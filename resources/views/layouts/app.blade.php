@@ -4,7 +4,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'Dashboard IMI Mobilitas - Auto Responsive')</title>
+    <title>@yield('title', 'Dashboard - BAKUMDA')</title>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            200: '#bfdbfe',
+                            300: '#93c5fd',
+                            400: '#60a5fa',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            800: '#1e40af',
+                            900: '#1e3a8a',
+                        },
+                    },
+                },
+            },
+        };
+    </script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
         rel="stylesheet">
@@ -142,7 +164,7 @@
                                 class="w-full h-full rounded-lg object-cover">
                         </div>
                         <div>
-                            <h2 class="text-sm font-black text-white tracking-wide">IMI Mobilitas</h2>
+                            <h2 class="text-sm font-black text-white tracking-wide">BAKUMDA</h2>
                             <span class="text-[10px] text-orange-400 font-extrabold uppercase tracking-widest">Web
                                 Portal</span>
                         </div>

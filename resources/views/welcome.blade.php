@@ -30,7 +30,7 @@
 
     <div id="appContainer" class="w-full flex flex-col items-center justify-center">
 
-        <div id="viewSwitcherBar" class="hidden md:flex w-full max-w-[1140px] justify-center gap-3 px-4 py-3 bg-white/95 border-b border-gray-200 shadow-sm sticky top-0 z-40">
+        {{-- <div id="viewSwitcherBar" class="hidden md:flex w-full max-w-[1140px] justify-center gap-3 px-4 py-3 bg-white/95 border-b border-gray-200 shadow-sm sticky top-0 z-40">
             <button id="btnMobileView" onclick="setViewMode('mobile')"
                 class="px-4 py-1.5 text-xs font-bold rounded-full transition text-gray-600 hover:text-gray-900">
                 Mode Mobile
@@ -39,7 +39,7 @@
                 class="px-4 py-1.5 text-xs font-bold rounded-full transition text-gray-600 hover:text-gray-900">
                 Mode Desktop
             </button>
-        </div>
+        </div> --}}
 
         <!-- ================= ANDROID MOBILE APP VIEW CONTAINER ================= -->
         <div id="androidView"

@@ -10,11 +10,13 @@ use App\Models\Sertifikat;
 use App\Models\Notification;
 use App\Models\Nilai;
 use App\Models\Materi;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class UserPelatihanController extends Controller
 {
@@ -68,12 +70,7 @@ class UserPelatihanController extends Controller
     {
         $validated = $request->validate([
             'nama'              => 'required|string|max:255',
-            'no_ktp'            => [
-                'required',
-                'string',
-                'digits:16',
-                'unique:pelatihan_anggota,no_ktp,NULL,id,pelatihan_id,' . $pelatihan->id
-            ],
+            'no_ktp'            => 'required|string|digits:16',
             'jenis_kelamin'     => 'required|in:Laki-laki,Perempuan',
             'tempat_lahir'      => 'required|string|max:100',
             'tanggal_lahir'     => 'required|date',
@@ -90,91 +87,53 @@ class UserPelatihanController extends Controller
             'kelurahan'         => 'required|string',
             'foto'              => 'required|image|mimes:jpeg,png,jpg|max:2048',
             'foto_ktp'          => 'required|file|mimes:jpeg,png,jpg,pdf|max:2048',
-            'pakta_integritas'  => 'nullable|file|mimes:pdf|max:5120',
+            'pakta_integritas'  => 'required|accepted', // Wajib dicentang
             'keterangan'        => 'nullable|string',
         ], [
-            'no_ktp.unique' => 'NIK ini sudah terdaftar pada pelatihan ini.',
+            'pakta_integritas.accepted' => 'Anda wajib menyetujui Pakta Integritas untuk melanjutkan.',
         ]);
 
         DB::beginTransaction();
         try {
-            // Cek kuota pelatihan
+            // Cek kuota
             $jumlahPendaftar = PelatihanAnggota::where('pelatihan_id', $pelatihan->id)->count();
             if ($pelatihan->kuota > 0 && $jumlahPendaftar >= $pelatihan->kuota) {
-                return redirect()->route('user-pelatihan.show', $pelatihan->id)
-                    ->with('error', 'Mohon maaf, kuota untuk pelatihan ini sudah penuh.');
+                return back()->with('error', 'Mohon maaf, kuota sudah penuh.');
             }
 
-            // Cek apakah user sudah terdaftar di pelatihan ini
-            $isAlreadyRegistered = PelatihanAnggota::where('pelatihan_id', $pelatihan->id)
-                ->where('users_id', Auth::id())
-                ->exists();
-
-            if ($isAlreadyRegistered) {
-                return redirect()->route('user-pelatihan.index')->with('warning', 'Anda sudah terdaftar pada pelatihan ini.');
-            }
-
-            // Siapkan data untuk disimpan ke database
-            $dataSimpan = $validated;
+            // Siapkan data tanpa mengecualikan pakta_integritas lagi
+            $dataSimpan = $request->except(['pakta_integritas']);
             $dataSimpan['pelatihan_id'] = $pelatihan->id;
             $dataSimpan['users_id'] = Auth::id();
 
-            // Handle Upload File
-            if ($request->hasFile('foto')) {
-                $dataSimpan['foto'] = $request->file('foto')->store('pelatihan/peserta', 'public');
-            }
+            // Pastikan nilai pakta_integritas tersimpan sebagai 1 (approve)
+            $dataSimpan['pakta_integritas'] = 1;
 
-            if ($request->hasFile('foto_ktp')) {
-                $dataSimpan['foto_ktp'] = $request->file('foto_ktp')->store('pelatihan/ktp', 'public');
-            }
+            // Handle Files
+            $dataSimpan['foto'] = $request->file('foto')->store('pelatihan/peserta', 'public');
+            $dataSimpan['foto_ktp'] = $request->file('foto_ktp')->store('pelatihan/ktp', 'public');
 
-            if ($request->hasFile('pakta_integritas')) {
-                $dataSimpan['pakta_integritas'] = $request->file('pakta_integritas')->store('pelatihan/pakta', 'public');
-            } else {
-                unset($dataSimpan['pakta_integritas']);
-            }
-
-            // 1. Buat data pendaftar
             $pendaftar = PelatihanAnggota::create($dataSimpan);
 
-            // 2. Buat status awal pendaftaran
             PelatihanAnggotaStatus::create([
                 'pelatihan_anggota_id' => $pendaftar->id,
                 'status' => 'Menunggu Pembayaran',
             ]);
 
-            // 3. Buat Notifikasi untuk User
             Notification::create([
                 'user_id' => Auth::id(),
-                'title'   => 'Pendaftaran Pelatihan Berhasil',
-                'message' => 'Anda telah berhasil mendaftar pada pelatihan "' . $pelatihan->judul . '". Silakan lakukan pembayaran untuk melanjutkan.',
+                'title'   => 'Pendaftaran Berhasil',
+                'message' => 'Silakan lakukan pembayaran untuk pelatihan ' . $pelatihan->judul,
                 'type'    => 'success',
                 'route'   => route('user-pelatihan.payment', $pendaftar->id, false),
             ]);
 
             DB::commit();
-
             return redirect()->route('user-pelatihan.payment', $pendaftar->id)
-                ->with('success', 'Pendaftaran pelatihan berhasil. Silakan lanjutkan ke proses pembayaran.');
+                ->with('success', 'Pendaftaran berhasil!');
         } catch (\Exception $e) {
             DB::rollBack();
-
-            // Hapus file yang terlanjur di-upload jika terjadi error pada database
-            if (isset($dataSimpan['foto']) && Storage::disk('public')->exists($dataSimpan['foto'])) {
-                Storage::disk('public')->delete($dataSimpan['foto']);
-            }
-            if (isset($dataSimpan['foto_ktp']) && Storage::disk('public')->exists($dataSimpan['foto_ktp'])) {
-                Storage::disk('public')->delete($dataSimpan['foto_ktp']);
-            }
-            if (isset($dataSimpan['pakta_integritas']) && Storage::disk('public')->exists($dataSimpan['pakta_integritas'])) {
-                Storage::disk('public')->delete($dataSimpan['pakta_integritas']);
-            }
-
-            $errorMessage = 'Terjadi kesalahan saat mendaftar pelatihan. Silakan coba lagi.';
-            if (config('app.debug')) {
-                $errorMessage = 'Gagal mendaftar pelatihan: ' . $e->getMessage() . ' di file ' . $e->getFile() . ' pada baris ' . $e->getLine();
-            }
-            return back()->withInput()->with('error', $errorMessage);
+            return back()->withInput()->with('error', 'Gagal memproses pendaftaran: ' . $e->getMessage());
         }
     }
 
@@ -286,7 +245,16 @@ class UserPelatihanController extends Controller
             abort(403, 'Anda tidak memiliki izin untuk mengakses halaman ini.');
         }
 
-        // Mengarahkan ke view status dengan data yang diperlukan
+        // Ambil status terakhir
+        $statusTerakhir = $pendaftaran->latestStatus->status ?? '';
+
+        // Cek jika status sudah disetujui / aktif / pembayaran diverifikasi
+        // Sesuaikan string 'Aktif' atau status sukses Anda di database
+        if (in_array($statusTerakhir, ['Aktif', 'Disetujui', 'Selesai','Pembayaran Disetujui'])) {
+            return redirect()->route('user-materi.index', $pendaftaran->pelatihan_id);
+        }
+
+        // Jika belum diverifikasi, arahkan ke view status seperti biasa
         return view('user.pelatihan.status', compact('pendaftaran'));
     }
 
@@ -323,5 +291,92 @@ class UserPelatihanController extends Controller
         $namaPeserta = \Illuminate\Support\Facades\Auth::user()->name;
 
         return view('user.sertifikat.sertifikat', compact('sertifikat', 'pelatihan', 'namaPeserta'));
+    }
+
+    public function downloadSertifikat($pelatihanId)
+    {
+        $pelatihanAnggota = PelatihanAnggota::where('pelatihan_id', $pelatihanId)
+            ->where('users_id', Auth::id())
+            ->firstOrFail();
+
+        $pelatihan = Pelatihan::with('materi')->findOrFail($pelatihanId);
+
+        $materiIds = $pelatihan->materi->pluck('id');
+
+        $nilaiLulusIds = Nilai::where('pelatihan_anggota_id', $pelatihanAnggota->id)
+            ->whereIn('materi_id', $materiIds)
+            ->where('status', 'lulus')
+            ->pluck('id');
+
+        $sertifikat = Sertifikat::whereHas('nilai', function ($query) use ($nilaiLulusIds) {
+            $query->whereIn('nilai.id', $nilaiLulusIds);
+        })->firstOrFail();
+
+        $namaPeserta = Auth::user()->name;
+
+        $pelatihanAnggotaId = optional($sertifikat->nilai->first())->pelatihan_anggota_id;
+        $daftarNilai = $pelatihanAnggotaId
+            ? Nilai::where('pelatihan_anggota_id', $pelatihanAnggotaId)->get()
+            : $sertifikat->nilai ?? collect();
+        $totalNilaiAkumulatif = $daftarNilai->sum('nilai');
+        $predikat = '';
+        if ($totalNilaiAkumulatif >= 85) {
+            $predikat = 'Sangat Baik';
+        } elseif ($totalNilaiAkumulatif >= 70) {
+            $predikat = 'Baik';
+        } elseif ($totalNilaiAkumulatif >= 55) {
+            $predikat = 'Cukup Baik';
+        } elseif ($totalNilaiAkumulatif >= 40) {
+            $predikat = 'Kurang Baik';
+        } else {
+            $predikat = 'Buruk';
+        }
+
+        return view('user.sertifikat.download', compact('sertifikat', 'pelatihan', 'namaPeserta', 'daftarNilai', 'predikat', 'totalNilaiAkumulatif'));
+    }
+
+    public function downloadSertifikatPdf($pelatihanId)
+    {
+        $pelatihanAnggota = PelatihanAnggota::where('pelatihan_id', $pelatihanId)
+            ->where('users_id', Auth::id())
+            ->firstOrFail();
+
+        $pelatihan = Pelatihan::with('materi')->findOrFail($pelatihanId);
+
+        $materiIds = $pelatihan->materi->pluck('id');
+
+        $nilaiLulusIds = Nilai::where('pelatihan_anggota_id', $pelatihanAnggota->id)
+            ->whereIn('materi_id', $materiIds)
+            ->where('status', 'lulus')
+            ->pluck('id');
+
+        $sertifikat = Sertifikat::whereHas('nilai', function ($query) use ($nilaiLulusIds) {
+            $query->whereIn('nilai.id', $nilaiLulusIds);
+        })->firstOrFail();
+
+        $namaPeserta = Auth::user()->name;
+
+        $pelatihanAnggotaId = optional($sertifikat->nilai->first())->pelatihan_anggota_id;
+        $daftarNilai = $pelatihanAnggotaId
+            ? Nilai::where('pelatihan_anggota_id', $pelatihanAnggotaId)->get()
+            : $sertifikat->nilai ?? collect();
+        $totalNilaiAkumulatif = $daftarNilai->sum('nilai');
+        $predikat = '';
+        if ($totalNilaiAkumulatif >= 85) {
+            $predikat = 'Sangat Baik';
+        } elseif ($totalNilaiAkumulatif >= 70) {
+            $predikat = 'Baik';
+        } elseif ($totalNilaiAkumulatif >= 55) {
+            $predikat = 'Cukup Baik';
+        } elseif ($totalNilaiAkumulatif >= 40) {
+            $predikat = 'Kurang Baik';
+        } else {
+            $predikat = 'Buruk';
+        }
+
+        $pdf = Pdf::loadView('user.sertifikat.download-pdf', compact('sertifikat', 'pelatihan', 'namaPeserta', 'daftarNilai', 'predikat', 'totalNilaiAkumulatif'))
+            ->setPaper('a4', 'portrait');
+
+        return $pdf->download('sertifikat-' . Str::slug($pelatihan->judul ?? 'pelatihan') . '.pdf');
     }
 }

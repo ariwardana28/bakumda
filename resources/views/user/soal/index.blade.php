@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends('layouts.app')
 
 @section('content')
     <div class="container mx-auto px-4 py-8 max-w-7xl" x-data="{ answeredCount: 0 }">
@@ -7,7 +7,7 @@
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
             
             {{-- KOLOM KIRI: Informasi Materi, Status, Tombol Fullscreen, & Timer (Sticky) --}}
-            <div class="lg:col-span-4 lg:sticky lg:top-6 space-y-6 z-30">
+            <div class="lg:col-span-4 sticky top-6 self-start space-y-6 z-30">
                 <div class="bg-white/90 backdrop-blur-xl rounded-3xl p-6 shadow-xl shadow-slate-100 border border-slate-100 flex flex-col gap-6 transition-all">
                     
                     {{-- Judul & Status Materi --}}

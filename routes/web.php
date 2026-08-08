@@ -98,6 +98,8 @@ Route::middleware('auth')->group(function () {
         ->parameters(['user-pelatihan' => 'pelatihan']);
 
     Route::get('/pelatihan/{pelatihan}/sertifikat', [UserPelatihanController::class, 'cetakSertifikat'])->name('user.sertifikat');
+    Route::get('/pelatihan/{pelatihan}/sertifikat/download', [UserPelatihanController::class, 'downloadSertifikat'])->name('user.sertifikat.download');
+    Route::get('/pelatihan/{pelatihan}/sertifikat/download-pdf', [UserPelatihanController::class, 'downloadSertifikatPdf'])->name('user.sertifikat.download.pdf');
     // --- User Materi & Kuis/Soal Pelatihan ---
     Route::get('pelatihan-materi/{pelatihanId}', [UserMateriController::class, 'index'])->name('user-materi.index');
     Route::get('pelatihan-materi/{pelatihanId}/{materiId}', [UserMateriController::class, 'show'])->name('user-materi.show');

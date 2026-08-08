@@ -1,4 +1,4 @@
-    @extends('layouts.admin')
+    @extends('layouts.app')
 
     @section('title', 'Status Keanggotaan')
 
@@ -251,7 +251,7 @@
                                 </div>
 
                                 <!-- KANAN: INFORMASI LENGKAP KARTU -->
-                                <div class="lg:col-span-2 space-y-6" x-data="{ showHistory: false }">
+                                <div class="hidden lg:block lg:col-span-2 space-y-6" x-data="{ showHistory: false }">
                                     <div
                                         class="bg-white dark:bg-gray-800 p-6 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm space-y-4">
                                         <div
@@ -534,57 +534,70 @@
                         {{-- KONDISI STATUS LAINNYA (PENDING, APPROVED, REJECTED) --}}
                     @else
                         <div
-                            class="p-8 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xl text-center space-y-6">
+                            class="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-10 border border-slate-200/80 dark:border-slate-800 shadow-xl text-center space-y-6 relative overflow-hidden">
 
-                            <!-- Icon Status Dynamic -->
+                            <!-- Background Ambient Glow Accent -->
+                            <div
+                                class="absolute -top-24 left-1/2 -translate-x-1/2 w-96 h-96 bg-indigo-500/5 dark:bg-indigo-500/10 rounded-full blur-3xl pointer-events-none">
+                            </div>
+
+                            <!-- Icon Status Dynamic with Modern Glow Effect -->
                             <div class="relative w-20 h-20 mx-auto flex items-center justify-center">
                                 @if ($currentStatus === 'approved')
+                                    <div class="absolute inset-0 rounded-2xl bg-blue-500/20 blur-xl animate-pulse"></div>
                                     <div
-                                        class="w-20 h-20 rounded-full bg-blue-100 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400 flex items-center justify-center text-3xl">
+                                        class="relative w-20 h-20 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 text-white flex items-center justify-center text-3xl shadow-lg shadow-blue-500/30">
                                         <i class="fa-solid fa-circle-chevron-right"></i>
                                     </div>
                                 @elseif(in_array($currentStatus, ['rejected', 'ditolak']))
+                                    <div class="absolute inset-0 rounded-2xl bg-rose-500/20 blur-xl animate-pulse"></div>
                                     <div
-                                        class="w-20 h-20 rounded-full bg-rose-100 dark:bg-rose-500/20 text-rose-600 dark:text-rose-400 flex items-center justify-center text-3xl">
+                                        class="relative w-20 h-20 rounded-2xl bg-gradient-to-br from-rose-500 to-red-600 text-white flex items-center justify-center text-3xl shadow-lg shadow-rose-500/30">
                                         <i class="fa-solid fa-circle-xmark"></i>
                                     </div>
                                 @elseif($currentStatus === 'menunggu pembayaran')
+                                    <div class="absolute inset-0 rounded-2xl bg-cyan-500/20 blur-xl animate-pulse"></div>
                                     <div
-                                        class="w-20 h-20 rounded-full bg-cyan-100 dark:bg-cyan-500/20 text-cyan-600 dark:text-cyan-400 flex items-center justify-center text-3xl">
+                                        class="relative w-20 h-20 rounded-2xl bg-gradient-to-br from-cyan-500 to-teal-600 text-white flex items-center justify-center text-3xl shadow-lg shadow-cyan-500/30">
                                         <i class="fa-solid fa-wallet"></i>
                                     </div>
                                 @elseif($currentStatus === 'pembayaran diproses')
+                                    <div class="absolute inset-0 rounded-2xl bg-indigo-500/20 blur-xl animate-pulse"></div>
                                     <div
-                                        class="w-20 h-20 rounded-full bg-indigo-100 dark:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-3xl">
+                                        class="relative w-20 h-20 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 text-white flex items-center justify-center text-3xl shadow-lg shadow-indigo-500/30">
                                         <i class="fa-solid fa-receipt"></i>
                                     </div>
                                 @elseif($currentStatus === 'non-aktif')
+                                    <div class="absolute inset-0 rounded-2xl bg-slate-500/10 blur-xl"></div>
                                     <div
-                                        class="w-20 h-20 rounded-full bg-gray-100 dark:bg-gray-500/20 text-gray-600 dark:text-gray-400 flex items-center justify-center text-3xl">
+                                        class="relative w-20 h-20 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 flex items-center justify-center text-3xl shadow-inner border border-slate-200 dark:border-slate-700">
                                         <i class="fa-solid fa-calendar-xmark"></i>
                                     </div>
                                 @else
+                                    <div class="absolute inset-0 rounded-2xl bg-amber-500/20 blur-xl animate-pulse"></div>
                                     <div
-                                        class="w-20 h-20 rounded-full bg-amber-100 dark:bg-amber-500/20 text-amber-600 dark:text-amber-400 flex items-center justify-center text-3xl animate-pulse">
+                                        class="relative w-20 h-20 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600 text-white flex items-center justify-center text-3xl shadow-lg shadow-amber-500/30 animate-pulse">
                                         <i class="fa-solid fa-clock"></i>
                                     </div>
                                 @endif
                             </div>
 
-                            <!-- Status Header -->
-                            <div class="max-w-md mx-auto space-y-2">
+                            <!-- Status Header & Typography -->
+                            <div class="max-w-lg mx-auto space-y-3 relative z-10">
                                 <span
-                                    class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider
-                            @if ($currentStatus === 'menunggu pembayaran') bg-cyan-50 text-cyan-600 dark:bg-cyan-500/10 dark:text-cyan-400
-                            @elseif ($currentStatus === 'pembayaran diproses') bg-indigo-50 text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-400
-                            @elseif ($currentStatus === 'approved') bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400
-                            @elseif(in_array($currentStatus, ['rejected', 'ditolak'])) bg-rose-50 text-rose-600 dark:bg-rose-500/10 dark:text-rose-400
-                            @elseif($currentStatus === 'non-aktif') bg-gray-50 text-gray-600 dark:bg-gray-500/10 dark:text-gray-400
-                            @else bg-amber-50 text-amber-600 dark:bg-amber-500/10 dark:text-amber-400 @endif">
+                                    class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-wider shadow-sm
+            @if ($currentStatus === 'menunggu pembayaran') bg-cyan-50 text-cyan-700 dark:bg-cyan-500/10 dark:text-cyan-400 border border-cyan-200/60 dark:border-cyan-800/60
+            @elseif ($currentStatus === 'pembayaran diproses') bg-indigo-50 text-indigo-700 dark:bg-indigo-500/10 dark:text-indigo-400 border border-indigo-200/60 dark:border-indigo-800/60
+            @elseif ($currentStatus === 'approved') bg-blue-50 text-blue-700 dark:bg-blue-500/10 dark:text-blue-400 border border-blue-200/60 dark:border-blue-800/60
+            @elseif(in_array($currentStatus, ['rejected', 'ditolak'])) bg-rose-50 text-rose-700 dark:bg-rose-500/10 dark:text-rose-400 border border-rose-200/60 dark:border-rose-800/60
+            @elseif($currentStatus === 'non-aktif') bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-400 border border-slate-200 dark:border-slate-700
+            @else bg-amber-50 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400 border border-amber-200/60 dark:border-amber-800/60 @endif">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-current"></span>
                                     Status: {{ ucfirst($currentStatus) }}
                                 </span>
 
-                                <h2 class="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white">
+                                <h2
+                                    class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight leading-snug">
                                     @if ($currentStatus === 'approved')
                                         Verifikasi Berkas Selesai, Menunggu Penerbitan KTA
                                     @elseif(in_array($currentStatus, ['rejected', 'ditolak']))
@@ -600,13 +613,13 @@
                                     @endif
                                 </h2>
 
-                                <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
+                                <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 leading-relaxed px-4">
                                     @if ($currentStatus === 'approved')
                                         Berkas Anda telah disetujui oleh verifikator. Saat ini proses penerbitan Kartu Tanda
-                                        Anggota
-                                        (KTA) sedang dipersiapkan.
+                                        Anggota (KTA) sedang dipersiapkan.
                                     @elseif(in_array($currentStatus, ['rejected', 'ditolak']))
-                                        Mohon maaf, permohonan pendaftaran Anda belum dapat disetujui. {{ $catatanAdmin }}
+                                        Mohon maaf, permohonan pendaftaran Anda belum dapat disetujui. <span
+                                            class="font-semibold text-rose-600 dark:text-rose-400">{{ $catatanAdmin }}</span>
                                     @elseif($currentStatus === 'menunggu pembayaran')
                                         Selamat, data Anda telah disetujui. Silakan lakukan pembayaran biaya keanggotaan
                                         untuk melanjutkan proses penerbitan kartu.
@@ -618,48 +631,62 @@
                                         untuk mengaktifkan kembali status keanggotaan Anda.
                                     @else
                                         Formulir pendaftaran Anda berhasil terkirim. Tim verifikator BAKUMDA sedang
-                                        menjadwalkan
-                                        pemeriksaan berkas Anda.
+                                        menjadwalkan pemeriksaan berkas Anda.
                                     @endif
                                 </p>
                             </div>
 
+                            <!-- Instruksi Pembayaran (Jika Menunggu Pembayaran) -->
                             @if ($currentStatus === 'menunggu pembayaran')
                                 <div
-                                    class="max-w-xl mx-auto p-4 sm:p-6 rounded-2xl bg-slate-50/80 dark:bg-slate-800/40 text-xs text-left space-y-4 border border-slate-100 dark:border-slate-800/60">
-                                    <div>
-                                        <h4 class="font-bold text-slate-800 dark:text-slate-200 mb-1">Instruksi Pembayaran
+                                    class="max-w-xl mx-auto p-5 sm:p-6 rounded-2xl bg-slate-50/80 dark:bg-slate-800/40 text-xs text-left space-y-4 border border-slate-200/80 dark:border-slate-800 backdrop-blur-sm">
+                                    <div class="space-y-2">
+                                        <h4
+                                            class="font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2 text-sm">
+                                            <span
+                                                class="w-6 h-6 rounded-lg bg-cyan-100 dark:bg-cyan-500/20 text-cyan-600 dark:text-cyan-400 flex items-center justify-center text-xs">
+                                                <i class="fa-solid fa-info"></i>
+                                            </span>
+                                            Instruksi Pembayaran
                                         </h4>
-                                        <p class="text-slate-500 dark:text-slate-400">
+                                        <p class="text-slate-500 dark:text-slate-400 leading-relaxed">
                                             Silakan transfer biaya pendaftaran sebesar <strong
-                                                class="text-slate-800 dark:text-slate-100">Rp 150.000,-</strong> ke nomor
-                                            rekening berikut:
+                                                class="text-slate-800 dark:text-slate-100 font-bold bg-cyan-50 dark:bg-cyan-500/10 px-1.5 py-0.5 rounded text-cyan-600 dark:text-cyan-400">Rp
+                                                150.000,-</strong> ke nomor rekening resmi berikut:
                                         </p>
                                         <div
-                                            class="mt-2 p-3 rounded-xl bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700/50">
-                                            <p class="font-mono text-sm"><strong
-                                                    class="text-brand-600 dark:text-brand-400">BCA:</strong> 1234-5678-9012
-                                            </p>
-                                            <p class="text-xs">a.n. Bendahara BAKUMDA</p>
+                                            class="mt-3 p-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 flex items-center justify-between shadow-xs">
+                                            <div>
+                                                <p
+                                                    class="font-mono text-sm font-bold text-slate-900 dark:text-white tracking-wider">
+                                                    <span
+                                                        class="text-cyan-600 dark:text-cyan-400 font-sans uppercase text-[11px] font-semibold mr-1 bg-cyan-50 dark:bg-cyan-500/10 px-2 py-0.5 rounded-md">BCA</span>
+                                                    1234-5678-9012
+                                                </p>
+                                                <p class="text-[11px] text-slate-400 mt-1 font-medium">a.n. Bendahara
+                                                    BAKUMDA</p>
+                                            </div>
                                         </div>
                                     </div>
+
                                     <form action="{{ route('user-anggota.pembayaran.upload', $anggota->id) }}"
-                                        method="POST" enctype="multipart/form-data">
+                                        method="POST" enctype="multipart/form-data" class="space-y-3 pt-2">
                                         @csrf
                                         <div>
                                             <label
-                                                class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+                                                class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
                                                 Upload Bukti Pembayaran <span class="text-rose-500">*</span>
                                             </label>
-                                            <input type="file" name="bukti_pembayaran" required
-                                                class="text-xs text-slate-500 w-full file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-[11px] file:font-semibold file:bg-brand-50 file:text-brand-600 dark:file:bg-brand-500/10 dark:file:text-brand-400 hover:file:bg-brand-100">
+                                            <input type="file" name="bukti_pembayaran" required accept="image/*,.pdf"
+                                                class="text-xs text-slate-500 w-full file:mr-3 file:py-2 file:px-3.5 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-cyan-50 file:text-cyan-700 dark:file:bg-cyan-500/10 dark:file:text-cyan-400 hover:file:bg-cyan-100 transition-all border border-slate-200 dark:border-slate-700 rounded-xl bg-white dark:bg-slate-900 p-1 cursor-pointer">
                                             @error('bukti_pembayaran')
-                                                <span class="text-[10px] text-rose-500 mt-1 block">{{ $message }}</span>
+                                                <span
+                                                    class="text-[10px] text-rose-500 mt-1 block font-medium">{{ $message }}</span>
                                             @enderror
                                         </div>
-                                        <div class="text-right mt-3">
+                                        <div class="text-right pt-2">
                                             <button type="submit"
-                                                class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-bold text-xs shadow-lg shadow-brand-600/30 transition-all duration-200">
+                                                class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-bold text-xs shadow-lg shadow-cyan-600/20 transition-all duration-200 hover:scale-[1.02]">
                                                 <i class="fa-solid fa-paper-plane"></i>
                                                 <span>Konfirmasi Pembayaran</span>
                                             </button>
@@ -668,51 +695,53 @@
                                 </div>
                             @endif
 
-                            <!-- Detail Pendaftaran Rangkuman -->
+                            <!-- Rangkuman Detail Pendaftaran -->
                             <div
-                                class="max-w-xl mx-auto p-4 rounded-2xl bg-slate-50/80 dark:bg-slate-800/40 text-xs text-left space-y-2 border border-slate-100 dark:border-slate-800/60">
+                                class="max-w-xl mx-auto p-4 sm:p-5 rounded-2xl bg-slate-50/70 dark:bg-slate-800/40 text-xs text-left space-y-3 border border-slate-200/80 dark:border-slate-800">
                                 <div
-                                    class="flex justify-between py-1 border-b border-slate-200/50 dark:border-slate-700/50">
-                                    <span class="text-slate-500">Nama Pendaftar:</span>
-                                    <span class="font-bold text-slate-800 dark:text-slate-200">{{ $anggota->nama }}</span>
+                                    class="flex justify-between items-center py-1.5 border-b border-slate-200/60 dark:border-slate-700/50">
+                                    <span class="text-slate-400 dark:text-slate-500 font-medium">Nama Pendaftar</span>
+                                    <span
+                                        class="font-bold text-slate-800 dark:text-slate-200 uppercase tracking-tight">{{ $anggota->nama }}</span>
                                 </div>
                                 <div
-                                    class="flex justify-between py-1 border-b border-slate-200/50 dark:border-slate-700/50">
-                                    <span class="text-slate-500">NIK / KTP:</span>
+                                    class="flex justify-between items-center py-1.5 border-b border-slate-200/60 dark:border-slate-700/50">
+                                    <span class="text-slate-400 dark:text-slate-500 font-medium">NIK / KTP</span>
                                     <span
-                                        class="font-bold text-slate-800 dark:text-slate-200">{{ $anggota->no_ktp }}</span>
+                                        class="font-bold text-slate-800 dark:text-slate-200 font-mono tracking-wider">{{ $anggota->no_ktp }}</span>
                                 </div>
-                                <div
-                                    class="flex justify-between py-1 border-b border-slate-200/50 dark:border-slate-700/50">
-                                    <span class="text-slate-500">Tanggal Pengajuan:</span>
-                                    <span
-                                        class="font-bold text-slate-800 dark:text-slate-200">{{ $anggota->created_at ? $anggota->created_at->translatedFormat('d F Y (H:i)') : '-' }}</span>
+                                <div class="flex justify-between items-center py-1.5">
+                                    <span class="text-slate-400 dark:text-slate-500 font-medium">Tanggal Pengajuan</span>
+                                    <span class="font-bold text-slate-800 dark:text-slate-200">
+                                        {{ $anggota->created_at ? $anggota->created_at->translatedFormat('d F Y (H:i)') : '-' }}
+                                    </span>
                                 </div>
                             </div>
 
-                            @if (in_array($currentStatus, ['rejected', 'ditolak', 'non-aktif']))
-                                <div class="pt-4">
+                            <!-- Tombol Tindakan / Aksi Status Khusus -->
+                            @if (in_array($currentStatus, ['rejected', 'ditolak', 'non-aktif', 'proses']))
+                                <div class="pt-2 flex justify-center">
                                     @if (in_array($currentStatus, ['rejected', 'ditolak']) && !$pendingEditRequest)
                                         <button type="button" @click="showEditModal = true"
-                                            class="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-brand-600 hover:bg-brand-500 text-white font-bold text-xs shadow-xl shadow-brand-600/30 transition-all duration-200 hover:scale-[1.02]">
+                                            class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-orange-600 hover:bg-orange-500 text-white font-bold text-xs shadow-lg shadow-orange-600/20 transition-all duration-200 hover:scale-[1.02]">
                                             <i class="fa-solid fa-paper-plane"></i>
                                             <span>Ajukan Ulang Pendaftaran</span>
                                         </button>
                                     @elseif ($currentStatus === 'non-aktif')
                                         <a href="{{ route('user-anggota.edit', $anggota->id) }}"
-                                            class="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-brand-600 hover:bg-brand-500 text-white font-bold text-xs shadow-xl shadow-brand-600/30 transition-all duration-200 hover:scale-[1.02]">
+                                            class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-orange-600 hover:bg-orange-500 text-white font-bold text-xs shadow-lg shadow-orange-600/20 transition-all duration-200 hover:scale-[1.02]">
                                             <i class="fa-solid fa-pen-to-square"></i>
                                             <span>Ajukan Perpanjangan Kartu</span>
                                         </a>
-                                    @elseif ($pendingEditRequest && $pendingEditRequest->latestStatus->status === 'proses')
+                                    @elseif ($pendingEditRequest && optional($pendingEditRequest->latestStatus)->status === 'proses')
                                         <button type="button" @click="showCancelRequestModal = true"
-                                            class="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-gray-500 hover:bg-gray-600 text-white font-bold text-xs shadow-xl transition-all">
+                                            class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-slate-600 hover:bg-slate-500 text-white font-bold text-xs shadow-md transition-all hover:scale-[1.02]">
                                             <i class="fa-solid fa-hourglass-half"></i>
                                             <span>Lihat & Batalkan Permintaan</span>
                                         </button>
-                                    @elseif($currentStatus === 'proses')
+                                    @elseif ($currentStatus === 'proses')
                                         <a href="{{ route('user-anggota.edit', $anggota->id) }}"
-                                            class="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-green-600 hover:bg-green-700 text-white font-bold text-xs shadow-xl transition-all">
+                                            class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-lg shadow-emerald-600/20 transition-all hover:scale-[1.02]">
                                             <i class="fa-solid fa-pen-to-square"></i>
                                             <span>Lanjutkan Perbarui Pendaftaran</span>
                                         </a>
@@ -945,245 +974,238 @@
                 </div>
                 {{-- TAMPILAN 2: JIKA USER BELUM MENDAFTAR (LANDING PAGE REGISTRASI) --}}
             @else
-                <!-- Hero Section Banner -->
-                <div
-                    class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-brand-950 to-indigo-950 p-8 sm:p-12 text-white shadow-2xl border border-slate-800/80 group">
-                    <!-- Efek Backdrop Glow & Pattern Dekoratif -->
+                <div class="px-3 md:px-8 py-4 md:py-6 space-y-6 md:space-y-8 max-w-7xl mx-auto">
+
+                    <!-- Hero Section Banner -->
                     <div
-                        class="absolute -right-20 -top-20 w-96 h-96 bg-brand-500/15 rounded-full blur-3xl pointer-events-none transition-all duration-700 group-hover:scale-125">
-                    </div>
-                    <div
-                        class="absolute -left-20 -bottom-20 w-80 h-80 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none">
-                    </div>
-
-                    <div class="relative z-10 max-w-2xl space-y-5">
-                        <span
-                            class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-brand-500/20 border border-brand-500/30 text-brand-300 text-xs font-semibold tracking-wide uppercase shadow-inner backdrop-blur-md">
-                            <i class="fa-solid fa-shield-halved text-brand-400"></i> Keanggotaan Resmi BAKUMDA
-                        </span>
-
-                        <h1 class="text-3xl sm:text-5xl font-extrabold leading-[1.15] tracking-tight text-white">
-                            Bergabunglah Dalam Jaringan Advokasi & <span
-                                class="text-transparent bg-clip-text bg-gradient-to-r from-brand-400 to-indigo-300">Hukum
-                                Daerah</span>
-                        </h1>
-
-                        <p class="text-sm sm:text-base text-slate-300 leading-relaxed font-normal">
-                            BAKUMDA membuka kesempatan bagi praktisi hukum, akademisi, dan profesional untuk berkontribusi
-                            secara nyata dalam memberikan pendampingan hukum dan pengabdian masyarakat.
-                        </p>
-
-                        <div class="pt-3 flex flex-wrap items-center gap-3.5">
-                            <a href="{{ route('user-anggota.create') }}"
-                                class="inline-flex items-center gap-2.5 px-7 py-3.5 rounded-2xl bg-brand-600 hover:bg-brand-500 text-white font-bold text-xs shadow-xl shadow-brand-600/30 transition-all duration-300 hover:scale-[1.03] active:scale-95">
-                                <span>Mulai Pendaftaran Sekarang</span>
-                                <i
-                                    class="fa-solid fa-arrow-right text-xs transition-transform duration-300 group-hover:translate-x-1"></i>
-                            </a>
-                            <a href="#persyaratan"
-                                class="inline-flex items-center gap-2 px-6 py-3.5 rounded-2xl bg-slate-800/80 hover:bg-slate-800 text-slate-300 hover:text-white font-semibold text-xs border border-slate-700/80 backdrop-blur-sm transition-all duration-200">
-                                <span>Lihat Persyaratan</span>
-                            </a>
-                        </div>
-                    </div>
-
-                    <!-- Ikon Transparan Besar di Sudut Kanan -->
-                    <div
-                        class="absolute right-6 -bottom-6 opacity-10 hidden lg:block pointer-events-none transition-transform duration-500 group-hover:scale-110">
-                        <i class="fa-solid fa-scale-balanced text-[200px]"></i>
-                    </div>
-                </div>
-
-                <!-- Keuntungan / Why Join Us Section -->
-                <div class="space-y-6">
-                    <div class="text-center max-w-xl mx-auto space-y-1">
-                        <h2 class="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-                            Manfaat & Fasilitas Keanggotaan
-                        </h2>
-                        <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
-                            Akses berbagai benefit eksklusif setelah resmi terdaftar sebagai anggota.
-                        </p>
-                    </div>
-
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
-                        <!-- Card 1 -->
+                        class="relative overflow-hidden rounded-2xl md:rounded-3xl bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 p-6 sm:p-10 md:p-12 text-white shadow-xl md:shadow-2xl border border-slate-800/80 group">
+                        <!-- Efek Backdrop Glow & Pattern Dekoratif -->
                         <div
-                            class="group p-7 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-sm hover:shadow-xl hover:border-brand-500/30 dark:hover:border-brand-500/30 transition-all duration-300 flex flex-col justify-between hover:-translate-y-1">
-                            <div class="space-y-4">
-                                <div
-                                    class="w-14 h-14 rounded-2xl bg-brand-50 dark:bg-brand-500/10 text-brand-600 dark:text-brand-400 flex items-center justify-center text-xl font-bold transition-transform duration-300 group-hover:scale-110 shadow-sm">
-                                    <i class="fa-solid fa-id-card"></i>
-                                </div>
-                                <h3 class="font-extrabold text-sm sm:text-base text-slate-900 dark:text-white">Kartu
-                                    Anggota Resmi (NIA)</h3>
-                                <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-                                    Mendapatkan Nomor Induk Anggota (NIA) resmi serta Kartu Keanggotaan fisik/digital yang
-                                    terverifikasi.
-                                </p>
+                            class="absolute -right-20 -top-20 w-64 md:w-96 h-64 md:h-96 bg-orange-500/15 rounded-full blur-3xl pointer-events-none transition-all duration-700 group-hover:scale-125">
+                        </div>
+                        <div
+                            class="absolute -left-20 -bottom-20 w-60 md:w-80 h-60 md:h-80 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none">
+                        </div>
+
+                        <div class="relative z-10 max-w-2xl space-y-4 md:space-y-5">
+                            <span
+                                class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-orange-500/20 border border-orange-500/30 text-orange-300 text-[10px] md:text-xs font-semibold tracking-wide uppercase shadow-inner backdrop-blur-md">
+                                <i class="fa-solid fa-shield-halved text-orange-400"></i> Keanggotaan Resmi BAKUMDA
+                            </span>
+
+                            <h1
+                                class="text-2xl sm:text-3xl md:text-5xl font-extrabold leading-[1.2] md:leading-[1.15] tracking-tight text-white">
+                                Bergabunglah Bersama Jaringan Masyarakat <span
+                                    class="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-indigo-300">Hukum
+                                    Indonesia</span>
+                            </h1>
+
+                            <p class="text-xs sm:text-sm md:text-base text-slate-300 leading-relaxed font-normal">
+                                BAKUMDA membuka kesempatan bagi praktisi hukum, akademisi, dan profesional untuk
+                                berkontribusi secara nyata dalam memberikan pendampingan hukum dan pengabdian masyarakat.
+                            </p>
+
+                            <div class="pt-2 md:pt-3 flex flex-wrap items-center gap-3">
+                                <a href="{{ route('user-anggota.create') }}"
+                                    class="inline-flex items-center gap-2 px-5 md:px-7 py-3 md:py-3.5 rounded-xl md:rounded-2xl bg-orange-600 hover:bg-orange-500 text-white font-bold text-xs shadow-lg shadow-orange-600/30 transition-all duration-300 hover:scale-[1.03] active:scale-95">
+                                    <span>Mulai Pendaftaran Sekarang</span>
+                                    <i
+                                        class="fa-solid fa-arrow-right text-xs transition-transform duration-300 group-hover:translate-x-1"></i>
+                                </a>
+                                <a href="#persyaratan"
+                                    class="inline-flex items-center gap-2 px-5 md:px-6 py-3 md:py-3.5 rounded-xl md:rounded-2xl bg-slate-800/80 hover:bg-slate-800 text-slate-300 hover:text-white font-semibold text-xs border border-slate-700/80 backdrop-blur-sm transition-all duration-200">
+                                    <span>Lihat Persyaratan</span>
+                                </a>
                             </div>
                         </div>
 
-                        <!-- Card 2 -->
+                        <!-- Ikon Transparan Besar di Sudut Kanan (Desktop Only) -->
                         <div
-                            class="group p-7 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-sm hover:shadow-xl hover:border-indigo-500/30 dark:hover:border-indigo-500/30 transition-all duration-300 flex flex-col justify-between hover:-translate-y-1">
-                            <div class="space-y-4">
-                                <div
-                                    class="w-14 h-14 rounded-2xl bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-xl font-bold transition-transform duration-300 group-hover:scale-110 shadow-sm">
-                                    <i class="fa-solid fa-network-wired"></i>
+                            class="absolute right-6 -bottom-6 opacity-10 hidden lg:block pointer-events-none transition-transform duration-500 group-hover:scale-110">
+                            <i class="fa-solid fa-scale-balanced text-[180px]"></i>
+                        </div>
+                    </div>
+
+                    <!-- Keuntungan / Why Join Us Section -->
+                    <div class="space-y-4 md:space-y-6">
+                        <div class="text-center max-w-xl mx-auto space-y-1">
+                            <h2 class="text-lg sm:text-xl md:text-2xl font-extrabold text-slate-900 tracking-tight">
+                                Manfaat & Fasilitas Keanggotaan
+                            </h2>
+                            <p class="text-xs sm:text-sm text-slate-500">
+                                Akses berbagai benefit eksklusif setelah resmi terdaftar sebagai anggota.
+                            </p>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6">
+                            <!-- Card 1 -->
+                            <div
+                                class="group p-5 md:p-7 rounded-2xl md:rounded-3xl bg-white border border-slate-200/80 shadow-sm hover:shadow-xl hover:border-orange-500/30 transition-all duration-300 flex flex-col justify-between hover:-translate-y-1">
+                                <div class="space-y-3 md:space-y-4">
+                                    <div
+                                        class="w-12 h-12 md:w-14 md:h-14 rounded-xl md:rounded-2xl bg-orange-50 text-orange-600 flex items-center justify-center text-lg md:text-xl font-bold transition-transform duration-300 group-hover:scale-110 shadow-sm">
+                                        <i class="fa-solid fa-id-card"></i>
+                                    </div>
+                                    <h3 class="font-extrabold text-sm sm:text-base text-slate-900">Kartu Anggota Resmi
+                                        (NIA)</h3>
+                                    <p class="text-xs text-slate-500 leading-relaxed">
+                                        Mendapatkan Nomor Induk Anggota (NIA) resmi serta Kartu Keanggotaan fisik/digital
+                                        yang terverifikasi.
+                                    </p>
                                 </div>
-                                <h3 class="font-extrabold text-sm sm:text-base text-slate-900 dark:text-white">Jaringan
-                                    Advokasi Luas</h3>
-                                <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-                                    Koneksi langsung dengan jejaring advokat, konsultan hukum, serta mitra strategis di
-                                    berbagai daerah.
-                                </p>
+                            </div>
+
+                            <!-- Card 2 -->
+                            <div
+                                class="group p-5 md:p-7 rounded-2xl md:rounded-3xl bg-white border border-slate-200/80 shadow-sm hover:shadow-xl hover:border-indigo-500/30 transition-all duration-300 flex flex-col justify-between hover:-translate-y-1">
+                                <div class="space-y-3 md:space-y-4">
+                                    <div
+                                        class="w-12 h-12 md:w-14 md:h-14 rounded-xl md:rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-lg md:text-xl font-bold transition-transform duration-300 group-hover:scale-110 shadow-sm">
+                                        <i class="fa-solid fa-network-wired"></i>
+                                    </div>
+                                    <h3 class="font-extrabold text-sm sm:text-base text-slate-900">Jaringan Advokasi Luas
+                                    </h3>
+                                    <p class="text-xs text-slate-500 leading-relaxed">
+                                        Koneksi langsung dengan jejaring advokat, konsultan hukum, serta mitra strategis di
+                                        berbagai daerah.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Card 3 -->
+                            <div
+                                class="group p-5 md:p-7 rounded-2xl md:rounded-3xl bg-white border border-slate-200/80 shadow-sm hover:shadow-xl hover:border-purple-500/30 transition-all duration-300 flex flex-col justify-between hover:-translate-y-1">
+                                <div class="space-y-3 md:space-y-4">
+                                    <div
+                                        class="w-12 h-12 md:w-14 md:h-14 rounded-xl md:rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center text-lg md:text-xl font-bold transition-transform duration-300 group-hover:scale-110 shadow-sm">
+                                        <i class="fa-solid fa-gavel"></i>
+                                    </div>
+                                    <h3 class="font-extrabold text-sm sm:text-base text-slate-900">Pendampingan & Pelatihan
+                                    </h3>
+                                    <p class="text-xs text-slate-500 leading-relaxed">
+                                        Akses mengikuti bimtek, workshop advokasi, serta keterlibatan dalam penanganan kasus
+                                        daerah.
+                                    </p>
+                                </div>
                             </div>
                         </div>
-
-                        <!-- Card 3 -->
-                        <div
-                            class="group p-7 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-sm hover:shadow-xl hover:border-purple-500/30 dark:hover:border-purple-500/30 transition-all duration-300 flex flex-col justify-between hover:-translate-y-1">
-                            <div class="space-y-4">
-                                <div
-                                    class="w-14 h-14 rounded-2xl bg-purple-50 dark:bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center text-xl font-bold transition-transform duration-300 group-hover:scale-110 shadow-sm">
-                                    <i class="fa-solid fa-gavel"></i>
-                                </div>
-                                <h3 class="font-extrabold text-sm sm:text-base text-slate-900 dark:text-white">Pendampingan
-                                    & Pelatihan</h3>
-                                <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-                                    Akses mengikuti bimtek, workshop advokasi, serta keterlibatan dalam penanganan kasus
-                                    daerah.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Alur Pendaftaran Section -->
-                <div
-                    class="p-6 sm:p-10 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-6">
-                    <div class="space-y-1">
-                        <h2
-                            class="text-sm sm:text-base font-extrabold text-slate-900 dark:text-white uppercase tracking-wider">
-                            Alur Tahapan Pendaftaran
-                        </h2>
-                        <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
-                            5 langkah mudah untuk menyelesaikan proses registrasi keanggotaan.
-                        </p>
                     </div>
 
-                    <div class="grid grid-cols-1 sm:grid-cols-5 gap-4 relative">
-                        <div
-                            class="p-5 rounded-2xl bg-slate-50/80 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800/80 space-y-2.5 transition-all hover:bg-slate-100/80 dark:hover:bg-slate-800/70">
-                            <span
-                                class="inline-block px-2.5 py-1 rounded-md bg-brand-500/10 text-xs font-black text-brand-600 dark:text-brand-400 font-mono">01</span>
-                            <h4 class="font-extrabold text-xs sm:text-sm text-slate-900 dark:text-white">Isi Formulir
-                                Online</h4>
-                            <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">Melengkapi identitas diri
-                                dan informasi domisili secara valid.</p>
-                        </div>
-
-                        <div
-                            class="p-5 rounded-2xl bg-slate-50/80 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800/80 space-y-2.5 transition-all hover:bg-slate-100/80 dark:hover:bg-slate-800/70">
-                            <span
-                                class="inline-block px-2.5 py-1 rounded-md bg-brand-500/10 text-xs font-black text-brand-600 dark:text-brand-400 font-mono">02</span>
-                            <h4 class="font-extrabold text-xs sm:text-sm text-slate-900 dark:text-white">Upload Dokumen
-                            </h4>
-                            <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">Mengunggah scan KTP dan
-                                pas foto terbaru ukuran 3x4.</p>
-                        </div>
-
-                        <div
-                            class="p-5 rounded-2xl bg-slate-50/80 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800/80 space-y-2.5 transition-all hover:bg-slate-100/80 dark:hover:bg-slate-800/70">
-                            <span
-                                class="inline-block px-2.5 py-1 rounded-md bg-brand-500/10 text-xs font-black text-brand-600 dark:text-brand-400 font-mono">03</span>
-                            <h4 class="font-extrabold text-xs sm:text-sm text-slate-900 dark:text-white">Ikuti Pelatihan
-                            </h4>
-                            <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">Wajib mengikuti program
-                                pelatihan yang telah ditentukan.</p>
-                        </div>
-
-                        <div
-                            class="p-5 rounded-2xl bg-slate-50/80 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800/80 space-y-2.5 transition-all hover:bg-slate-100/80 dark:hover:bg-slate-800/70">
-                            <span
-                                class="inline-block px-2.5 py-1 rounded-md bg-brand-500/10 text-xs font-black text-brand-600 dark:text-brand-400 font-mono">04</span>
-                            <h4 class="font-extrabold text-xs sm:text-sm text-slate-900 dark:text-white">Verifikasi
-                                Pengurus</h4>
-                            <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">Tim pengurus akan
-                                memvalidasi kelengkapan berkas Anda.</p>
-                        </div>
-
-                        <div
-                            class="p-5 rounded-2xl bg-slate-50/80 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800/80 space-y-2.5 transition-all hover:bg-slate-100/80 dark:hover:bg-slate-800/70">
-                            <span
-                                class="inline-block px-2.5 py-1 rounded-md bg-brand-500/10 text-xs font-black text-brand-600 dark:text-brand-400 font-mono">05</span>
-                            <h4 class="font-extrabold text-xs sm:text-sm text-slate-900 dark:text-white">Penerbitan KTA
-                            </h4>
-                            <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">Menerima NIA dan Kartu
-                                Tanda Anggota (KTA) BAKUMDA.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Persyaratan & Checklist Section -->
-                <div id="persyaratan"
-                    class="p-6 sm:p-10 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-5">
-                    <div class="space-y-1">
-                        <h2
-                            class="text-sm sm:text-base font-extrabold text-slate-900 dark:text-white uppercase tracking-wider">
-                            Dokumen Persyaratan
-                        </h2>
-                        <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
-                            Pastikan Anda telah menyiapkan dokumen digital berikut sebelum melanjutkan ke formulir:
-                        </p>
-                    </div>
-
-                    <ul
-                        class="grid grid-cols-1 sm:grid-cols-2 gap-3.5 pt-1 text-xs sm:text-sm text-slate-700 dark:text-slate-300">
-                        <li
-                            class="flex items-center gap-3 p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800/50">
-                            <i class="fa-solid fa-circle-check text-emerald-500 text-base shrink-0"></i>
-                            <span class="font-medium">Kartu Tanda Penduduk (KTP) asli / Scan berwarna</span>
-                        </li>
-                        <li
-                            class="flex items-center gap-3 p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800/50">
-                            <i class="fa-solid fa-circle-check text-emerald-500 text-base shrink-0"></i>
-                            <span class="font-medium">Pas foto formal terbaru latar merah/biru</span>
-                        </li>
-                        <li
-                            class="flex items-center gap-3 p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800/50">
-                            <i class="fa-solid fa-circle-check text-emerald-500 text-base shrink-0"></i>
-                            <span class="font-medium">Alamat e-mail & Nomor WhatsApp aktif</span>
-                        </li>
-                        <li
-                            class="flex items-center gap-3 p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800/50">
-                            <i class="fa-solid fa-circle-check text-emerald-500 text-base shrink-0"></i>
-                            <span class="font-medium">Daftar riwayat hidup singkat / CV (Opsional)</span>
-                        </li>
-                    </ul>
-                </div>
-
-                <!-- Bottom Action Card -->
-                <div
-                    class="relative overflow-hidden p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-brand-600 via-indigo-600 to-brand-700 text-white shadow-xl flex flex-col sm:flex-row items-center justify-between gap-6">
-                    <!-- Dekorasi Background Tipis -->
+                    <!-- Alur Pendaftaran Section -->
                     <div
-                        class="absolute -right-10 -top-10 w-40 h-40 bg-white/10 rounded-full blur-2xl pointer-events-none">
+                        class="p-5 sm:p-8 md:p-10 rounded-2xl md:rounded-3xl bg-white border border-slate-200/80 shadow-sm space-y-5 md:space-y-6">
+                        <div class="space-y-1">
+                            <h2
+                                class="text-xs sm:text-sm md:text-base font-extrabold text-slate-900 uppercase tracking-wider">
+                                Alur Tahapan Pendaftaran
+                            </h2>
+                            <p class="text-xs sm:text-sm text-slate-500">
+                                5 langkah mudah untuk menyelesaikan proses registrasi keanggotaan.
+                            </p>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5 relative">
+                            <div
+                                class="p-4 rounded-xl bg-slate-50 border border-slate-100 space-y-2 transition-all hover:bg-slate-100/80">
+                                <span
+                                    class="inline-block px-2 py-0.5 rounded bg-orange-500/10 text-[11px] font-black text-orange-600 font-mono">01</span>
+                                <h4 class="font-extrabold text-xs sm:text-sm text-slate-900">Isi Formulir Online</h4>
+                                <p class="text-[11px] sm:text-xs text-slate-500 leading-relaxed">Melengkapi identitas diri
+                                    dan informasi domisili secara valid.</p>
+                            </div>
+
+                            <div
+                                class="p-4 rounded-xl bg-slate-50 border border-slate-100 space-y-2 transition-all hover:bg-slate-100/80">
+                                <span
+                                    class="inline-block px-2 py-0.5 rounded bg-orange-500/10 text-[11px] font-black text-orange-600 font-mono">02</span>
+                                <h4 class="font-extrabold text-xs sm:text-sm text-slate-900">Upload Dokumen</h4>
+                                <p class="text-[11px] sm:text-xs text-slate-500 leading-relaxed">Mengunggah scan KTP dan
+                                    pas foto terbaru ukuran 3x4.</p>
+                            </div>
+
+                            <div
+                                class="p-4 rounded-xl bg-slate-50 border border-slate-100 space-y-2 transition-all hover:bg-slate-100/80">
+                                <span
+                                    class="inline-block px-2 py-0.5 rounded bg-orange-500/10 text-[11px] font-black text-orange-600 font-mono">03</span>
+                                <h4 class="font-extrabold text-xs sm:text-sm text-slate-900">Ikuti Pelatihan</h4>
+                                <p class="text-[11px] sm:text-xs text-slate-500 leading-relaxed">Wajib mengikuti program
+                                    pelatihan yang telah ditentukan.</p>
+                            </div>
+
+                            <div
+                                class="p-4 rounded-xl bg-slate-50 border border-slate-100 space-y-2 transition-all hover:bg-slate-100/80">
+                                <span
+                                    class="inline-block px-2 py-0.5 rounded bg-orange-500/10 text-[11px] font-black text-orange-600 font-mono">04</span>
+                                <h4 class="font-extrabold text-xs sm:text-sm text-slate-900">Verifikasi Pengurus</h4>
+                                <p class="text-[11px] sm:text-xs text-slate-500 leading-relaxed">Tim pengurus akan
+                                    memvalidasi kelengkapan berkas Anda.</p>
+                            </div>
+
+                            <div
+                                class="p-4 rounded-xl bg-slate-50 border border-slate-100 space-y-2 transition-all hover:bg-slate-100/80">
+                                <span
+                                    class="inline-block px-2 py-0.5 rounded bg-orange-500/10 text-[11px] font-black text-orange-600 font-mono">05</span>
+                                <h4 class="font-extrabold text-xs sm:text-sm text-slate-900">Penerbitan KTA</h4>
+                                <p class="text-[11px] sm:text-xs text-slate-500 leading-relaxed">Menerima NIA dan Kartu
+                                    Tanda Anggota (KTA) BAKUMDA.</p>
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="space-y-1 text-center sm:text-left z-10">
-                        <h3 class="text-base sm:text-lg font-extrabold">Sudah Siap Bergabung?</h3>
-                        <p class="text-xs sm:text-sm text-white/80">Proses pengisian formulir hanya membutuhkan waktu
-                            sekitar 3–5 menit.</p>
+                    <!-- Persyaratan & Checklist Section -->
+                    <div id="persyaratan"
+                        class="p-5 sm:p-8 md:p-10 rounded-2xl md:rounded-3xl bg-white border border-slate-200/80 shadow-sm space-y-4 md:space-y-5">
+                        <div class="space-y-1">
+                            <h2
+                                class="text-xs sm:text-sm md:text-base font-extrabold text-slate-900 uppercase tracking-wider">
+                                Dokumen Persyaratan
+                            </h2>
+                            <p class="text-xs sm:text-sm text-slate-500">
+                                Pastikan Anda telah menyiapkan dokumen digital berikut sebelum melanjutkan ke formulir:
+                            </p>
+                        </div>
+
+                        <ul class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1 text-xs sm:text-sm text-slate-700">
+                            <li class="flex items-center gap-3 p-3 rounded-xl bg-slate-50 border border-slate-100">
+                                <i class="fa-solid fa-circle-check text-emerald-500 text-base shrink-0"></i>
+                                <span class="font-medium">Kartu Tanda Penduduk (KTP) asli / Scan berwarna</span>
+                            </li>
+                            <li class="flex items-center gap-3 p-3 rounded-xl bg-slate-50 border border-slate-100">
+                                <i class="fa-solid fa-circle-check text-emerald-500 text-base shrink-0"></i>
+                                <span class="font-medium">Pas foto formal terbaru latar merah/biru</span>
+                            </li>
+                            <li class="flex items-center gap-3 p-3 rounded-xl bg-slate-50 border border-slate-100">
+                                <i class="fa-solid fa-circle-check text-emerald-500 text-base shrink-0"></i>
+                                <span class="font-medium">Alamat e-mail & Nomor WhatsApp aktif</span>
+                            </li>
+                            <li class="flex items-center gap-3 p-3 rounded-xl bg-slate-50 border border-slate-100">
+                                <i class="fa-solid fa-circle-check text-emerald-500 text-base shrink-0"></i>
+                                <span class="font-medium">Daftar riwayat hidup singkat / CV (Opsional)</span>
+                            </li>
+                        </ul>
                     </div>
 
-                    <a href="{{ route('user-anggota.create') }}"
-                        class="z-10 shrink-0 inline-flex items-center gap-2 px-7 py-3.5 rounded-2xl bg-white text-brand-700 hover:bg-slate-100 font-extrabold text-xs shadow-lg transition-all duration-300 hover:scale-105 active:scale-95">
-                        <span>Lanjut ke Formulir</span>
-                        <i class="fa-solid fa-arrow-right text-xs"></i>
-                    </a>
+                    <!-- Bottom Action Card -->
+                    <div
+                        class="relative overflow-hidden p-6 sm:p-8 rounded-2xl md:rounded-3xl bg-gradient-to-r from-orange-600 via-indigo-600 to-orange-700 text-white shadow-xl flex flex-col sm:flex-row items-center justify-between gap-5">
+                        <!-- Dekorasi Background Tipis -->
+                        <div
+                            class="absolute -right-10 -top-10 w-40 h-40 bg-white/10 rounded-full blur-2xl pointer-events-none">
+                        </div>
+
+                        <div class="space-y-1 text-center sm:text-left z-10">
+                            <h3 class="text-base sm:text-lg font-extrabold">Sudah Siap Bergabung?</h3>
+                            <p class="text-xs sm:text-sm text-white/80">Proses pengisian formulir hanya membutuhkan waktu
+                                sekitar 3–5 menit.</p>
+                        </div>
+
+                        <a href="{{ route('user-anggota.create') }}"
+                            class="z-10 shrink-0 inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-white text-orange-700 hover:bg-slate-100 font-extrabold text-xs shadow-lg transition-all duration-300 hover:scale-105 active:scale-95">
+                            <span>Lanjut ke Formulir</span>
+                            <i class="fa-solid fa-arrow-right text-xs"></i>
+                        </a>
+                    </div>
                 </div>
-
             @endif
 
         </div>

@@ -239,15 +239,15 @@
 
                 <!-- Sertifikasi -->
                 @can('sertifikat-view')
-                @php $isSertifikasiActive = request()->is('pelatihan-sertifikat*'); @endphp
-                <a href="{{ route('sertifikat.index') }}"
-                    class="flex items-center gap-3.5 px-3.5 py-3 rounded-xl transition-all duration-200 group relative {{ $isSertifikasiActive ? 'font-semibold text-brand-600 bg-brand-50/80 dark:bg-brand-500/15 dark:text-brand-400 shadow-sm' : 'font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100/60 dark:text-slate-400 dark:hover:text-slate-100 dark:hover:bg-slate-800/40' }}">
-                    <div class="absolute left-0 w-1 h-5 bg-brand-600 dark:bg-brand-400 rounded-r-full"
-                        x-show="sidebarOpen && {{ $isSertifikasiActive ? 'true' : 'false' }}"></div>
-                    <i
-                        class="fa-solid fa-award text-sm w-5 text-center transition-transform group-hover:scale-110"></i>
-                    <span x-show="sidebarOpen" class="whitespace-nowrap text-xs tracking-wide">Sertifikasi</span>
-                </a>
+                    @php $isSertifikasiActive = request()->is('pelatihan-sertifikat*'); @endphp
+                    <a href="{{ route('sertifikat.index') }}"
+                        class="flex items-center gap-3.5 px-3.5 py-3 rounded-xl transition-all duration-200 group relative {{ $isSertifikasiActive ? 'font-semibold text-brand-600 bg-brand-50/80 dark:bg-brand-500/15 dark:text-brand-400 shadow-sm' : 'font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100/60 dark:text-slate-400 dark:hover:text-slate-100 dark:hover:bg-slate-800/40' }}">
+                        <div class="absolute left-0 w-1 h-5 bg-brand-600 dark:bg-brand-400 rounded-r-full"
+                            x-show="sidebarOpen && {{ $isSertifikasiActive ? 'true' : 'false' }}"></div>
+                        <i
+                            class="fa-solid fa-award text-sm w-5 text-center transition-transform group-hover:scale-110"></i>
+                        <span x-show="sidebarOpen" class="whitespace-nowrap text-xs tracking-wide">Sertifikasi</span>
+                    </a>
                 @endcan
 
                 {{-- <div class="pt-4"></div>
@@ -628,7 +628,56 @@
         </div>
 
     </div>
+    <script>
+        // Fungsi deteksi otomatis berdasarkan lebar layar saat halaman dimuat
+        document.addEventListener("DOMContentLoaded", function() {
+            checkScreenSize();
+            window.addEventListener("resize", checkScreenSize);
+        });
 
+        function checkScreenSize() {
+            // Jika lebar layar kurang dari 768px (Mobile/Android), aktifkan tampilan mobile. Jika lebih, desktop.
+            if (window.innerWidth < 768) {
+                setMode('mobile');
+            } else {
+                setMode('desktop');
+            }
+        }
+
+        function setMode(mode) {
+            const desktopView = document.getElementById('desktopView');
+            const androidView = document.getElementById('androidView');
+            const btnDesktop = document.getElementById('btnDesktop');
+            const btnMobile = document.getElementById('btnMobile');
+
+            if (mode === 'desktop') {
+                desktopView.classList.remove('hidden');
+                androidView.classList.add('hidden');
+                if (btnDesktop && btnMobile) {
+                    btnDesktop.className = "px-3 py-1.5 text-xs font-bold rounded-xl bg-orange-500 text-white transition";
+                    btnMobile.className =
+                        "px-3 py-1.5 text-xs font-bold rounded-xl bg-gray-100 text-gray-600 hover:bg-gray-200 transition";
+                }
+            } else {
+                desktopView.classList.add('hidden');
+                androidView.classList.remove('hidden');
+                if (btnDesktop && btnMobile) {
+                    btnMobile.className = "px-3 py-1.5 text-xs font-bold rounded-xl bg-orange-500 text-white transition";
+                    btnDesktop.className =
+                        "px-3 py-1.5 text-xs font-bold rounded-xl bg-gray-100 text-gray-600 hover:bg-gray-200 transition";
+                }
+            }
+        }
+
+        function showServiceMessage(msg) {
+            alert(msg);
+        }
+
+        function showNotificationModal() {
+            alert("Tidak ada notifikasi baru.");
+        }
+    </script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     @stack('scripts')
 </body>
 

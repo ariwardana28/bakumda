@@ -15,6 +15,7 @@ use App\Http\Controllers\WilayahController;
 use App\Http\Controllers\UserPelatihanController;
 use App\Http\Controllers\Admin\PelatihanAnggotaController;
 use App\Http\Controllers\UserSoalController;
+use App\Http\Controllers\HalamanUtamaController;
 use App\Http\Controllers\UserMateriController;
 use App\Http\Controllers\Admin\SoalController;
 
@@ -23,10 +24,7 @@ use App\Http\Controllers\Admin\SoalController;
 | Public Routes
 |--------------------------------------------------------------------------
 */
-
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [HalamanUtamaController::class, 'index'])->name('welcome');
 
 // Route::get('/sertifikasi', function () {
 //     return view('admin.sertifikasi.index');

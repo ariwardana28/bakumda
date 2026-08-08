@@ -6,8 +6,25 @@ function initWilayahDropdowns(config) {
 
     const oldData = config.oldData || {};
 
+    function populateDatalist(selectElement) {
+        const datalist = document.getElementById(`${selectElement.id}List`);
+        if (!datalist) return;
+
+        datalist.innerHTML = '';
+        Array.from(selectElement.options).forEach(option => {
+            if (option.value) {
+                datalist.insertAdjacentHTML('beforeend', `<option value="${option.value}"></option>`);
+            }
+        });
+    }
+
     function fetchAndFill(url, element, placeholder, selectedValue, callback) {
         element.innerHTML = `<option value="">Memuat...</option>`;
+        const datalist = document.getElementById(`${element.id}List`);
+        if (datalist) {
+            datalist.innerHTML = '';
+        }
+
         fetch(url)
             .then(response => response.json())
             .then(data => {
@@ -19,6 +36,7 @@ function initWilayahDropdowns(config) {
                     });
                 }
                 element.innerHTML = options;
+                populateDatalist(element);
 
                 if (typeof callback === 'function') {
                     callback(data);

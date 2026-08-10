@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
 use Illuminate\Database\Eloquent\Model;
 
 class PelatihanAnggota extends Model
@@ -35,12 +37,15 @@ class PelatihanAnggota extends Model
         'catatan_pembayaran',
     ];
 
-    public function pelatihan()
+    public function pelatihan(): BelongsTo
     {
         return $this->belongsTo(Pelatihan::class, 'pelatihan_id');
     }
 
-    public function users()
+    /**
+     * Get the user that owns the PelatihanAnggota.
+     */
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'users_id');
     }

@@ -55,8 +55,7 @@
     @stack('styles')
 </head>
 
-<body
-    class="min-h-screen text-gray-800 flex flex-col items-center justify-start p-0 md:p-6 transition-all duration-300">
+<body class="min-h-screen text-gray-800 flex flex-col items-center justify-start p-0 md:p-6 transition-all duration-300">
 
     <div id="appContainer" class="w-full flex flex-col items-center justify-center">
 
@@ -92,13 +91,13 @@
                 class="fixed top-0 left-0 right-0 px-5 pt-4 pb-2 flex items-center justify-between bg-white shadow-sm z-30">
                 <div class="flex items-center space-x-3">
                     <div
-                        class="w-12 h-12 rounded-full border-2 border-orange-500 p-0.5 flex items-center justify-center bg-orange-100 text-gray-700 overflow-hidden shadow-sm">
+                        class="w-12 h-12 rounded-xl p-0.5 flex items-center justify-center text-gray-700 overflow-hidden shadow-sm">
                         <img src="{{ asset('bakumda.png') }}" alt="Profile"
-                            class="w-full h-full rounded-full object-cover">
+                            class="w-full h-full rounded-lg object-cover">
                     </div>
                     <div>
-                        <p class="text-xs text-gray-500 font-medium">Halo</p>
-                        <h1 class="text-lg font-bold text-gray-900 tracking-tight">{{ Auth::user()->name ?? 'Guest' }}
+                        <p class="text-xs text-gray-500 font-medium"></p>
+                        <h1 class="text-lg font-bold text-gray-900 tracking-tight">BAKUMDA
                         </h1>
                     </div>
                 </div>
@@ -116,31 +115,69 @@
             </div>
 
             <!-- MAIN CONTENT AREA (Mobile) -->
-            <div id="androidContentSlot" class="flex-1 overflow-y-auto no-scrollbar pb-28 pt-24"></div>
+            <div id="androidContentSlot" class="flex-1 overflow-y-auto no-scrollbar pb-28 pt-24">
+                @yield('content')
+            </div>
 
             <!-- BOTTOM NAVIGATION BAR (Mobile View) -->
             <div
                 class="fixed bottom-0 left-0 right-0 w-full bg-white/95 backdrop-blur-md border-t border-gray-100 py-3 px-6 flex justify-around items-center z-30 shadow-lg">
-                <button onclick="switchTab(this, 'Beranda')"
-                    class="flex flex-col items-center text-orange-500 transition active-tab">
-                    <div
-                        class="bg-orange-500 text-white px-4 py-1.5 rounded-full flex items-center space-x-1.5 shadow-sm">
-                        <i class="fa-solid fa-house text-sm"></i>
-                        <span class="text-xs font-bold">Beranda</span>
-                    </div>
-                </button>
-                <button onclick="switchTab(this, 'Explore')"
-                    class="flex flex-col items-center text-gray-400 hover:text-gray-600 transition p-2">
-                    <i class="fa-solid fa-globe text-xl"></i>
-                </button>
-                <button onclick="switchTab(this, 'Community')"
-                    class="flex flex-col items-center text-gray-400 hover:text-gray-600 transition p-2">
-                    <i class="fa-solid fa-user-group text-xl"></i>
-                </button>
-                <button onclick="switchTab(this, 'Profile')"
-                    class="flex flex-col items-center text-gray-400 hover:text-gray-600 transition p-2">
-                    <i class="fa-regular fa-folder text-xl"></i>
-                </button>
+                {{-- Tombol Beranda (Dashboard) --}}
+                <a href="{{ route('dashboard') }}" class="flex flex-col items-center transition">
+                    @if (request()->routeIs('dashboard'))
+                        {{-- Tampilan Aktif --}}
+                        <div
+                            class="px-4 py-1.5 rounded-full flex items-center space-x-1.5 bg-orange-500 text-white shadow-sm">
+                            <i class="fa-solid fa-house text-sm"></i>
+                            <span class="text-xs font-bold">Beranda</span>
+                        </div>
+                    @else
+                        {{-- Tampilan Tidak Aktif --}}
+                        <i class="fa-solid fa-house text-xl text-gray-400 p-2"></i>
+                    @endif
+                </a>
+
+                {{-- Tombol Kartu Anggota --}}
+                <a href="{{ route('user-anggota.index') }}" class="flex flex-col items-center transition">
+                    @if (request()->routeIs('user-anggota.*'))
+                        {{-- Tampilan Aktif --}}
+                        <div
+                            class="px-4 py-1.5 rounded-full flex items-center space-x-1.5 bg-orange-500 text-white shadow-sm">
+                            <i class="fa-solid fa-id-card text-sm"></i>
+                            <span class="text-xs font-bold">Kartu</span>
+                        </div>
+                    @else
+                        {{-- Tampilan Tidak Aktif --}}
+                        <i class="fa-solid fa-id-card text-xl text-gray-400 p-2"></i>
+                    @endif
+                </a>
+
+                {{-- Tombol Cek Sertifikat --}}
+                <a href="{{ route('sertifikat.cek.form') }}" class="flex flex-col items-center transition">
+                    {{-- Logika aktif jika sedang berada di rute sertifikat --}}
+                    @if (request()->routeIs('sertifikat.*'))
+                        <div
+                            class="px-4 py-1.5 rounded-full flex items-center space-x-1.5 bg-orange-500 text-white shadow-sm">
+                            <i class="fa-solid fa-certificate text-sm"></i>
+                            <span class="text-xs font-bold">Sertifikat</span>
+                        </div>
+                    @else
+                        <i class="fa-solid fa-certificate text-xl text-gray-400 p-2"></i>
+                    @endif
+                </a>
+
+                {{-- Tombol Cek Kartu Anggota --}}
+                <a href="{{ route('kartu-anggota.cek.form') }}" class="flex flex-col items-center transition">
+                    @if (request()->routeIs('kartu-anggota.*'))
+                        <div
+                            class="px-4 py-1.5 rounded-full flex items-center space-x-1.5 bg-orange-500 text-white shadow-sm">
+                            <i class="fa-solid fa-user-check text-sm"></i>
+                            <span class="text-xs font-bold">Kartu Anggota</span>
+                        </div>
+                    @else
+                       <i class="fa-solid fa-user-check text-xl text-gray-400 p-2"></i>
+                    @endif
+                </a>
             </div>
 
             <div
@@ -172,7 +209,7 @@
 
                     <!-- Sidebar Navigation Links -->
                     <nav class="p-4 space-y-1.5 text-sm font-semibold">
-                        <a href="#"
+                        <a href="{{ url('/') }}"
                             class="flex items-center space-x-3 px-4 py-3 rounded-xl bg-orange-500 text-white shadow-lg shadow-orange-500/20 transition">
                             <i class="fa-solid fa-house w-5 text-center"></i>
                             <span>Beranda</span>
@@ -214,7 +251,8 @@
                                 {{ substr(Auth::user()->name ?? 'G', 0, 1) }}
                             </div>
                             <div class="truncate">
-                                <p class="text-xs font-bold text-white truncate">{{ Auth::user()->name ?? 'Guest' }}</p>
+                                <p class="text-xs font-bold text-white truncate">{{ Auth::user()->name ?? 'Guest' }}
+                                </p>
                                 <p class="text-[10px] text-slate-400 truncate">Member Aktif</p>
                             </div>
                         </div>
@@ -252,12 +290,10 @@
                 </header>
 
                 <!-- Scrollable Content Body -->
-                <main id="desktopContentSlot" class="flex-1 overflow-y-auto p-8"></main>
+                <main id="desktopContentSlot" class="flex-1 overflow-y-auto p-8">
+                    @yield('content')
+                </main>
             </div>
-        </div>
-
-        <div id="sharedContent" class="hidden">
-            @yield('content')
         </div>
 
     </div>
@@ -283,7 +319,6 @@
             const androidView = document.getElementById('androidView');
             const btnDesktop = document.getElementById('btnDesktop');
             const btnMobile = document.getElementById('btnMobile');
-            const sharedContent = document.getElementById('sharedContent');
 
             if (mode === 'desktop') {
                 desktopView.classList.remove('hidden');
@@ -303,17 +338,6 @@
                     btnDesktop.className =
                         "px-3 py-1.5 text-xs font-bold rounded-xl bg-gray-100 text-gray-600 hover:bg-gray-200 transition";
                 }
-            }
-        }
-
-        function moveSharedContentTo(slotId, sharedContent) {
-            const slot = document.getElementById(slotId);
-            if (!slot || !sharedContent) {
-                return;
-            }
-            if (sharedContent.parentElement !== slot) {
-                sharedContent.classList.remove('hidden');
-                slot.appendChild(sharedContent);
             }
         }
 

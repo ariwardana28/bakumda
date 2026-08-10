@@ -5,12 +5,19 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Pelatihan;
 use App\Models\Anggota;
+use App\Models\Sertifikat;
+use App\Models\AnggotaCard;
 use Illuminate\Support\Facades\Auth; // Tambahkan ini
 
 class HalamanUtamaController extends Controller
 {
     public function index()
     {
+        // Jika pengguna sudah login, langsung arahkan ke dashboard.
+        if (Auth::check()) {
+            return redirect()->route('dashboard');
+        }
+
         $pelatihans = Pelatihan::latest()->get();
         $user = Auth::user();
 
@@ -36,5 +43,78 @@ class HalamanUtamaController extends Controller
         }
 
         return view('welcome', compact('pelatihans', 'isRegistered', 'nama_anggota', 'no_ktpa', 'status_anggota'));
+    }
+
+    /**
+     * Menampilkan halaman formulir untuk pengecekan sertifikat.
+     */
+    public function showCekSertifikatForm()
+    {
+        return view('user.sertifikat.cek-sertifikat');
+    }
+
+    /**
+     * Memproses pengecekan nomor sertifikat dan menampilkan hasilnya.
+     */
+    public function CekSertifikat(Request $request)
+    {
+        $request->validate([
+            'no_sertifikat' => 'required|string|min:5',
+        ], [
+            'no_sertifikat.required' => 'Nomor sertifikat wajib diisi.',
+        ]);
+
+        $nomorSertifikat = $request->input('no_sertifikat');
+
+        // Cari sertifikat berdasarkan nomor, dan eager load relasi yang dibutuhkan
+        $sertifikat = Sertifikat::where('no_sertifikat', $nomorSertifikat)
+            ->with([
+                'nilai.pelatihanAnggota.user', // User (Peserta)
+                'nilai.pelatihanAnggota.pelatihan' // Pelatihan
+            ])
+            ->first();
+
+        if (!$sertifikat) {
+            return back()->withInput()->with('error', 'Sertifikat dengan nomor tersebut tidak ditemukan.');
+        }
+
+        return view('user.sertifikat.sertifikat-publik', compact('sertifikat'));
+    }
+
+    /**
+     * Menampilkan halaman formulir untuk pengecekan kartu anggota.
+     */
+    public function showCekKartuAnggotaForm()
+    {
+        // Anda perlu membuat file view ini: resources/views/user/keanggotaan/cek-kartu-anggota.blade.php
+        return view('admin.keanggotaan.cek-kartu-anggota');
+    }
+
+    /**
+     * Memproses pengecekan nomor kartu anggota dan menampilkan hasilnya.
+     */
+    public function CekKartuAnggota(Request $request)
+    {
+        $request->validate([
+            'no_kartu' => 'required|string|min:5',
+        ], [
+            'no_kartu.required' => 'Nomor kartu anggota wajib diisi.',
+        ]);
+
+        $nomorKartu = $request->input('no_kartu');
+
+        // Cari kartu anggota berdasarkan nomor, dan eager load relasi yang dibutuhkan
+        $anggotaCard = AnggotaCard::where('card_id', $nomorKartu)
+            ->with(['anggota', 'latestStatus', 'latestBerlaku'])
+            ->first();
+
+        if (!$anggotaCard) {
+            return back()->withInput()->with('error', 'Kartu anggota dengan nomor tersebut tidak ditemukan.');
+        }
+
+        // Ambil variabel pendukung yang dibutuhkan view
+        $latestBerlaku = $anggotaCard->latestBerlaku;
+
+        return view('admin.keanggotaan.kartu-anggota-publik', compact('anggotaCard', 'latestBerlaku'));
     }
 }

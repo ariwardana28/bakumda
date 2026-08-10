@@ -26,6 +26,14 @@ use App\Http\Controllers\Admin\SoalController;
 */
 Route::get('/', [HalamanUtamaController::class, 'index'])->name('welcome');
 
+// Route untuk Pengecekan Sertifikat Publik
+Route::get('/cek-sertifikat', [HalamanUtamaController::class, 'showCekSertifikatForm'])->name('sertifikat.cek.form');
+Route::post('/cek-sertifikat', [HalamanUtamaController::class, 'CekSertifikat'])->name('sertifikat.cek.submit');
+
+// Route untuk Pengecekan Kartu Anggota Publik
+Route::get('/cek-kartu-anggota', [HalamanUtamaController::class, 'showCekKartuAnggotaForm'])->name('kartu-anggota.cek.form');
+Route::post('/cek-kartu-anggota', [HalamanUtamaController::class, 'CekKartuAnggota'])->name('kartu-anggota.cek.submit');
+
 // Route::get('/sertifikasi', function () {
 //     return view('admin.sertifikasi.index');
 // });

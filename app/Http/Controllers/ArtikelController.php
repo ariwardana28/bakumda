@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
  
+use App\Models\Kategori;
 use App\Models\Artikel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -15,7 +16,7 @@ class ArtikelController extends Controller
      */
     public function index()
     {
-        $artikels = Artikel::latest()->paginate(10);
+        $artikels = Artikel::where('users_id', Auth::id())->latest()->paginate(10);
         return view('user.artikel.index', compact('artikels'));
     }
  
@@ -24,7 +25,8 @@ class ArtikelController extends Controller
      */
     public function create()
     {
-        return view('user.artikel.create');
+        $kategoris = Kategori::orderBy('nama')->get();
+        return view('user.artikel.create', compact('kategoris'));
     }
  
     /**
@@ -34,12 +36,14 @@ class ArtikelController extends Controller
     {
         $validated = $request->validate([
             'judul' => 'required|string|max:255',
-            'konten' => 'required|string',
+            'isi' => 'required|string',
             'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'status' => 'required|in:draft,published',
+            'kategori_id' => 'required|exists:kategori,id',
+            'tanggal' => 'required|date',
         ]);
  
-        $validated['user_id'] = Auth::id();
+        $validated['users_id'] = Auth::id();
         $validated['slug'] = Str::slug($validated['judul']);
  
         // Pastikan slug unik
@@ -52,6 +56,7 @@ class ArtikelController extends Controller
             $validated['gambar'] = $request->file('gambar')->store('artikel/gambar', 'public');
         }
  
+        // dd($validated);
         Artikel::create($validated);
  
         return redirect()->route('user.artikel.index')->with('success', 'Artikel berhasil dibuat.');
@@ -62,6 +67,11 @@ class ArtikelController extends Controller
      */
     public function show(Artikel $artikel)
     {
+        // Pastikan user hanya bisa melihat artikel miliknya sendiri
+        if ($artikel->users_id !== Auth::id()) {
+            abort(403, 'ANDA TIDAK MEMILIKI IZIN UNTUK MENGAKSES HALAMAN INI.');
+        }
+
         // Untuk halaman publik/pengguna
         return view('user.artikel.show', compact('artikel'));
     }
@@ -71,7 +81,14 @@ class ArtikelController extends Controller
      */
     public function edit(Artikel $artikel)
     {
-        return view('user.artikel.edit', compact('artikel'));
+        $kategoris = Kategori::orderBy('nama')->get();
+        
+        // Pastikan user hanya bisa mengedit artikel miliknya sendiri
+        if ($artikel->users_id !== Auth::id()) {
+            abort(403, 'ANDA TIDAK MEMILIKI IZIN UNTUK MENGAKSES HALAMAN INI.');
+        }
+
+        return view('user.artikel.edit', compact('artikel', 'kategoris'));
     }
  
     /**
@@ -79,14 +96,22 @@ class ArtikelController extends Controller
      */
     public function update(Request $request, Artikel $artikel)
     {
+        // Pastikan user hanya bisa memperbarui artikel miliknya sendiri
+        if ($artikel->users_id !== Auth::id()) {
+            abort(403, 'ANDA TIDAK MEMILIKI IZIN UNTUK MELAKUKAN TINDAKAN INI.');
+        }
+
         $validated = $request->validate([
             'judul' => 'required|string|max:255',
-            'konten' => 'required|string',
+            'isi' => 'required|string',
             'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'status' => 'required|in:draft,published',
+            'kategori_id' => 'required|exists:kategori,id',
+            'tanggal' => 'required|date',
         ]);
  
         // Jika judul berubah, buat slug baru
+        // Cek apakah judul yang di-request berbeda dengan judul yang ada di database
         if ($artikel->judul !== $validated['judul']) {
             $validated['slug'] = Str::slug($validated['judul']);
             $slugCount = Artikel::where('slug', 'like', $validated['slug'].'%')->where('id', '!=', $artikel->id)->count();
@@ -113,6 +138,11 @@ class ArtikelController extends Controller
      */
     public function destroy(Artikel $artikel)
     {
+        // Pastikan user hanya bisa menghapus artikel miliknya sendiri
+        if ($artikel->users_id !== Auth::id()) {
+            abort(403, 'ANDA TIDAK MEMILIKI IZIN UNTUK MELAKUKAN TINDAKAN INI.');
+        }
+
         // Hapus gambar terkait jika ada
         if ($artikel->gambar) {
             Storage::disk('public')->delete($artikel->gambar);

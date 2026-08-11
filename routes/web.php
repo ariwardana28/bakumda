@@ -18,6 +18,7 @@ use App\Http\Controllers\UserSoalController;
 use App\Http\Controllers\HalamanUtamaController;
 use App\Http\Controllers\UserMateriController;
 use App\Http\Controllers\Admin\SoalController;
+use App\Http\Controllers\ArtikelController;
 
 /*
 |--------------------------------------------------------------------------
@@ -121,6 +122,12 @@ Route::middleware('auth')->group(function () {
     // Route untuk Remidi
     Route::get('/pelatihan/{pelatihan}/materi/{materi}/remedi', [UserSoalController::class, 'remedi'])->name('user-soal.remedi');
     Route::post('/pelatihan/{pelatihan}/materi/{materi}/remedi/store', [UserSoalController::class, 'storeRemedi'])->name('user-soal.store-remedi');
+    /*
+    |--------------------------------------------------------------------------
+    | User Artikel Routes
+    |--------------------------------------------------------------------------
+    */
+    Route::resource('artikel', ArtikelController::class)->names('user.artikel')->parameter('artikel', 'artikel:slug');
     /*
     |--------------------------------------------------------------------------
     | Admin Group Routes

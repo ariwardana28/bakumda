@@ -1,16 +1,16 @@
-<section class="bg-white/90 backdrop-blur-xl rounded-3xl p-6 sm:p-8 shadow-xl shadow-slate-100/70 border border-slate-100 transition-all">
-    <header class="border-b border-slate-100 pb-5 mb-6">
+<section class="bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl rounded-3xl p-6 sm:p-8 shadow-xl shadow-slate-100/70 dark:shadow-slate-950/40 border border-slate-100 dark:border-slate-800 transition-all">
+    <header class="border-b border-slate-100 dark:border-slate-800 pb-5 mb-6">
         <div class="flex items-center gap-3 mb-2">
-            <div class="w-9 h-9 rounded-xl bg-blue-600 text-white flex items-center justify-center shadow-md shadow-blue-500/20 shrink-0">
+            <div class="w-9 h-9 rounded-xl bg-orange-500 text-white flex items-center justify-center shadow-md shadow-orange-500/20 shrink-0">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                 </svg>
             </div>
-            <h2 class="text-lg sm:text-xl font-black text-slate-900 tracking-tight">
+            <h2 class="text-lg sm:text-xl font-black text-slate-900 dark:text-slate-100 tracking-tight">
                 {{ __('Profile Information') }}
             </h2>
         </div>
-        <p class="text-sm text-slate-500 font-medium pl-12">
+        <p class="text-sm text-slate-500 dark:text-slate-400 font-medium pl-12">
             {{ __("Update your account's profile information and email address.") }}
         </p>
     </header>
@@ -24,27 +24,27 @@
         @method('patch')
 
         <div class="space-y-2">
-            <x-input-label for="name" :value="__('Name')" class="font-bold text-slate-700" />
-            <x-text-input id="name" name="name" type="text" class="block w-full rounded-2xl border-slate-200/80 bg-slate-50/50 focus:border-blue-600 focus:ring-blue-600 shadow-sm transition" :value="old('name', $user->name)" required autofocus autocomplete="name" />
-            <x-input-error class="mt-1" :messages="$errors->get('name')" />
+            <x-input-label for="name" :value="__('Name')" class="font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider text-xs" />
+            <x-text-input id="name" name="name" type="text" class="block w-full rounded-2xl border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 px-4 py-3 focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 shadow-sm transition" :value="old('name', $user->name)" required autofocus autocomplete="name" />
+            <x-input-error class="mt-1 text-xs text-rose-500" :messages="$errors->get('name')" />
         </div>
 
         <div class="space-y-2">
-            <x-input-label for="email" :value="__('Email')" class="font-bold text-slate-700" />
-            <x-text-input id="email" name="email" type="email" class="block w-full rounded-2xl border-slate-200/80 bg-slate-50/50 focus:border-blue-600 focus:ring-blue-600 shadow-sm transition" :value="old('email', $user->email)" required autocomplete="username" />
-            <x-input-error class="mt-1" :messages="$errors->get('email')" />
+            <x-input-label for="email" :value="__('Email')" class="font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider text-xs" />
+            <x-text-input id="email" name="email" type="email" class="block w-full rounded-2xl border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 px-4 py-3 focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 shadow-sm transition" :value="old('email', $user->email)" required autocomplete="username" />
+            <x-input-error class="mt-1 text-xs text-rose-500" :messages="$errors->get('email')" />
 
             @if ($user instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && ! $user->hasVerifiedEmail())
-                <div class="mt-4 p-4 rounded-2xl bg-amber-50 border border-amber-200/60 flex flex-col gap-2">
-                    <p class="text-sm text-amber-800 font-medium">
+                <div class="mt-4 p-4 rounded-2xl bg-amber-50 dark:bg-amber-950/45 border border-amber-200/60 dark:border-amber-900/50 flex flex-col gap-2">
+                    <p class="text-sm text-amber-800 dark:text-amber-300 font-medium">
                         {{ __('Your email address is unverified.') }}
                     </p>
-                    <button form="send-verification" class="inline-flex items-center text-xs font-bold text-amber-700 hover:text-amber-900 underline underline-offset-2">
+                    <button form="send-verification" class="inline-flex items-center text-xs font-bold text-amber-700 dark:text-amber-400 hover:text-amber-900 dark:hover:text-amber-200 underline underline-offset-2">
                         {{ __('Click here to re-send the verification email.') }}
                     </button>
 
                     @if (session('status') === 'verification-link-sent')
-                        <p class="mt-1 font-medium text-xs text-green-600">
+                        <p class="mt-1 font-medium text-xs text-emerald-600 dark:text-emerald-400">
                             {{ __('A new verification link has been sent to your email address.') }}
                         </p>
                     @endif
@@ -52,10 +52,10 @@
             @endif
         </div>
 
-        <div class="flex items-center gap-4 pt-4 border-t border-slate-100">
-            <x-primary-button class="px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-extrabold text-sm rounded-2xl shadow-lg shadow-blue-600/30 transition-all">
+        <div class="flex items-center gap-4 pt-4 border-t border-slate-100 dark:border-slate-800">
+            <button type="submit" class="px-6 py-3 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-extrabold text-sm rounded-2xl shadow-lg shadow-orange-500/20 transition-all hover:scale-[1.02] active:scale-95">
                 {{ __('Save') }}
-            </x-primary-button>
+            </button>
 
             @if (session('status') === 'profile-updated')
                 <p
@@ -63,7 +63,7 @@
                     x-show="show"
                     x-transition
                     x-init="setTimeout(() => show = false, 2000)"
-                    class="text-sm font-bold text-emerald-600 flex items-center gap-1.5 bg-emerald-50 px-3 py-1.5 rounded-xl border border-emerald-100"
+                    class="text-sm font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5 bg-emerald-50 dark:bg-emerald-950/50 px-3 py-1.5 rounded-xl border border-emerald-100 dark:border-emerald-900"
                 >
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>
                     {{ __('Saved.') }}

@@ -40,7 +40,7 @@
             </div>
 
             <p class="text-sm text-slate-500 dark:text-slate-400 font-medium leading-relaxed">
-                {{ __('Once your account is deleted, all of its resources and data will be permanently deleted. Please enter your password to confirm you would like to permanently delete your account.') }}
+                {{ __('Setelah akun Anda dihapus, semua sumber daya dan datanya akan dihapus secara permanen. Harap masukkan kata sandi Anda untuk mengonfirmasi bahwa Anda ingin menghapus akun Anda secara permanen.') }}
             </p>
 
             <div class="space-y-2">
@@ -50,7 +50,7 @@
                     id="password"
                     name="password"
                     type="password"
-                    class="block w-full rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-900 px-4 py-3 text-sm text-slate-800 dark:text-slate-100 shadow-sm focus:border-rose-600 focus:outline-none focus:ring-2 focus:ring-rose-600/20 transition"
+                    class="block w-full rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-900 px-4 py-3 text-sm text-slate-800 dark:text-slate-100 shadow-sm focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-500/20 transition"
                     placeholder="{{ __('Password') }}"
                 />
 

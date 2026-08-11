@@ -60,7 +60,7 @@
                                                 Preview Kartu Anggota
                                             </h3>
                                             <span
-                                                class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 border border-indigo-100 dark:border-indigo-900/50"
+                                                class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-orange-50 dark:bg-orange-950/50 text-orange-600 dark:text-orange-400 border border-orange-100 dark:border-orange-900/50"
                                                 x-text="isFlipped ? 'Sisi Belakang' : 'Sisi Depan'"></span>
                                         </div>
 
@@ -222,7 +222,7 @@
                                         <!-- Tombol Aksi -->
                                         <div class="pt-2 flex flex-col gap-2">
                                             <button type="button" @click="isFlipped = !isFlipped"
-                                                class="w-full px-3 py-2 text-xs font-semibold rounded-xl bg-indigo-50 text-indigo-600 hover:bg-indigo-100 border border-indigo-100 transition flex items-center justify-center gap-1.5 shadow-sm">
+                                                class="w-full px-3 py-2 text-xs font-semibold rounded-xl bg-orange-50 text-orange-600 hover:bg-orange-100 border border-orange-100 transition flex items-center justify-center gap-1.5 shadow-sm">
                                                 <i class="fa-solid fa-rotate transition-transform duration-500"
                                                     :class="{ 'rotate-180': isFlipped }"></i>
                                                 <span
@@ -230,7 +230,7 @@
                                             </button>
 
                                             <div class="flex flex-col sm:flex-row gap-2 justify-center">
-                                                <button type="button" @click="zoomCard = true"
+                                                <button type="button" @click="zoomCard = true" 
                                                     class="px-3 py-2 text-xs font-semibold rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600 transition flex items-center justify-center gap-1.5">
                                                     <i class="fa-solid fa-magnifying-glass-plus"></i>
                                                     <span>Perbesar Kartu</span>
@@ -238,7 +238,7 @@
 
                                                 <a href="{{ route('admin.anggota-card.download', $anggotaCard->id) }}"
                                                     target="_blank"
-                                                    class="px-3 py-2 text-xs font-semibold rounded-xl bg-brand-600 hover:bg-brand-700 text-white transition flex items-center justify-center gap-1.5 shadow-sm">
+                                                    class="px-3 py-2 text-xs font-semibold rounded-xl bg-orange-600 hover:bg-orange-700 text-white transition flex items-center justify-center gap-1.5 shadow-sm">
                                                     <i class="fa-solid fa-download"></i>
                                                     <span>Unduh Kartu</span>
                                                 </a>
@@ -317,7 +317,7 @@
                                             <div class="bg-gray-50 dark:bg-gray-700/30 p-3 rounded-xl">
                                                 <span class="block text-gray-400 mb-0.5">Nomor Induk Anggota (NIA)</span>
                                                 <span
-                                                    class="font-bold text-indigo-600 dark:text-indigo-400">{{ $anggotaCard->card_id ?? '-' }}</span>
+                                                    class="font-bold text-orange-600 dark:text-orange-400">{{ $anggotaCard->card_id ?? '-' }}</span>
                                             </div>
 
                                             <div class="bg-gray-50 dark:bg-gray-700/30 p-3 rounded-xl">
@@ -586,12 +586,12 @@
                             <div class="max-w-lg mx-auto space-y-3 relative z-10">
                                 <span
                                     class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-wider shadow-sm
-            @if ($currentStatus === 'menunggu pembayaran') bg-cyan-50 text-cyan-700 dark:bg-cyan-500/10 dark:text-cyan-400 border border-cyan-200/60 dark:border-cyan-800/60
-            @elseif ($currentStatus === 'pembayaran diproses') bg-indigo-50 text-indigo-700 dark:bg-indigo-500/10 dark:text-indigo-400 border border-indigo-200/60 dark:border-indigo-800/60
-            @elseif ($currentStatus === 'approved') bg-blue-50 text-blue-700 dark:bg-blue-500/10 dark:text-blue-400 border border-blue-200/60 dark:border-blue-800/60
-            @elseif(in_array($currentStatus, ['rejected', 'ditolak'])) bg-rose-50 text-rose-700 dark:bg-rose-500/10 dark:text-rose-400 border border-rose-200/60 dark:border-rose-800/60
-            @elseif($currentStatus === 'non-aktif') bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-400 border border-slate-200 dark:border-slate-700
-            @else bg-amber-50 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400 border border-amber-200/60 dark:border-amber-800/60 @endif">
+                        @if ($currentStatus === 'menunggu pembayaran') bg-cyan-50 text-cyan-700 dark:bg-cyan-500/10 dark:text-cyan-400 border border-cyan-200/60 dark:border-cyan-800/60
+                        @elseif ($currentStatus === 'pembayaran diproses') bg-indigo-50 text-indigo-700 dark:bg-indigo-500/10 dark:text-indigo-400 border border-indigo-200/60 dark:border-indigo-800/60
+                        @elseif ($currentStatus === 'approved') bg-blue-50 text-blue-700 dark:bg-blue-500/10 dark:text-blue-400 border border-blue-200/60 dark:border-blue-800/60
+                        @elseif(in_array($currentStatus, ['rejected', 'ditolak'])) bg-rose-50 text-rose-700 dark:bg-rose-500/10 dark:text-rose-400 border border-rose-200/60 dark:border-rose-800/60
+                        @elseif($currentStatus === 'non-aktif') bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-400 border border-slate-200 dark:border-slate-700
+                        @else bg-amber-50 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400 border border-amber-200/60 dark:border-amber-800/60 @endif">
                                     <span class="w-1.5 h-1.5 rounded-full bg-current"></span>
                                     Status: {{ ucfirst($currentStatus) }}
                                 </span>

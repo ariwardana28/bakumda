@@ -120,66 +120,42 @@
             </div>
 
             <!-- BOTTOM NAVIGATION BAR (Mobile View) -->
+            <!-- Bottom Navigation Bar -->
             <div
-                class="fixed bottom-0 left-0 right-0 w-full bg-white/95 backdrop-blur-md border-t border-gray-100 py-3 px-6 flex justify-around items-center z-30 shadow-lg">
-                {{-- Tombol Beranda (Dashboard) --}}
-                <a href="{{ route('dashboard') }}" class="flex flex-col items-center transition">
-                    @if (request()->routeIs('dashboard'))
-                        {{-- Tampilan Aktif --}}
-                        <div
-                            class="px-4 py-1.5 rounded-full flex items-center space-x-1.5 bg-orange-500 text-white shadow-sm">
-                            <i class="fa-solid fa-house text-sm"></i>
-                            <span class="text-xs font-bold">Beranda</span>
-                        </div>
-                    @else
-                        {{-- Tampilan Tidak Aktif --}}
-                        <i class="fa-solid fa-house text-xl text-gray-400 p-2"></i>
-                    @endif
-                </a>
+                class="fixed bottom-0 left-0 right-0 h-24 bg-white shadow-[0_-5px_20px_-5px_rgba(0,0,0,0.05)] z-30 sm:max-w-[412px] sm:mx-auto sm:rounded-b-[45px] flex justify-center items-start pt-3">
+                <div class="flex justify-around items-start w-full max-w-xs">
 
-                {{-- Tombol Kartu Anggota --}}
-                <a href="{{ route('user-anggota.index') }}" class="flex flex-col items-center transition">
-                    @if (request()->routeIs('user-anggota.*'))
-                        {{-- Tampilan Aktif --}}
-                        <div
-                            class="px-4 py-1.5 rounded-full flex items-center space-x-1.5 bg-orange-500 text-white shadow-sm">
-                            <i class="fa-solid fa-id-card text-sm"></i>
-                            <span class="text-xs font-bold">Kartu</span>
-                        </div>
-                    @else
-                        {{-- Tampilan Tidak Aktif --}}
-                        <i class="fa-solid fa-id-card text-xl text-gray-400 p-2"></i>
-                    @endif
-                </a>
-
-                {{-- Tombol Cek Sertifikat --}}
-                <a href="{{ route('sertifikat.cek.form') }}" class="flex flex-col items-center transition">
-                    {{-- Logika aktif jika sedang berada di rute sertifikat --}}
-                    @if (request()->routeIs('sertifikat.*'))
-                        <div
-                            class="px-4 py-1.5 rounded-full flex items-center space-x-1.5 bg-orange-500 text-white shadow-sm">
-                            <i class="fa-solid fa-certificate text-sm"></i>
-                            <span class="text-xs font-bold">Sertifikat</span>
-                        </div>
-                    @else
-                        <i class="fa-solid fa-certificate text-xl text-gray-400 p-2"></i>
-                    @endif
-                </a>
-
-                {{-- Tombol Cek Kartu Anggota --}}
-                <a href="{{ route('kartu-anggota.cek.form') }}" class="flex flex-col items-center transition">
-                    @if (request()->routeIs('kartu-anggota.*'))
-                        <div
-                            class="px-4 py-1.5 rounded-full flex items-center space-x-1.5 bg-orange-500 text-white shadow-sm">
-                            <i class="fa-solid fa-user-check text-sm"></i>
-                            <span class="text-xs font-bold">Kartu Anggota</span>
-                        </div>
-                    @else
-                       <i class="fa-solid fa-user-check text-xl text-gray-400 p-2"></i>
-                    @endif
-                </a>
+                    <!-- Tombol Kartu -->
+                    <a href="{{ route('user-anggota.index') }}"
+                        class="flex flex-col items-center space-y-1 text-gray-400 hover:text-orange-500 transition">
+                        <i class="fa-solid fa-id-card text-xl"></i>
+                        <span class="text-[10px] font-bold">Kartu</span>
+                    </a>
+                    <!-- Tombol Pendaftaran (sebelumnya Beranda) -->
+                    <a href="{{ route('sertifikat.cek.form') }}"
+                        class="flex flex-col items-center space-y-1 text-gray-400 hover:text-orange-500 transition">
+                        <i class="fa-solid fa-clipboard-check text-xl"></i>
+                        <span class="text-[10px] font-bold">Cek Sertifikat</span>
+                    </a>
+                    <!-- Tombol Beranda (Tengah) -->
+                    <a href="{{ route('welcome') }}"
+                        class="w-16 h-16 rounded-full bg-orange-500 text-white flex items-center justify-center -mt-8 shadow-lg shadow-orange-500/40 border-4 border-white">
+                        <i class="fa-solid fa-house text-2xl"></i>
+                    </a>
+                    <!-- Tombol Cek Kartu -->
+                    <a href="{{ route('kartu-anggota.cek.form') }}"
+                        class="flex flex-col items-center space-y-1 text-gray-400 hover:text-orange-500 transition">
+                        <i class="fa-solid fa-id-card-clip text-xl"></i>
+                        <span class="text-[10px] font-bold">Cek Anggota</span>
+                    </a>
+                    <!-- Tombol Profil -->
+                    <a href="{{ route('profile.show') }}"
+                        class="flex flex-col items-center space-y-1 text-gray-400 hover:text-orange-500 transition">
+                        <i class="fa-solid fa-user text-xl"></i>
+                        <span class="text-[10px] font-bold">Profil</span>
+                    </a>
+                </div>
             </div>
-
             <div
                 class="absolute bottom-1 left-1/2 -translate-x-1/2 w-32 h-1 bg-gray-800 rounded-full z-30 pointer-events-none hidden sm:block">
             </div>

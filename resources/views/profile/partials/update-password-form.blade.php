@@ -1,7 +1,7 @@
 <section class="bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl rounded-3xl p-6 sm:p-8 shadow-xl shadow-slate-100/70 dark:shadow-slate-950/40 border border-slate-100 dark:border-slate-800 transition-all">
     <header class="border-b border-slate-100 dark:border-slate-800 pb-5 mb-6">
         <div class="flex items-center gap-3 mb-2">
-            <div class="w-9 h-9 rounded-xl bg-blue-600 text-white flex items-center justify-center shadow-md shadow-blue-500/20 shrink-0">
+            <div class="w-9 h-9 rounded-xl bg-orange-500 text-white flex items-center justify-center shadow-md shadow-orange-500/20 shrink-0">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"></path>
                 </svg>
@@ -26,7 +26,7 @@
             </label>
             <div class="relative">
                 <input id="update_password_current_password" name="current_password" :type="show ? 'text' : 'password'" 
-                    class="w-full rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-900 px-4 py-3 pr-12 text-sm text-slate-800 dark:text-slate-100 shadow-sm focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/20 transition" 
+                    class="w-full rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-900 px-4 py-3 pr-12 text-sm text-slate-800 dark:text-slate-100 shadow-sm focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-500/20 transition" 
                     autocomplete="current-password" />
                 <button type="button" @click="show = !show" class="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 focus:outline-none">
                     <i class="fa-solid text-sm" :class="show ? 'fa-eye-slash' : 'fa-eye'"></i>
@@ -42,7 +42,7 @@
             </label>
             <div class="relative">
                 <input id="update_password_password" name="password" :type="show ? 'text' : 'password'" 
-                    class="w-full rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-900 px-4 py-3 pr-12 text-sm text-slate-800 dark:text-slate-100 shadow-sm focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/20 transition" 
+                    class="w-full rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-900 px-4 py-3 pr-12 text-sm text-slate-800 dark:text-slate-100 shadow-sm focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-500/20 transition" 
                     autocomplete="new-password" />
                 <button type="button" @click="show = !show" class="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 focus:outline-none">
                     <i class="fa-solid text-sm" :class="show ? 'fa-eye-slash' : 'fa-eye'"></i>
@@ -58,7 +58,7 @@
             </label>
             <div class="relative">
                 <input id="update_password_password_confirmation" name="password_confirmation" :type="show ? 'text' : 'password'" 
-                    class="w-full rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-900 px-4 py-3 pr-12 text-sm text-slate-800 dark:text-slate-100 shadow-sm focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/20 transition" 
+                    class="w-full rounded-2xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-900 px-4 py-3 pr-12 text-sm text-slate-800 dark:text-slate-100 shadow-sm focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-500/20 transition" 
                     autocomplete="new-password" />
                 <button type="button" @click="show = !show" class="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 focus:outline-none">
                     <i class="fa-solid text-sm" :class="show ? 'fa-eye-slash' : 'fa-eye'"></i>
@@ -69,7 +69,7 @@
 
         <!-- Action / Submit Button -->
         <div class="flex items-center gap-4 pt-4 border-t border-slate-100 dark:border-slate-800">
-            <button type="submit" class="px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-extrabold text-sm rounded-2xl shadow-lg shadow-blue-600/30 transition-all hover:scale-[1.02] active:scale-95">
+            <button type="submit" class="px-6 py-3 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-extrabold text-sm rounded-2xl shadow-lg shadow-orange-500/20 transition-all hover:scale-[1.02] active:scale-95">
                 {{ __('Save') }}
             </button>
 

@@ -2,80 +2,9 @@
 
 @section('content')
     <div class="space-y-6">
-        {{-- PELATIHAN --}}
+       
         @if (isset($isRegistered) && $isRegistered)
         @else
-            <div class="mt-4">
-                <div id="cardSlider"
-                    class="flex overflow-x-auto space-x-4 px-5 no-scrollbar scroll-smooth snap-x snap-mandatory">
-                    @forelse ($pelatihans as $pelatihan)
-                        <!-- Card Pelatihan Dinamis -->
-                        <div
-                            class="snap-start min-w-[280px] w-[82%] sm:w-[300px] flex-shrink-0 bg-gradient-to-br from-cyan-400 to-blue-600 rounded-3xl p-5 text-white shadow-lg relative overflow-hidden flex flex-col justify-between h-[190px]    ">
-                            <div class="absolute -right-8 -bottom-8 w-32 h-32 bg-white/5 rounded-full pointer-events-none">
-                            </div>
-                            <div class="z-10">
-                                <h2 class="text-lg font-black tracking-wide truncate">{{ $pelatihan->judul }}</h2>
-                                <div class="mt-2 text-xs opacity-90 space-y-0.5 font-medium">
-                                    <p>• Kuota:
-                                        {{ $pelatihan->kuota > 0 ? $pelatihan->kuota . ' Peserta' : 'Tidak Terbatas' }}
-                                    </p>
-                                    <p class="font-semibold text-gray-300">• Biaya Pelatihan</p>
-                                    <p class="text-lg font-extrabold text-white">Rp
-                                        {{ number_format($pelatihan->harga, 0, ',', '.') }}</p>
-                                </div>
-                            </div>
-                            <div class="z-10">
-                                <a href="{{ route('user-pelatihan.show', $pelatihan->id) }}"
-                                    class="bg-white text-gray-900 hover:bg-gray-100 font-bold text-xs px-4 py-2 rounded-full shadow transition">
-                                    Lihat Detail
-                                </a>
-                            </div>
-                        </div>
-                    @empty
-                        <div
-                            class="min-w-[280px] w-full flex-shrink-0 bg-gray-100 rounded-3xl p-5 text-gray-500 shadow-inner relative flex flex-col justify-center items-center h-[190px]">
-                            <i class="fa-solid fa-book-open text-3xl mb-2"></i>
-                            <p class="text-sm font-semibold">Belum ada pelatihan tersedia.</p>
-                            <p class="text-xs">Silakan cek kembali nanti.</p>
-                        </div>
-                    @endforelse
-
-                    <!-- Card Coming Soon Tambahan (Selalu Tampil di Akhir Slider) -->
-                    <div
-                        class="snap-start min-w-[280px] w-[82%] sm:w-[300px] flex-shrink-0 bg-gradient-to-br from-amber-500/10 to-orange-500/10 border-2 border-dashed border-orange-400/50 rounded-3xl p-5 text-gray-800 shadow-sm relative overflow-hidden flex flex-col justify-between h-[190px]">
-                        <div class="absolute -right-8 -bottom-8 w-32 h-32 bg-orange-500/5 rounded-full pointer-events-none">
-                        </div>
-                        <div class="z-10">
-                            <div class="flex items-center space-x-2 mb-2">
-                                <span
-                                    class="px-2.5 py-0.5 bg-orange-500 text-white text-[10px] font-extrabold uppercase rounded-full tracking-wider shadow-sm">Segera
-                                    Hadir</span>
-                            </div>
-                            <h2 class="text-base font-black tracking-wide text-gray-900 truncate">Pelatihan & Event
-                                Baru
-                            </h2>
-                            <p class="mt-1.5 text-xs text-gray-500 font-medium leading-relaxed">
-                                Nantikan jadwal pelatihan berkendara dan agenda mobilitas seru berikutnya dari kami.
-                            </p>
-                        </div>
-                        <div class="z-10 flex items-center space-x-2 text-xs font-bold text-orange-600">
-                            <i class="fa-regular fa-clock"></i>
-                            <span>Stay Tuned!</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Dots Indicator -->
-                @if ($pelatihans->count() > 1)
-                    <div class="flex justify-center items-center space-x-1.5 mt-3" id="dotIndicators">
-                        @foreach ($pelatihans as $index => $pelatihan)
-                            <span onclick="scrollToCard({{ $index }})"
-                                class="w-2 h-2 bg-gray-300 rounded-full cursor-pointer transition-all duration-300 dot {{ $loop->first ? 'active-dot' : '' }}"></span>
-                        @endforeach
-                    </div>
-                @endif
-            </div>
         @endif
 
         {{-- Anggota --}}
@@ -200,15 +129,6 @@
                     <span class="text-[11px] sm:text-xs font-semibold text-gray-700 mt-2 text-center">E-Organisasi</span>
                 </div>
 
-                {{-- Korwil --}}
-                <div onclick="showServiceMessage('Korwil')" class="flex flex-col items-center cursor-pointer group">
-                    <div
-                        class="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-orange-100/70 border border-orange-200 flex items-center justify-center text-orange-500 shadow-sm group-hover:scale-105 transition">
-                        <i class="fa-solid fa-map-location-dot text-xl sm:text-2xl"></i>
-                    </div>
-                    <span class="text-[11px] sm:text-xs font-semibold text-gray-700 mt-2 text-center">Korwil</span>
-                </div>
-
                 {{-- Struktur --}}
                 <div onclick="showServiceMessage('Struktur')" class="flex flex-col items-center cursor-pointer group">
                     <div
@@ -234,7 +154,7 @@
                         class="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-orange-100/70 border border-orange-200 flex items-center justify-center text-orange-500 shadow-sm group-hover:scale-105 transition">
                         <i class="fa-solid fa-user-plus text-xl sm:text-2xl"></i>
                     </div>
-                    <span class="text-[11px] sm:text-xs font-semibold text-gray-700 mt-2 text-center">E-Recruitment</span>
+                    <span class="text-[11px] sm:text-xs font-semibold text-gray-700 mt-2 text-center">Referral</span>
                 </div>
                 <div onclick="showServiceMessage('Semua Menu')" class="flex flex-col items-center cursor-pointer group">
                     <div
@@ -246,6 +166,78 @@
             </div>
         </div>
 
+         {{-- PELATIHAN --}}
+        <div class="mt-4">
+            <div id="cardSlider"
+                class="flex overflow-x-auto space-x-4 px-5 no-scrollbar scroll-smooth snap-x snap-mandatory">
+                @forelse ($pelatihans as $pelatihan)
+                    <!-- Card Pelatihan Dinamis -->
+                    <div
+                        class="snap-start min-w-[280px] w-[82%] sm:w-[300px] flex-shrink-0 bg-gradient-to-br from-cyan-400 to-blue-600 rounded-3xl p-5 text-white shadow-lg relative overflow-hidden flex flex-col justify-between h-[190px]    ">
+                        <div class="absolute -right-8 -bottom-8 w-32 h-32 bg-white/5 rounded-full pointer-events-none">
+                        </div>
+                        <div class="z-10">
+                            <h2 class="text-lg font-black tracking-wide truncate">{{ $pelatihan->judul }}</h2>
+                            <div class="mt-2 text-xs opacity-90 space-y-0.5 font-medium">
+                                <p>• Kuota:
+                                    {{ $pelatihan->kuota > 0 ? $pelatihan->kuota . ' Peserta' : 'Tidak Terbatas' }}
+                                </p>
+                                <p class="font-semibold text-gray-300">• Biaya Pelatihan</p>
+                                <p class="text-lg font-extrabold text-white">Rp
+                                    {{ number_format($pelatihan->harga, 0, ',', '.') }}</p>
+                            </div>
+                        </div>
+                        <div class="z-10">
+                            <a href="{{ route('user-pelatihan.show', $pelatihan->id) }}"
+                                class="bg-white text-gray-900 hover:bg-gray-100 font-bold text-xs px-4 py-2 rounded-full shadow transition">
+                                Lihat Detail
+                            </a>
+                        </div>
+                    </div>
+                @empty
+                    <div
+                        class="min-w-[280px] w-full flex-shrink-0 bg-gray-100 rounded-3xl p-5 text-gray-500 shadow-inner relative flex flex-col justify-center items-center h-[190px]">
+                        <i class="fa-solid fa-book-open text-3xl mb-2"></i>
+                        <p class="text-sm font-semibold">Belum ada pelatihan tersedia.</p>
+                        <p class="text-xs">Silakan cek kembali nanti.</p>
+                    </div>
+                @endforelse
+
+                <!-- Card Coming Soon Tambahan (Selalu Tampil di Akhir Slider) -->
+                <div
+                    class="snap-start min-w-[280px] w-[82%] sm:w-[300px] flex-shrink-0 bg-gradient-to-br from-amber-500/10 to-orange-500/10 border-2 border-dashed border-orange-400/50 rounded-3xl p-5 text-gray-800 shadow-sm relative overflow-hidden flex flex-col justify-between h-[190px]">
+                    <div class="absolute -right-8 -bottom-8 w-32 h-32 bg-orange-500/5 rounded-full pointer-events-none">
+                    </div>
+                    <div class="z-10">
+                        <div class="flex items-center space-x-2 mb-2">
+                            <span
+                                class="px-2.5 py-0.5 bg-orange-500 text-white text-[10px] font-extrabold uppercase rounded-full tracking-wider shadow-sm">Segera
+                                Hadir</span>
+                        </div>
+                        <h2 class="text-base font-black tracking-wide text-gray-900 truncate">Pelatihan & Event
+                            Baru
+                        </h2>
+                        <p class="mt-1.5 text-xs text-gray-500 font-medium leading-relaxed">
+                            Nantikan jadwal pelatihan berkendara dan agenda mobilitas seru berikutnya dari kami.
+                        </p>
+                    </div>
+                    <div class="z-10 flex items-center space-x-2 text-xs font-bold text-orange-600">
+                        <i class="fa-regular fa-clock"></i>
+                        <span>Stay Tuned!</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dots Indicator -->
+            @if ($pelatihans->count() > 1)
+                <div class="flex justify-center items-center space-x-1.5 mt-3" id="dotIndicators">
+                    @foreach ($pelatihans as $index => $pelatihan)
+                        <span onclick="scrollToCard({{ $index }})"
+                            class="w-2 h-2 bg-gray-300 rounded-full cursor-pointer transition-all duration-300 dot {{ $loop->first ? 'active-dot' : '' }}"></span>
+                    @endforeach
+                </div>
+            @endif
+        </div>
         <!-- Bagian Berita Tranding (Sesuai Screenshot) -->
         <div class="px-5">
             <div class="flex justify-between items-center mb-3">

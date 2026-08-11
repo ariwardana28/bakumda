@@ -47,4 +47,12 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    /**
+     * Get the anggota record associated with the user.
+     */
+    public function anggota()
+    {
+        return $this->hasOne(\App\Models\Anggota::class);
+    }
 }

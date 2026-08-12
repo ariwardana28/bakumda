@@ -15,6 +15,7 @@ use App\Http\Controllers\WilayahController;
 use App\Http\Controllers\UserPelatihanController;
 use App\Http\Controllers\Admin\PelatihanAnggotaController;
 use App\Http\Controllers\UserSoalController;
+use App\Http\Controllers\Admin\SuratJenisController;
 use App\Http\Controllers\HalamanUtamaController;
 use App\Http\Controllers\UserMateriController;
 use App\Http\Controllers\Admin\SoalController;
@@ -35,9 +36,49 @@ Route::post('/cek-sertifikat', [HalamanUtamaController::class, 'CekSertifikat'])
 Route::get('/cek-kartu-anggota', [HalamanUtamaController::class, 'showCekKartuAnggotaForm'])->name('kartu-anggota.cek.form');
 Route::post('/cek-kartu-anggota', [HalamanUtamaController::class, 'CekKartuAnggota'])->name('kartu-anggota.cek.submit');
 
-// Route::get('/sertifikasi', function () {
-//     return view('admin.sertifikasi.index');
-// });
+Route::get('/admin/surat', function () {
+    return view('admin.surat.index');
+});
+Route::get('/admin/surat/surat-perjanjian-kerja-waktu-tertentu-pkwt', function () {
+    return view('admin.surat.pkwt');
+});
+
+Route::get('/admin/surat/surat-perjanjian-hutang-piutang', function () {
+    return view('admin.surat.hutang');
+});
+
+Route::get('/admin/surat/surat-perjanjian-kerja-sama', function () {
+    return view('admin.surat.kerja-sama');
+});
+
+Route::get('/admin/surat/surat-permohonan', function () {
+    return view('admin.surat.permohonan');
+});
+
+Route::get('/admin/surat/surat-pengunduran-diri', function () {
+    return view('admin.surat.pengunduran-diri');
+});
+
+Route::get('/admin/surat/surat-jual-beli', function () {
+    return view('admin.surat.jual-beli');
+});
+
+Route::get('/admin/surat/surat-sewa', function () {
+    return view('admin.surat.sewa');
+});
+
+Route::get('/admin/surat/surat-keterangan-kerja', function () {
+    return view('admin.surat.keterangan-kerja');
+});
+
+Route::get('/admin/surat/surat-perjanjian-perdamaian', function () {
+    return view('admin.surat.perdamaian');
+});
+
+Route::get('/admin/surat/surat-pencabutan-kuasa', function () {
+    return view('admin.surat.pencabutan-kuasa');
+});
+
 
 // Route::get('/sertifikasi/formulir', function () {
 //     return view('admin.sertifikasi.create');
@@ -190,6 +231,9 @@ Route::middleware('auth')->group(function () {
 
         Route::post('/pelatihan/verifikasi-pembayaran/{id}', [PelatihanAnggotaController::class, 'updateVerifikasi'])
             ->name('pelatihan.verifikasi.update');
+
+        // --- Manajemen Surat ---
+        Route::resource('surat-jenis', SuratJenisController::class);
     });
 });
 

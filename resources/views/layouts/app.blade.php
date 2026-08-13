@@ -174,7 +174,7 @@
                 <!-- Tombol Home Tengah (Mobile) -->
                 <a href="{{ route('welcome') }}"
                     class="w-14 h-14 rounded-full bg-orange-500 text-white flex items-center justify-center -mt-7 shadow-lg shadow-orange-500/40 border-4 border-white">
-                    <i class="fa-solid fa-house text-xl"></i>
+                    <img src="{{ asset('cd.png') }}" alt="QR Code" class="w-7 h-7">
                 </a>
                 <a href="{{ route('kartu-anggota.cek.form') }}"
                     class="flex flex-col items-center space-y-0.5 text-gray-400 hover:text-orange-500 transition">

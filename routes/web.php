@@ -39,6 +39,7 @@ Route::post('/cek-kartu-anggota', [HalamanUtamaController::class, 'CekKartuAnggo
 Route::get('/admin/surat', function () {
     return view('admin.surat.index');
 });
+
 Route::get('/admin/surat/surat-perjanjian-kerja-waktu-tertentu-pkwt', function () {
     return view('admin.surat.pkwt');
 });
@@ -79,6 +80,53 @@ Route::get('/admin/surat/surat-pencabutan-kuasa', function () {
     return view('admin.surat.pencabutan-kuasa');
 });
 
+Route::get('user-surat', function () {
+    return view('user.surat.index');
+});
+
+Route::get('user-surat/surat-perjanjian-kerja-waktu-tertentu-pkwt', function () {
+    return view('user.surat.pkwt');
+});
+
+Route::get('user-surat/surat-perjanjian-hutang-piutang', function () {
+    return view('user.surat.hutang');
+});
+
+Route::get('user-surat/surat-perjanjian-kerja-sama', function () {
+    return view('user.surat.kerja-sama');
+});
+
+Route::get('user-surat/surat-permohonan', function () {
+    return view('user.surat.permohonan');
+});
+
+Route::get('user-surat/surat-pengunduran-diri', function () {
+    return view('user.surat.pengunduran-diri');
+});
+
+Route::get('user-surat/surat-jual-beli', function () {
+    return view('user.surat.jual-beli');
+});
+
+Route::get('user-surat/surat-sewa', function () {
+    return view('user.surat.sewa');
+});
+
+Route::get('user-surat/surat-keterangan-kerja', function () {
+    return view('user.surat.keterangan-kerja');
+});
+
+Route::get('user-surat/surat-perjanjian-perdamaian', function () {
+    return view('user.surat.perdamaian');
+});
+
+Route::get('user-surat/surat-pencabutan-kuasa', function () {
+    return view('user.surat.pencabutan-kuasa');
+});
+
+Route::get('about', function () {
+    return view('about');
+});
 
 // Route::get('/sertifikasi/formulir', function () {
 //     return view('admin.sertifikasi.create');

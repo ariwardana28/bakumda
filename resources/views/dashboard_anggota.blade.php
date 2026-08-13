@@ -156,13 +156,23 @@
                     </div>
                     <span class="text-[11px] sm:text-xs font-semibold text-gray-700 mt-2 text-center">Referral</span>
                 </div>
-                <div onclick="showServiceMessage('Semua Menu')" class="flex flex-col items-center cursor-pointer group">
+
+                {{-- Dokumen --}}
+                <a href="{{ url('user-surat') }}" class="flex flex-col items-center cursor-pointer group">
+                    <div
+                        class="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-orange-100/70 border border-orange-200 flex items-center justify-center text-orange-500 shadow-sm group-hover:scale-105 transition">
+                        <i class="fa-solid fa-file-lines text-xl sm:text-2xl"></i>
+                    </div>
+                    <span class="text-[11px] sm:text-xs font-semibold text-gray-700 mt-2 text-center">Dokumen</span>
+                </a>
+
+                {{-- <div onclick="showServiceMessage('Semua Menu')" class="flex flex-col items-center cursor-pointer group">
                     <div
                         class="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-orange-500 border border-orange-600 flex items-center justify-center text-white shadow-md group-hover:scale-105 transition">
                         <i class="fa-solid fa-grip text-xl sm:text-2xl"></i>
                     </div>
                     <span class="text-[11px] sm:text-xs font-semibold text-gray-700 mt-2 text-center">Lainnya</span>
-                </div>
+                </div> --}}
             </div>
         </div>
 

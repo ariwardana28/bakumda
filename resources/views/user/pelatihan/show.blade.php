@@ -217,6 +217,7 @@
             </div>
 
             {{-- KOLOM KANAN (Sidebar Ringkasan & Tombol Daftar) --}}
+            {{-- KOLOM KANAN (Sidebar Ringkasan & Tombol Daftar) --}}
             <div class="lg:col-span-1">
                 <div class="sticky top-8 bg-white rounded-3xl p-6 md:p-7 shadow-xl border border-gray-100 space-y-6">
 
@@ -288,21 +289,52 @@
                                 </div>
                                 <span>Status Pendaftaran</span>
                             </div>
-                            <span
-                                class="px-2.5 py-1 bg-emerald-100 text-emerald-700 rounded-md text-xs font-bold">Dibuka</span>
+
+                            {{-- Status Badge Dinamis --}}
+                            @if (($pelatihan->status ?? '') == 'berlangsung')
+                                <span class="px-2.5 py-1 bg-amber-100 text-amber-700 rounded-md text-xs font-bold">Coming
+                                    Soon</span>
+                            @elseif (($pelatihan->status ?? '') == 'selesai')
+                                <span class="px-2.5 py-1 bg-gray-100 text-gray-600 rounded-md text-xs font-bold">Pelatihan
+                                    Selesai</span>
+                            @else
+                                <span
+                                    class="px-2.5 py-1 bg-emerald-100 text-emerald-700 rounded-md text-xs font-bold">Dibuka</span>
+                            @endif
                         </div>
                     </div>
 
-                    {{-- Tombol Aksi Pendaftaran --}}
+                    {{-- Tombol Aksi Pendaftaran Dinamis (Berwarna) --}}
                     <div class="pt-2 space-y-3">
-                        <a href="{{ route('user-pelatihan.daftar', $pelatihan) }}"
-                            class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold py-3.5 px-4 rounded-2xl transition-all shadow-lg shadow-blue-500/25 flex items-center justify-center gap-2 text-center">
-                            <span>Daftar Pelatihan Sekarang</span>
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                            </svg>
-                        </a>
+                        @if (($pelatihan->status ?? '') == 'berlangsung')
+                            <button type="button" disabled
+                                class="w-full bg-gradient-to-r from-amber-500 to-orange-500 text-white font-bold py-3.5 px-4 rounded-2xl cursor-not-allowed shadow-lg shadow-amber-500/25 flex items-center justify-center gap-2 text-center">
+                                <svg class="w-5 h-5 animate-pulse" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                <span>Coming Soon</span>
+                            </button>
+                        @elseif (($pelatihan->status ?? '') == 'selesai')
+                            <button type="button" disabled
+                                class="w-full bg-gradient-to-r from-slate-600 to-gray-700 text-white font-bold py-3.5 px-4 rounded-2xl cursor-not-allowed shadow-lg shadow-gray-500/20 flex items-center justify-center gap-2 text-center">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 13l4 4L19 7" />
+                                </svg>
+                                <span>Pelatihan Selesai</span>
+                            </button>
+                        @else
+                            <a href="{{ route('user-pelatihan.daftar', $pelatihan) }}"
+                                class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold py-3.5 px-4 rounded-2xl transition-all shadow-lg shadow-blue-500/25 flex items-center justify-center gap-2 text-center">
+                                <span>Daftar Pelatihan Sekarang</span>
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                                </svg>
+                            </a>
+                        @endif
 
                         <a href="{{ url('/user-pelatihan') }}"
                             class="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-3 px-4 rounded-2xl transition-all text-center block text-sm">

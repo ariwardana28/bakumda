@@ -20,6 +20,7 @@ use App\Http\Controllers\HalamanUtamaController;
 use App\Http\Controllers\UserMateriController;
 use App\Http\Controllers\Admin\SoalController;
 use App\Http\Controllers\ArtikelController;
+use App\Http\Controllers\UserProdukController;
 
 /*
 |--------------------------------------------------------------------------
@@ -167,6 +168,10 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
+    // Marchaindise
+    Route::get('/merchandise', [UserProdukController::class, 'index'])->name('merchandise.index');
+    Route::get('/merchandise/{slug}', [UserProdukController::class, 'show'])->name('merchandise.show');
+
     // --- User Anggota & Pembayaran ---
     Route::post('user-anggota/{anggota}/request-edit', [UserAnggotaController::class, 'requestEdit'])
         ->name('user-anggota.request-edit');
@@ -282,6 +287,9 @@ Route::middleware('auth')->group(function () {
 
         // --- Manajemen Surat ---
         Route::resource('surat-jenis', SuratJenisController::class);
+
+        // --- Manajemen Produk ---
+        Route::resource('produk', \App\Http\Controllers\Admin\ProdukController::class);
     });
 });
 

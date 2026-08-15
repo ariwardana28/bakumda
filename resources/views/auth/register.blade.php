@@ -1,78 +1,33 @@
-<!DOCTYPE html>
-<html lang="id">
+@extends('layouts.app')
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register - Dashboard IMI Mobilitas</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
-        rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    <style>
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: #f1f5f9;
-        }
+@section('content')
+    <div class="flex flex-col h-full bg-gradient-to-b from-gray-50/50 to-white">
+        <!-- Konten Utama Halaman Register -->
+        <div class="px-6 py-8 flex-1 flex flex-col justify-center overflow-y-auto no-scrollbar max-w-md mx-auto w-full">
 
-        .no-scrollbar::-webkit-scrollbar {
-            display: none;
-        }
+            <!-- Card Pembungkus Utama -->
+            <div class="bg-white shadow-xl shadow-slate-200/50 border border-slate-100 rounded-[2.5rem] p-6 sm:p-8 space-y-6 w-full">
 
-        .no-scrollbar {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
-    </style>
-</head>
-
-<body class="min-h-screen text-gray-800 flex flex-col items-center justify-start p-0 md:p-6 transition-all duration-300">
-
-    <div id="appContainer" class="w-full flex flex-col items-center justify-center">
-
-        <!-- ================= ANDROID MOBILE APP VIEW CONTAINER ================= -->
-        <div id="androidView"
-            class="w-full sm:max-w-[412px] bg-white min-h-screen sm:min-h-[860px] sm:rounded-[45px] sm:ring-[12px] sm:ring-slate-800 sm:shadow-2xl relative flex flex-col justify-between overflow-hidden transition-all duration-300">
-
-            <!-- Mobile Status Bar (Android Simulation) -->
-            <div
-                class="w-full bg-white pt-3 px-6 sm:flex hidden justify-between items-center text-xs font-semibold text-gray-800">
-                <span>13.26</span>
-                <div class="flex items-center space-x-1.5 text-xs">
-                    <i class="fa-solid fa-signal"></i>
-                    <i class="fa-solid fa-wifi"></i>
-                    <span class="font-bold text-[10px] px-1 bg-gray-200 rounded">4G</span>
-                    <span class="bg-gray-800 text-white px-1 rounded text-[10px]">64</span>
-                </div>
-            </div>
-
-            <!-- Header Navigasi Atas -->
-            <div class="px-6 pt-4 pb-3 flex items-center justify-between bg-white border-b border-gray-100">
-                <a href="{{ route('login') }}" class="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-700 hover:bg-gray-200 transition">
-                    <i class="fa-solid fa-arrow-left text-sm"></i>
-                </a>
-                <span class="text-xs font-bold uppercase tracking-wider text-gray-500">Pendaftaran Akun</span>
-                <div class="w-10"></div>
-            </div>
-
-            <!-- Konten Utama Halaman Register -->
-            <div class="px-6 py-6 flex-1 flex flex-col justify-center overflow-y-auto no-scrollbar space-y-5">
-                
                 <!-- Logo & Judul Sambutan -->
-                <div class="text-center space-y-1.5">
-                    <div class="w-14 h-14 rounded-2xl border-2 border-orange-500 p-1 flex items-center justify-center bg-orange-50 mx-auto shadow-sm">
-                        <img src="{{ asset('bakumda.png') }}" alt="Logo" class="w-full h-full rounded-xl object-cover">
+                <div class="text-center space-y-2">
+                    <div class="relative w-16 h-16 rounded-3xl border-2 border-orange-500/30 p-1.5 flex items-center justify-center bg-gradient-to-tr from-orange-500/10 to-amber-500/10 mx-auto shadow-lg shadow-orange-500/10 group transition-transform duration-300 hover:scale-105">
+                        <img src="{{ asset('bakumda.png') }}" alt="Logo" class="w-full h-full rounded-2xl object-cover shadow-inner">
                     </div>
-                    <h1 class="text-lg font-black text-gray-900 tracking-tight">Buat Akun Baru</h1>
-                    <p class="text-xs text-gray-500">Lengkapi data diri Anda untuk bergabung</p>
+                    <div class="space-y-1">
+                        <h1 class="text-xl sm:text-2xl font-black text-gray-900 tracking-tight">Bergabung Sekarang</h1>
+                        <p class="text-xs sm:text-sm text-gray-500 font-medium">Lengkapi data diri Anda untuk membuat akun baru</p>
+                    </div>
                 </div>
 
                 <!-- Notifikasi Error Validasi Laravel -->
-                @if($errors->any())
-                    <div class="p-3 rounded-2xl bg-rose-50 border border-rose-200 text-rose-600 text-xs font-medium space-y-1">
-                        <ul class="list-disc list-inside space-y-0.5">
-                            @foreach($errors->all() as $error)
+                @if ($errors->any())
+                    <div class="p-4 rounded-3xl bg-rose-50/80 border border-rose-200/80 text-rose-600 text-xs font-medium space-y-2 shadow-sm backdrop-blur-sm">
+                        <div class="flex items-center gap-2 font-bold uppercase tracking-wider text-[10px]">
+                            <i class="fa-solid fa-triangle-exclamation text-sm"></i>
+                            <span>Mohon periksa kembali formulir Anda</span>
+                        </div>
+                        <ul class="list-disc list-inside space-y-1 pl-1">
+                            @foreach ($errors->all() as $error)
                                 <li>{{ $error }}</li>
                             @endforeach
                         </ul>
@@ -80,114 +35,96 @@
                 @endif
 
                 <!-- Form Register -->
-                <form method="POST" action="{{ route('register') }}" class="space-y-3.5">
+                <form method="POST" action="{{ route('register') }}" class="space-y-4">
                     @csrf
 
                     <!-- Name Input -->
-                    <div>
-                        <label class="block text-xs font-bold text-gray-700 mb-1 uppercase tracking-wider">Nama Lengkap</label>
-                        <div class="relative">
-                            <i class="fa-solid fa-user absolute left-4 top-3.5 text-gray-400 text-sm"></i>
-                            <input type="text" name="name" value="{{ old('name') }}" required autofocus autocomplete="name"
-                                class="w-full pl-11 pr-4 py-3 text-xs rounded-2xl bg-gray-50 border border-gray-200 focus:ring-2 focus:ring-orange-500 focus:bg-white outline-none transition text-gray-900 font-medium @error('name') border-rose-500 bg-rose-50/30 @enderror" 
-                                placeholder="Nama lengkap Anda">
+                    <div class="space-y-1.5">
+                        <label class="block text-[11px] font-bold text-gray-700 uppercase tracking-wider">Nama Lengkap</label>
+                        <div class="relative group">
+                            <span class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400 group-focus-within:text-orange-500 transition-colors">
+                                <i class="fa-solid fa-user text-sm"></i>
+                            </span>
+                            <input type="text" name="name" value="{{ old('name') }}" required autofocus
+                                autocomplete="name"
+                                class="w-full pl-11 pr-4 py-3.5 text-xs sm:text-sm rounded-2xl bg-gray-50/80 border border-gray-200/80 focus:ring-4 focus:ring-orange-500/15 focus:border-orange-500 focus:bg-white outline-none transition-all duration-200 text-gray-900 font-semibold placeholder:text-gray-400 placeholder:font-normal @error('name') border-rose-500 bg-rose-50/30 focus:ring-rose-500/15 focus:border-rose-500 @enderror"
+                                placeholder="Masukkan nama lengkap Anda">
                         </div>
                     </div>
 
                     <!-- Email Input -->
-                    <div>
-                        <label class="block text-xs font-bold text-gray-700 mb-1 uppercase tracking-wider">Alamat Email</label>
-                        <div class="relative">
-                            <i class="fa-solid fa-envelope absolute left-4 top-3.5 text-gray-400 text-sm"></i>
+                    <div class="space-y-1.5">
+                        <label class="block text-[11px] font-bold text-gray-700 uppercase tracking-wider">Alamat Email</label>
+                        <div class="relative group">
+                            <span class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400 group-focus-within:text-orange-500 transition-colors">
+                                <i class="fa-solid fa-envelope text-sm"></i>
+                            </span>
                             <input type="email" name="email" value="{{ old('email') }}" required autocomplete="username"
-                                class="w-full pl-11 pr-4 py-3 text-xs rounded-2xl bg-gray-50 border border-gray-200 focus:ring-2 focus:ring-orange-500 focus:bg-white outline-none transition text-gray-900 font-medium @error('email') border-rose-500 bg-rose-50/30 @enderror" 
+                                class="w-full pl-11 pr-4 py-3.5 text-xs sm:text-sm rounded-2xl bg-gray-50/80 border border-gray-200/80 focus:ring-4 focus:ring-orange-500/15 focus:border-orange-500 focus:bg-white outline-none transition-all duration-200 text-gray-900 font-semibold placeholder:text-gray-400 placeholder:font-normal @error('email') border-rose-500 bg-rose-50/30 focus:ring-rose-500/15 focus:border-rose-500 @enderror"
                                 placeholder="nama@domain.com">
                         </div>
                     </div>
 
                     <!-- Password Input -->
-                    <div x-data="{ showPassword: false }">
-                        <label class="block text-xs font-bold text-gray-700 mb-1 uppercase tracking-wider">Kata Sandi</label>
-                        <div class="relative">
-                            <i class="fa-solid fa-lock absolute left-4 top-3.5 text-gray-400 text-sm"></i>
-                            <input :type="showPassword ? 'text' : 'password'" name="password" required autocomplete="new-password"
-                                class="w-full pl-11 pr-12 py-3 text-xs rounded-2xl bg-gray-50 border border-gray-200 focus:ring-2 focus:ring-orange-500 focus:bg-white outline-none transition text-gray-900 font-medium @error('password') border-rose-500 bg-rose-50/30 @enderror" 
-                                placeholder="••••••••">
-                            <button type="button" @click="showPassword = !showPassword" class="absolute right-4 top-3.5 text-gray-400 hover:text-gray-600 focus:outline-none transition">
+                    <div class="space-y-1.5" x-data="{ showPassword: false }">
+                        <label class="block text-[11px] font-bold text-gray-700 uppercase tracking-wider">Kata Sandi</label>
+                        <div class="relative group">
+                            <span class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400 group-focus-within:text-orange-500 transition-colors">
+                                <i class="fa-solid fa-lock text-sm"></i>
+                            </span>
+                            <input :type="showPassword ? 'text' : 'password'" name="password" required
+                                autocomplete="new-password"
+                                class="w-full pl-11 pr-12 py-3.5 text-xs sm:text-sm rounded-2xl bg-gray-50/80 border border-gray-200/80 focus:ring-4 focus:ring-orange-500/15 focus:border-orange-500 focus:bg-white outline-none transition-all duration-200 text-gray-900 font-semibold placeholder:text-gray-400 placeholder:font-normal @error('password') border-rose-500 bg-rose-50/30 focus:ring-rose-500/15 focus:border-rose-500 @enderror"
+                                placeholder="Minimal 8 karakter">
+                            <button type="button" @click="showPassword = !showPassword"
+                                class="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-gray-600 focus:outline-none transition-colors">
                                 <i class="fa-solid text-sm" :class="showPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
                             </button>
                         </div>
                     </div>
 
                     <!-- Confirm Password Input -->
-                    <div x-data="{ showConfirmPassword: false }">
-                        <label class="block text-xs font-bold text-gray-700 mb-1 uppercase tracking-wider">Konfirmasi Kata Sandi</label>
-                        <div class="relative">
-                            <i class="fa-solid fa-lock absolute left-4 top-3.5 text-gray-400 text-sm"></i>
-                            <input :type="showConfirmPassword ? 'text' : 'password'" name="password_confirmation" required autocomplete="new-password"
-                                class="w-full pl-11 pr-12 py-3 text-xs rounded-2xl bg-gray-50 border border-gray-200 focus:ring-2 focus:ring-orange-500 focus:bg-white outline-none transition text-gray-900 font-medium @error('password_confirmation') border-rose-500 bg-rose-50/30 @enderror" 
-                                placeholder="••••••••">
-                            <button type="button" @click="showConfirmPassword = !showConfirmPassword" class="absolute right-4 top-3.5 text-gray-400 hover:text-gray-600 focus:outline-none transition">
+                    <div class="space-y-1.5" x-data="{ showConfirmPassword: false }">
+                        <label class="block text-[11px] font-bold text-gray-700 uppercase tracking-wider">Konfirmasi Kata Sandi</label>
+                        <div class="relative group">
+                            <span class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400 group-focus-within:text-orange-500 transition-colors">
+                                <i class="fa-solid fa-lock text-sm"></i>
+                            </span>
+                            <input :type="showConfirmPassword ? 'text' : 'password'" name="password_confirmation" required
+                                autocomplete="new-password"
+                                class="w-full pl-11 pr-12 py-3.5 text-xs sm:text-sm rounded-2xl bg-gray-50/80 border border-gray-200/80 focus:ring-4 focus:ring-orange-500/15 focus:border-orange-500 focus:bg-white outline-none transition-all duration-200 text-gray-900 font-semibold placeholder:text-gray-400 placeholder:font-normal @error('password_confirmation') border-rose-500 bg-rose-50/30 focus:ring-rose-500/15 focus:border-rose-500 @enderror"
+                                placeholder="Ulangi kata sandi">
+                            <button type="button" @click="showConfirmPassword = !showConfirmPassword"
+                                class="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-gray-600 focus:outline-none transition-colors">
                                 <i class="fa-solid text-sm" :class="showConfirmPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
                             </button>
                         </div>
                     </div>
 
                     <!-- Tombol Aksi Register & Redirect Login -->
-                    <div class="pt-3 space-y-2.5">
-                        <button type="submit" class="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-3.5 px-4 rounded-2xl shadow-lg shadow-orange-500/30 transition duration-200 flex items-center justify-center gap-2 text-xs tracking-wider uppercase">
-                            <span>Daftar Akun</span>
-                            <i class="fa-solid fa-user-plus"></i>
+                    <div class="pt-4 space-y-3">
+                        <button type="submit"
+                            class="w-full bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-extrabold py-4 px-6 rounded-2xl shadow-xl shadow-orange-500/25 active:scale-[0.99] transition-all duration-200 flex items-center justify-center gap-2.5 text-xs tracking-wider uppercase">
+                            <span>Daftar Akun Baru</span>
+                            <i class="fa-solid fa-arrow-right text-xs"></i>
                         </button>
 
-                        <a href="{{ route('login') }}" class="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-3 px-4 rounded-2xl transition duration-200 flex items-center justify-center gap-2 text-xs tracking-wider uppercase">
-                            <span>Sudah punya akun? Login</span>
+                        <div class="relative flex py-1 items-center">
+                            <div class="flex-grow border-t border-gray-100"></div>
+                            <span class="flex-shrink mx-4 text-gray-400 text-[10px] font-bold uppercase tracking-widest">Atau</span>
+                            <div class="flex-grow border-t border-gray-100"></div>
+                        </div>
+
+                        <a href="{{ route('login') }}"
+                            class="w-full bg-gray-50 hover:bg-gray-100 text-gray-700 border border-gray-200/80 font-bold py-3.5 px-6 rounded-2xl shadow-sm hover:shadow transition-all duration-200 flex items-center justify-center gap-2 text-xs tracking-wider uppercase">
+                            <i class="fa-solid fa-right-to-bracket text-orange-500"></i>
+                            <span>Sudah punya akun? Masuk</span>
                         </a>
                     </div>
                 </form>
 
             </div>
 
-            <!-- Bottom Navigation Bar -->
-            <div
-                class="w-full h-20 bg-white border-t border-gray-100 shadow-[0_-5px_20px_-5px_rgba(0,0,0,0.05)] sm:rounded-b-[45px] flex justify-center items-center">
-                <div class="flex justify-around items-center w-full max-w-xs px-2">
-                    <a href="{{ route('welcome') }}" class="flex flex-col items-center space-y-1 text-gray-400 hover:text-orange-500 transition">
-                        <i class="fa-solid fa-house text-lg"></i>
-                        <span class="text-[10px] font-bold">Beranda</span>
-                    </a>
-                    <button onclick="handleProtectedAction('{{ route('user-pelatihan.index') }}')" class="flex flex-col items-center space-y-1 text-gray-400 hover:text-orange-500 transition">
-                        <i class="fa-solid fa-layer-group text-lg"></i>
-                        <span class="text-[10px] font-bold">Layanan</span>
-                    </button>
-                    <button onclick="handleProtectedAction('{{ route('user-pelatihan.show', 1) }}')"
-                        class="w-14 h-14 rounded-full bg-orange-500 text-white flex items-center justify-center -mt-6 shadow-lg shadow-orange-500/40 border-4 border-white">
-                        <i class="fa-solid fa-file-pen text-xl"></i>
-                    </button>
-                    <button onclick="handleProtectedAction('#')" class="flex flex-col items-center space-y-1 text-gray-400 hover:text-orange-500 transition">
-                        <i class="fa-solid fa-clock-rotate-left text-lg"></i>
-                        <span class="text-[10px] font-bold">Riwayat</span>
-                    </button>
-                    <button onclick="handleProtectedAction('{{ route('profile.show') }}')" class="flex flex-col items-center space-y-1 text-gray-400 hover:text-orange-500 transition">
-                        <i class="fa-solid fa-user text-lg"></i>
-                        <span class="text-[10px] font-bold">Profil</span>
-                    </button>
-                </div>
-            </div>
         </div>
     </div>
-
-    <!-- Script Pendukung -->
-    <script>
-        const isAuthenticated = @json(Auth::check());
-
-        function handleProtectedAction(targetUrl) {
-            if (!isAuthenticated) {
-                window.location.href = "{{ route('login') }}";
-            } else {
-                window.location.href = targetUrl;
-            }
-        }
-    </script>
-</body>
-</html>
+@endsection

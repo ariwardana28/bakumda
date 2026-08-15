@@ -66,7 +66,7 @@
 
             {{-- Tombol Kembali --}}
             <div class="pt-6">
-                <a href="{{ route('sertifikat.cek.form') }}"
+                <a href="{{ route('kartu-anggota.cek.form') }}"
                     class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold text-xs shadow-sm transition-all duration-200">
                     <i class="fa-solid fa-arrow-left"></i>
                     <span>Cek Sertifikat Lain</span>

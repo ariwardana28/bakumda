@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="space-y-6">
-       
+
         @if (isset($isRegistered) && $isRegistered)
         @else
         @endif
@@ -97,73 +97,83 @@
         </div>
 
         <div class="px-5 mb-6">
-            <h3 class="text-base font-bold text-gray-900 mb-4">Layanan Lainnya</h3>
-            <div class="grid grid-cols-4 gap-3 sm:gap-4">
+            <h3 class="text-base font-bold text-gray-900 mb-4">Fitur Organisasi</h3>
+            <div class="grid grid-cols-4 gap-3 sm:gap-4 md:gap-5">
                 <a href="{{ route('user-pelatihan.index') }}" class="flex flex-col items-center cursor-pointer group">
                     <div
-                        class="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-orange-100/70 border border-orange-200 flex items-center justify-center text-orange-500 shadow-sm group-hover:scale-105 transition">
-                        <i class="fa-solid fa-graduation-cap text-xl sm:text-2xl"></i>
+                        class="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-2xl bg-orange-100/70 border border-orange-200 flex items-center justify-center text-orange-500 shadow-sm group-hover:scale-105 transition">
+                        <i class="fa-solid fa-graduation-cap text-xl sm:text-2xl md:text-3xl"></i>
                     </div>
-                    <span class="text-[11px] sm:text-xs font-semibold text-gray-700 mt-2 text-center">Pelatihan</span>
+                    <span
+                        class="text-[11px] sm:text-xs md:text-sm font-semibold text-gray-700 mt-2 text-center">Pelatihan</span>
                 </a>
                 <a href="{{ route('sertifikat.index') }}" class="flex flex-col items-center cursor-pointer group">
                     <div
-                        class="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-orange-100/70 border border-orange-200 flex items-center justify-center text-orange-500 shadow-sm group-hover:scale-105 transition">
-                        <i class="fa-solid fa-award text-xl sm:text-2xl"></i>
+                        class="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-2xl bg-orange-100/70 border border-orange-200 flex items-center justify-center text-orange-500 shadow-sm group-hover:scale-105 transition">
+                        <i class="fa-solid fa-award text-xl sm:text-2xl md:text-3xl"></i>
                     </div>
-                    <span class="text-[11px] sm:text-xs font-semibold text-gray-700 mt-2 text-center">Sertifikat</span>
+                    <span
+                        class="text-[11px] sm:text-xs md:text-sm font-semibold text-gray-700 mt-2 text-center">Sertifikat</span>
                 </a>
-                <a href="#" class="flex flex-col items-center cursor-pointer group">
+
+                {{-- Dokumen --}}
+                <a href="{{ url('user-surat') }}" class="flex flex-col items-center cursor-pointer group">
                     <div
-                        class="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-orange-100/70 border border-orange-200 flex items-center justify-center text-orange-500 shadow-sm group-hover:scale-105 transition">
-                        <i class="fa-solid fa-newspaper text-xl sm:text-2xl"></i>
+                        class="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-2xl bg-orange-100/70 border border-orange-200 flex items-center justify-center text-orange-500 shadow-sm group-hover:scale-105 transition">
+                        <i class="fa-solid fa-file-lines text-xl sm:text-2xl md:text-3xl"></i>
                     </div>
-                    <span class="text-[11px] sm:text-xs font-semibold text-gray-700 mt-2 text-center">Artikel</span>
+                    <span
+                        class="text-[11px] sm:text-xs md:text-sm font-semibold text-gray-700 mt-2 text-center">Legalku</span>
                 </a>
-                {{-- E-Organisasi --}}
-                <div onclick="showServiceMessage('E-Organisasi')" class="flex flex-col items-center cursor-pointer group">
+
+                {{-- Inspirator --}}
+                <div onclick="showServiceMessage('E-Recruitment')" class="flex flex-col items-center cursor-pointer group">
                     <div
-                        class="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-orange-100/70 border border-orange-200 flex items-center justify-center text-orange-500 shadow-sm group-hover:scale-105 transition">
-                        <i class="fa-solid fa-sitemap text-xl sm:text-2xl"></i>
+                        class="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-2xl bg-orange-100/70 border border-orange-200 flex items-center justify-center text-orange-500 shadow-sm group-hover:scale-105 transition">
+                        <i class="fa-solid fa-user-plus text-xl sm:text-2xl md:text-3xl"></i>
                     </div>
-                    <span class="text-[11px] sm:text-xs font-semibold text-gray-700 mt-2 text-center">E-Organisasi</span>
+                    <span
+                        class="text-[11px] sm:text-xs md:text-sm font-semibold text-gray-700 mt-2 text-center">Inspirator</span>
                 </div>
 
                 {{-- Struktur --}}
                 <div onclick="showServiceMessage('Struktur')" class="flex flex-col items-center cursor-pointer group">
                     <div
-                        class="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-orange-100/70 border border-orange-200 flex items-center justify-center text-orange-500 shadow-sm group-hover:scale-105 transition">
-                        <i class="fa-solid fa-users-rectangle text-xl sm:text-2xl"></i>
+                        class="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-2xl bg-orange-100/70 border border-orange-200 flex items-center justify-center text-orange-500 shadow-sm group-hover:scale-105 transition">
+                        <i class="fa-solid fa-users-rectangle text-xl sm:text-2xl md:text-3xl"></i>
                     </div>
-                    <span class="text-[11px] sm:text-xs font-semibold text-gray-700 mt-2 text-center">Struktur</span>
+                    <span
+                        class="text-[11px] sm:text-xs md:text-sm font-semibold text-gray-700 mt-2 text-center">Struktur</span>
                 </div>
+
+                {{-- E-Organisasi --}}
+                <a href="{{ url('about') }}" class="flex flex-col items-center cursor-pointer group">
+                    <div
+                        class="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-2xl bg-orange-100/70 border border-orange-200 flex items-center justify-center text-orange-500 shadow-sm group-hover:scale-105 transition">
+                        <i class="fa-solid fa-sitemap text-xl sm:text-2xl md:text-3xl"></i>
+                    </div>
+                    <span
+                        class="text-[11px] sm:text-xs md:text-sm font-semibold text-gray-700 mt-2 text-center">E-Organisasi</span>
+                </a>
+
+                {{-- Artikel --}}
+                <a href="#" class="flex flex-col items-center cursor-pointer group">
+                    <div
+                        class="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-2xl bg-orange-100/70 border border-orange-200 flex items-center justify-center text-orange-500 shadow-sm group-hover:scale-105 transition">
+                        <i class="fa-solid fa-newspaper text-xl sm:text-2xl md:text-3xl"></i>
+                    </div>
+                    <span
+                        class="text-[11px] sm:text-xs md:text-sm font-semibold text-gray-700 mt-2 text-center">Artikel</span>
+                </a>
 
                 {{-- Marchaindise --}}
-                <div onclick="showServiceMessage('Marchaindise')" class="flex flex-col items-center cursor-pointer group">
+                <a href="{{ route('merchandise.index') }}" class="flex flex-col items-center cursor-pointer group">
                     <div
-                        class="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-orange-100/70 border border-orange-200 flex items-center justify-center text-orange-500 shadow-sm group-hover:scale-105 transition">
-                        <i class="fa-solid fa-shirt text-xl sm:text-2xl"></i>
+                        class="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-2xl bg-orange-100/70 border border-orange-200 flex items-center justify-center text-orange-500 shadow-sm group-hover:scale-105 transition">
+                        <i class="fa-solid fa-shirt text-xl sm:text-2xl md:text-3xl"></i>
                     </div>
-                    <span class="text-[11px] sm:text-xs font-semibold text-gray-700 mt-2 text-center">Marchaindise</span>
-                </div>
-
-                {{-- E-Recruitment --}}
-                <div onclick="showServiceMessage('E-Recruitment')"
-                    class="flex flex-col items-center cursor-pointer group">
-                    <div
-                        class="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-orange-100/70 border border-orange-200 flex items-center justify-center text-orange-500 shadow-sm group-hover:scale-105 transition">
-                        <i class="fa-solid fa-user-plus text-xl sm:text-2xl"></i>
-                    </div>
-                    <span class="text-[11px] sm:text-xs font-semibold text-gray-700 mt-2 text-center">Referral</span>
-                </div>
-
-                {{-- Dokumen --}}
-                <a href="{{ url('user-surat') }}" class="flex flex-col items-center cursor-pointer group">
-                    <div
-                        class="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-orange-100/70 border border-orange-200 flex items-center justify-center text-orange-500 shadow-sm group-hover:scale-105 transition">
-                        <i class="fa-solid fa-file-lines text-xl sm:text-2xl"></i>
-                    </div>
-                    <span class="text-[11px] sm:text-xs font-semibold text-gray-700 mt-2 text-center">Dokumen</span>
+                    <span
+                        class="text-[11px] sm:text-xs md:text-sm font-semibold text-gray-700 mt-2 text-center">Merchandise</span>
                 </a>
 
                 {{-- <div onclick="showServiceMessage('Semua Menu')" class="flex flex-col items-center cursor-pointer group">
@@ -176,30 +186,63 @@
             </div>
         </div>
 
-         {{-- PELATIHAN --}}
-        <div class="mt-4">
+        {{-- PELATIHAN --}}
+        <div class="mt-4 px-5 mb-6">
+            <h3 class="text-base font-bold text-gray-900 mb-4">Pelatihan Unggulan</h3>
             <div id="cardSlider"
                 class="flex overflow-x-auto space-x-4 px-5 no-scrollbar scroll-smooth snap-x snap-mandatory">
                 @forelse ($pelatihans as $pelatihan)
+                    @php
+                        // Daftar pilihan kombinasi gradien Tailwind CSS
+                        $gradients = [
+                            'from-cyan-400 to-blue-600',
+                            'from-emerald-400 to-teal-600',
+                            'from-orange-400 to-amber-600',
+                            'from-violet-400 to-purple-600',
+                            'from-rose-400 to-pink-600',
+                        ];
+
+                        // Memilih warna secara berurutan berdasarkan index loop, lalu berulang kembali jika habis
+                        $currentGradient = $gradients[$loop->index % count($gradients)];
+                    @endphp
+
                     <!-- Card Pelatihan Dinamis -->
                     <div
-                        class="snap-start min-w-[280px] w-[82%] sm:w-[300px] flex-shrink-0 bg-gradient-to-br from-cyan-400 to-blue-600 rounded-3xl p-5 text-white shadow-lg relative overflow-hidden flex flex-col justify-between h-[190px]    ">
+                        class="snap-start min-w-[280px] w-[82%] sm:w-[300px] flex-shrink-0 bg-gradient-to-br {{ $currentGradient }} rounded-3xl p-5 text-white shadow-lg relative overflow-hidden flex flex-col justify-between h-[190px]">
+
+                        <!-- Efek Lingkaran Latar Belakang -->
                         <div class="absolute -right-8 -bottom-8 w-32 h-32 bg-white/5 rounded-full pointer-events-none">
                         </div>
+
                         <div class="z-10">
+                            {{-- Badge Status "Coming Soon" --}}
+                            @if ($pelatihan->status == 'akan datang')
+                                <div class="mb-2">
+                                    <span
+                                        class="px-2.5 py-1 bg-amber-400 text-amber-900 text-[9px] font-extrabold uppercase rounded-full tracking-wider shadow-sm">Coming
+                                        Soon</span>
+                                </div>
+                            @endif
                             <h2 class="text-lg font-black tracking-wide truncate">{{ $pelatihan->judul }}</h2>
-                            <div class="mt-2 text-xs opacity-90 space-y-0.5 font-medium">
-                                <p>• Kuota:
-                                    {{ $pelatihan->kuota > 0 ? $pelatihan->kuota . ' Peserta' : 'Tidak Terbatas' }}
+                            @if ($pelatihan->status == 'akan datang')
+                                <p class="mt-2 text-xs opacity-90 font-medium leading-relaxed">
+                                    Eksklusif untuk profesional dan praktisi hukum. Program sertifikasi lanjutan segera
+                                    hadir untuk mempertajam analisis Anda.
                                 </p>
-                                <p class="font-semibold text-gray-300">• Biaya Pelatihan</p>
-                                <p class="text-lg font-extrabold text-white">Rp
-                                    {{ number_format($pelatihan->harga, 0, ',', '.') }}</p>
-                            </div>
+                            @else
+                                <div class="mt-2 text-xs opacity-90 space-y-0.5 font-medium">
+                                    <p>• Kuota:
+                                        {{ $pelatihan->kuota > 0 ? $pelatihan->kuota . ' Peserta' : 'Tidak Terbatas' }}</p>
+                                    <p class="font-semibold text-white/80">• Biaya Pelatihan</p>
+                                    <p class="text-lg font-extrabold text-white">Rp
+                                        {{ number_format($pelatihan->harga, 0, ',', '.') }}</p>
+                                </div>
+                            @endif
                         </div>
+
                         <div class="z-10">
                             <a href="{{ route('user-pelatihan.show', $pelatihan->id) }}"
-                                class="bg-white text-gray-900 hover:bg-gray-100 font-bold text-xs px-4 py-2 rounded-full shadow transition">
+                                class="bg-white text-gray-900 hover:bg-gray-100 font-bold text-xs px-4 py-2 rounded-full shadow transition inline-block">
                                 Lihat Detail
                             </a>
                         </div>
@@ -239,15 +282,94 @@
             </div>
 
             <!-- Dots Indicator -->
-            @if ($pelatihans->count() > 1)
-                <div class="flex justify-center items-center space-x-1.5 mt-3" id="dotIndicators">
+            @if ($pelatihans->count() > 0)
+                <div class="flex justify-center items-center space-x-1.5 mt-4" id="dotIndicators">
                     @foreach ($pelatihans as $index => $pelatihan)
-                        <span onclick="scrollToCard({{ $index }})"
-                            class="w-2 h-2 bg-gray-300 rounded-full cursor-pointer transition-all duration-300 dot {{ $loop->first ? 'active-dot' : '' }}"></span>
+                        <button onclick="scrollToCard({{ $index }})"
+                            class="dot w-2 h-2 bg-gray-300 rounded-full cursor-pointer transition-all duration-300 {{ $loop->first ? 'active-dot' : '' }}"></button>
                     @endforeach
+                    {{-- Dot untuk card "Coming Soon" --}}
+                    <button onclick="scrollToCard({{ $pelatihans->count() }})"
+                        class="dot w-2 h-2 bg-gray-300 rounded-full cursor-pointer transition-all duration-300"></button>
                 </div>
             @endif
         </div>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                const slider = document.getElementById('cardSlider');
+                if (!slider) return;
+
+                const dots = document.querySelectorAll('#dotIndicators .dot');
+                const cards = slider.querySelectorAll('.snap-start');
+                if (cards.length <= 1) return; // Jangan jalankan jika kartu hanya 1 atau kurang
+
+                let currentIndex = 0;
+                let autoScrollInterval;
+
+                // Fungsi untuk update active dot
+                function updateActiveDot() {
+                    const scrollLeft = slider.scrollLeft;
+                    // Hitung index berdasarkan posisi scroll, lebih toleran
+                    const cardWidth = cards[0].offsetWidth;
+                    const gap = 16; // space-x-4
+                    const activeIndex = Math.round(scrollLeft / (cardWidth + gap));
+
+                    if (activeIndex !== currentIndex) {
+                        currentIndex = activeIndex;
+                    }
+
+                    dots.forEach((dot, index) => {
+                        if (index === currentIndex) {
+                            dot.classList.add('active-dot');
+                        } else {
+                            dot.classList.remove('active-dot');
+                        }
+                    });
+                }
+
+                // Fungsi untuk scroll ke card tertentu
+                window.scrollToCard = function(index) {
+                    currentIndex = index;
+                    const cardWidth = cards[0].offsetWidth;
+                    const gap = 16; // space-x-4
+                    slider.scrollTo({
+                        left: index * (cardWidth + gap),
+                        behavior: 'smooth'
+                    });
+                    updateActiveDot();
+                    resetAutoScroll(); // Reset timer saat navigasi manual
+                }
+
+                function nextCard() {
+                    let nextIndex = (currentIndex + 1) % cards.length;
+                    scrollToCard(nextIndex);
+                }
+
+                function startAutoScroll() {
+                    stopAutoScroll(); // Hentikan dulu jika sudah ada
+                    autoScrollInterval = setInterval(nextCard, 5000); // Ganti kartu setiap 5 detik
+                }
+
+                function stopAutoScroll() {
+                    clearInterval(autoScrollInterval);
+                }
+
+                function resetAutoScroll() {
+                    stopAutoScroll();
+                    startAutoScroll();
+                }
+
+                // Event listener saat user scroll manual
+                slider.addEventListener('scroll', updateActiveDot);
+                slider.addEventListener('mouseenter', stopAutoScroll);
+                slider.addEventListener('mouseleave', startAutoScroll);
+
+                // Inisialisasi dan mulai auto-scroll
+                startAutoScroll();
+            });
+        </script>
+
         <!-- Bagian Berita Tranding (Sesuai Screenshot) -->
         <div class="px-5">
             <div class="flex justify-between items-center mb-3">

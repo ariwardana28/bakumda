@@ -197,6 +197,32 @@
                     </a>
                 @endcan
 
+                @can('produk-view')
+                    <!-- Produk -->
+                    @php $isProdukActive = request()->routeIs('admin.produk.*'); @endphp
+                    <a href="{{ route('admin.produk.index') }}"
+                        class="flex items-center gap-3.5 px-3.5 py-3 rounded-xl transition-all duration-200 group relative {{ $isProdukActive ? 'font-semibold text-brand-600 bg-brand-50/80 dark:bg-brand-500/15 dark:text-brand-400 shadow-sm' : 'font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100/60 dark:text-slate-400 dark:hover:text-slate-100 dark:hover:bg-slate-800/40' }}">
+                        <div class="absolute left-0 w-1 h-5 bg-brand-600 dark:bg-brand-400 rounded-r-full"
+                            x-show="sidebarOpen && {{ $isProdukActive ? 'true' : 'false' }}"></div>
+                        <i
+                            class="fa-solid fa-store text-sm w-5 text-center transition-transform group-hover:scale-110"></i>
+                        <span x-show="sidebarOpen" class="whitespace-nowrap text-xs tracking-wide">Manajemen Produk</span>
+                    </a>
+                @endcan
+
+                @can('surat-view')
+                    <!-- Surat -->
+                    @php $isSuratActive = request()->is('admin/surat*'); @endphp
+                    <a href="/admin/surat"
+                        class="flex items-center gap-3.5 px-3.5 py-3 rounded-xl transition-all duration-200 group relative {{ $isSuratActive ? 'font-semibold text-brand-600 bg-brand-50/80 dark:bg-brand-500/15 dark:text-brand-400 shadow-sm' : 'font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100/60 dark:text-slate-400 dark:hover:text-slate-100 dark:hover:bg-slate-800/40' }}">
+                        <div class="absolute left-0 w-1 h-5 bg-brand-600 dark:bg-brand-400 rounded-r-full"
+                            x-show="sidebarOpen && {{ $isSuratActive ? 'true' : 'false' }}"></div>
+                        <i
+                            class="fa-solid fa-envelope-open-text text-sm w-5 text-center transition-transform group-hover:scale-110"></i>
+                        <span x-show="sidebarOpen" class="whitespace-nowrap text-xs tracking-wide">Manajemen Surat</span>
+                    </a>
+                @endcan
+
                 @can('pelatihan-pembayaran-view')
                     <!-- Pelatihan Payment -->
                     @php $isPelatihanPaymentActive = request()->routeIs('pelatihan-anggota.*'); @endphp

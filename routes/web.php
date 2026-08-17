@@ -28,6 +28,7 @@ use App\Http\Controllers\UserProdukController;
 |--------------------------------------------------------------------------
 */
 Route::get('/', [HalamanUtamaController::class, 'index'])->name('welcome');
+Route::get('/artiekl/{artikel:slug}', [HalamanUtamaController::class, 'show'])->name('artikel.show.public');
 
 // Route untuk Pengecekan Sertifikat Publik
 Route::get('/cek-sertifikat', [HalamanUtamaController::class, 'showCekSertifikatForm'])->name('sertifikat.cek.form');
@@ -36,6 +37,9 @@ Route::post('/cek-sertifikat', [HalamanUtamaController::class, 'CekSertifikat'])
 // Route untuk Pengecekan Kartu Anggota Publik
 Route::get('/cek-kartu-anggota', [HalamanUtamaController::class, 'showCekKartuAnggotaForm'])->name('kartu-anggota.cek.form');
 Route::post('/cek-kartu-anggota', [HalamanUtamaController::class, 'CekKartuAnggota'])->name('kartu-anggota.cek.submit');
+
+// Route untuk menampilkan detail artikel publik
+Route::get('/artikel/{artikel:slug}', [HalamanUtamaController::class, 'show'])->name('artikel.show.public');
 
 Route::get('/admin/surat', function () {
     return view('admin.surat.index');

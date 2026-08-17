@@ -48,24 +48,24 @@
                         class="group p-6 rounded-2xl bg-slate-50/80 dark:bg-slate-800/40 border border-slate-200/80 dark:border-slate-800 hover:border-orange-500/50 hover:bg-orange-50/40 dark:hover:bg-orange-950/20 transition-all duration-300 text-center flex flex-col items-center justify-center shadow-xs hover:shadow-md">
                         <div
                             class="w-14 h-14 rounded-2xl bg-orange-100 dark:bg-orange-950/60 border border-orange-200/60 dark:border-orange-800/60 flex items-center justify-center text-orange-600 dark:text-orange-400 mb-4 group-hover:scale-110 transition-transform shadow-2xs">
-                            <i class="fa-solid fa-qrcode text-xl"></i>
+                            <i class="fa-solid fa-id-card text-2xl"></i>
                         </div>
-                        <h3 class="font-bold text-slate-900 dark:text-white text-sm mb-1 uppercase tracking-wider">Scan QR
-                            Code</h3>
-                        <p class="text-[11px] text-slate-500 dark:text-slate-400">Gunakan kamera untuk memindai QR
-                            sertifikat.</p>
+                        <h3 class="font-bold text-slate-900 dark:text-white text-sm mb-1 uppercase tracking-wider">Scan
+                            Kartu Anggota</h3>
+                        <p class="text-[11px] text-slate-500 dark:text-slate-400">Gunakan kamera untuk memindai QR pada
+                            kartu anggota.</p>
                     </button>
 
-                    {{-- Tombol Pilihan 2: Input Nomor Sertifikat --}}
+                    {{-- Tombol Pilihan 2: Input Nomor Sertifikat Manual --}}
                     <button @click="changeTab('manual')"
                         class="group p-6 rounded-2xl bg-slate-50/80 dark:bg-slate-800/40 border border-slate-200/80 dark:border-slate-800 hover:border-orange-500/50 hover:bg-orange-50/40 dark:hover:bg-orange-950/20 transition-all duration-300 text-center flex flex-col items-center justify-center shadow-xs hover:shadow-md">
                         <div
                             class="w-14 h-14 rounded-2xl bg-orange-100 dark:bg-orange-950/60 border border-orange-200/60 dark:border-orange-800/60 flex items-center justify-center text-orange-600 dark:text-orange-400 mb-4 group-hover:scale-110 transition-transform shadow-2xs">
-                            <i class="fa-solid fa-id-card text-2xl"></i>
+                            <i class="fa-solid fa-award text-2xl"></i>
                         </div>
                         <h3 class="font-bold text-slate-900 dark:text-white text-sm mb-1 uppercase tracking-wider">Nomor
-                            Kartu</h3>
-                        <p class="text-[11px] text-slate-500 dark:text-slate-400">Input nomor kartu anggota secara manual.
+                            Sertifikat</h3>
+                        <p class="text-[11px] text-slate-500 dark:text-slate-400">Input nomor sertifikat secara manual.
                         </p>
                     </button>
 
@@ -77,7 +77,7 @@
                     <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
                         <span
                             class="text-xs font-bold uppercase tracking-wider text-orange-600 dark:text-orange-400 flex items-center gap-2">
-                            <i class="fa-solid fa-keyboard"></i> Masukkan Nomor Kartu Anggota
+                            <i class="fa-solid fa-keyboard"></i> Masukkan Nomor Sertifikat
                         </span>
                         <button @click="changeTab('menu')"
                             class="text-xs text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 flex items-center gap-1 transition-colors">
@@ -85,14 +85,14 @@
                         </button>
                     </div>
 
-                    <form action="{{ route('kartu-anggota.cek.submit') }}" method="POST" id="manual-form"
+                    <form action="{{ route('sertifikat.cek.submit') }}" method="POST" id="manual-form"
                         class="pt-2 space-y-4">
                         @csrf
                         <div class="relative">
-                            <input id="card_id" type="text" name="card_id" value="{{ old('card_id') }}" required
-                                placeholder="Contoh: KTPA.2024.0001"
+                            <input id="no_sertifikat" type="text" name="no_sertifikat" value="{{ old('no_sertifikat') }}"
+                                required placeholder="Contoh: CERT-XXXX-YYYY"
                                 class="w-full text-center px-6 py-4 text-sm rounded-2xl bg-slate-50 dark:bg-slate-800/60 text-slate-800 dark:text-slate-100 border border-slate-200 dark:border-slate-700/80 focus:border-orange-500/50 focus:ring-2 focus:ring-orange-500/20 outline-none transition-all">
-                            @error('card_id')
+                            @error('no_sertifikat')
                                 <span
                                     class="text-[10px] text-rose-500 mt-1.5 block text-center font-medium">{{ $message }}</span>
                             @enderror
@@ -100,7 +100,7 @@
                         <button type="submit"
                             class="w-full inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-orange-600 hover:bg-orange-700 text-white font-bold text-xs uppercase tracking-wider shadow-lg shadow-orange-600/25 transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]">
                             <i class="fa-solid fa-magnifying-glass"></i>
-                            <span>Cek Kartu Anggota</span>
+                            <span>Cek Sertifikat</span>
                         </button>
                     </form>
                 </div>
@@ -110,8 +110,8 @@
                     class="space-y-4">
                     <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
                         <span
-                            class="text-xs font-bold uppercase tracking-wider text-orange-600 dark:text-orange-400 flex items-center gap-2">
-                            <i class="fa-solid fa-qrcode"></i> Scan QR Code
+                            class="text-xs font-bold uppercase tracking-wider text-orange-600 dark:text-orange-400 flex items-center gap-2 animate-pulse">
+                            <i class="fa-solid fa-qrcode"></i> Scan KTPA
                         </span>
                         <button @click="changeTab('menu')"
                             class="text-xs text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 flex items-center gap-1 transition-colors">
@@ -121,6 +121,11 @@
 
                     <div
                         class="relative rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/40 p-2 shadow-inner">
+                        {{-- Form tersembunyi untuk submit hasil scan QR kartu anggota --}}
+                        <form action="{{ route('kartu-anggota.cek.submit') }}" method="POST" id="qr-form" class="hidden">
+                            @csrf
+                            <input type="text" name="card_id" id="qr_card_id">
+                        </form>
                         <div id="qr-reader" class="w-full rounded-xl overflow-hidden"></div>
                     </div>
                     <div id="qr-reader-results" class="text-center"></div>
@@ -182,10 +187,10 @@
                             config,
                             (decodedText) => {
                                 this.stopScanner();
-                                const input = document.getElementById('card_id');
+                                const input = document.getElementById('qr_card_id');
                                 if (input) {
                                     input.value = decodedText;
-                                    document.getElementById('manual-form').submit();
+                                    document.getElementById('qr-form').submit();
                                 }
                             },
                             (errorMessage) => {

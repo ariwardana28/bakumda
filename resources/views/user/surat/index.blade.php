@@ -6,7 +6,7 @@
         {{-- Draft Dokumen Hukum & Korporat (10 Jenis Surat) --}}
         <div class="px-5 mb-6">
             <div class="flex justify-between items-center mb-4">
-                <h3 class="text-base font-bold text-gray-900">Draft Dokumen Hukum & Korporat</h3>
+                <h3 class="text-xl md:text-2xl font-black text-white tracking-tight">Draft Dokumen Hukum & Korporat</h3>
                 <span class="text-xs text-orange-500 font-semibold">Pilih Template</span>
             </div>
             

@@ -1,592 +1,407 @@
 @extends('layouts.app')
 
+@section('title', 'Dashboard - Bantuan Hukum Daerah')
+
 @section('content')
-    <div class="space-y-6">
 
-        @if (isset($isRegistered) && $isRegistered)
-        @else
-        @endif
+    <!-- ========================================== -->
+    <!-- HERO BANNER & KTA / PENDAFTARAN            -->
+    <!-- ========================================== -->
+    <div class="grid grid-cols-1 gap-3 md:gap-6 mb-4 md:mb-8 relative z-7">
 
-        {{-- Anggota --}}
-        <div class="px-5" id="member-card">
-            @if (isset($isRegistered) && $isRegistered)
-                <!-- Tampilan JIKA SUDAH TERDAFTAR -->
-                <div
-                    class="relative rounded-[2rem] p-5 bg-slate-900 border border-slate-800 shadow-2xl overflow-hidden text-white max-w-lg mx-auto">
-
-                    {{-- Aksen Glow --}}
-                    <div
-                        class="absolute -top-12 -right-12 w-40 h-40 bg-orange-500/10 rounded-full blur-3xl pointer-events-none">
-                    </div>
-
-                    {{-- Bagian Atas --}}
-                    <div class="flex items-center gap-3 mb-4 relative z-10">
-                        <div
-                            class="w-12 h-12 rounded-xl bg-gradient-to-tr from-orange-500 to-amber-500 flex items-center justify-center text-white font-black text-lg shrink-0 border border-white/10 shadow-lg overflow-hidden">
-                            @if (isset($foto_anggota) && $foto_anggota)
-                                <img src="{{ asset('storage/' . $foto_anggota) }}" alt="Foto"
-                                    class="w-full h-full object-cover">
-                            @else
-                                <i class="fa-solid fa-user text-lg"></i>
-                            @endif
-                        </div>
-                        <div class="leading-tight">
-                            <span class="text-[10px] text-slate-400 font-bold uppercase tracking-wide">Halo !</span>
-                            <h3 class="font-black text-white text-sm uppercase tracking-tight truncate">
-                                {{ $nama_anggota ?? 'JUNAEDI HASYIM, SH, MH.' }}
-                            </h3>
-                        </div>
-                    </div>
-
-                    {{-- Bagian Kotak Bawah (Compact) --}}
-                    <div
-                        class="bg-white/[0.03] border border-white/5 rounded-2xl p-4 relative z-10 flex items-center justify-between shadow-inner">
-
-                        <div class="flex-1">
-                            <div class="flex items-center gap-2 mb-1.5">
-                                <span class="text-[9px] text-slate-400 font-bold uppercase tracking-wider">Masa
-                                    Berlaku</span>
-                                {{-- Status di samping Masa Berlaku --}}
-                                <span
-                                    class="px-2 py-0.5 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-bold text-[9px] uppercase rounded-full">
-                                    {{ $status_anggota ?? 'Aktif' }}
-                                </span>
-                            </div>
-                            <div class="font-mono font-bold text-amber-400 text-sm tracking-wider">
-                                {{ $no_ktpa ?? '7371 2094 0000 3127' }}
-                            </div>
-                        </div>
-
-                        {{-- Preview Kartu Mini --}}
-                        <div
-                            class="w-16 h-10 rounded-lg bg-gradient-to-br from-slate-800 to-slate-950 border border-slate-700 p-1 flex flex-col justify-between shrink-0 ml-3">
-                            <div class="flex justify-between items-start">
-                                <span class="text-[6px] text-slate-500 font-bold uppercase">ID</span>
-                                <div class="w-1 h-1 rounded-full bg-orange-500"></div>
-                            </div>
-                            <div class="w-4 h-2 bg-amber-400/20 rounded-[1px] ml-auto"></div>
-                        </div>
-                    </div>
+        <!-- Hero Banner Slider -->
+        <div id="banner-slider-container"
+            class="relative w-full overflow-hidden rounded-3xl shadow-xl border border-slate-800 mb-1 md:mb-4 z-10">
+            <!-- Slider Track -->
+            <div class="heroSlider flex transition-transform duration-700 ease-out w-full">
+                <!-- Slide 1 -->
+                <div class="slide-item min-w-full w-full relative overflow-hidden">
+                    <img src="{{ asset('b1.jpeg') }}" alt="Banner 1" class="w-full h-auto object-contain">
                 </div>
-            @else
-                <!-- Tampilan JIKA BELUM TERDAFTAR -->
-                <div
-                    class="relative group rounded-3xl p-6 bg-gradient-to-r from-orange-500 to-amber-500 shadow-xl shadow-orange-500/20 overflow-hidden">
-                    <div class="absolute -top-10 -right-10 w-40 h-40 bg-white/20 rounded-full blur-2xl"></div>
-
-                    <div class="relative z-10">
-                        <div class="flex items-center space-x-3 mb-3">
-                            <div
-                                class="w-10 h-10 bg-white/20 backdrop-blur-md rounded-xl flex items-center justify-center text-white">
-                                <i class="fa-solid fa-file-pen text-xl"></i>
-                            </div>
-                            <h4 class="font-extrabold text-white text-lg tracking-tight">Pendaftaran Anggota
-                            </h4>
-                        </div>
-                        <p class="text-white/90 text-xs mb-5">Gabung dengan komunitas IMI Mobilitas dan nikmati
-                            berbagai akses eksklusif.</p>
-
-                        <a href="{{ route('user-pelatihan.show', 1) }}"
-                            class="w-full bg-white text-orange-600 hover:bg-gray-50 font-bold text-xs py-3 rounded-2xl shadow-lg transition-all duration-300 flex items-center justify-center space-x-2 block text-center">
-                            <span>Formulir Pendaftaran</span>
-                            <i class="fa-solid fa-arrow-right text-[10px]"></i>
-                        </a>
-                    </div>
+                <!-- Slide 2 -->
+                <div class="slide-item min-w-full w-full relative overflow-hidden">
+                    <img src="{{ asset('b2.jpeg') }}" alt="Banner 2" class="w-full h-auto object-contain">
                 </div>
-            @endif
-        </div>
-
-        <div class="px-5 mb-6">
-            <h3 class="text-base font-bold text-gray-900 mb-4">Fitur Organisasi</h3>
-            <div class="grid grid-cols-4 gap-3 sm:gap-4 md:gap-5">
-                <a href="{{ route('user-pelatihan.index') }}" class="flex flex-col items-center cursor-pointer group">
-                    <div
-                        class="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-2xl bg-orange-100/70 border border-orange-200 flex items-center justify-center text-orange-500 shadow-sm group-hover:scale-105 transition">
-                        <i class="fa-solid fa-graduation-cap text-xl sm:text-2xl md:text-3xl"></i>
-                    </div>
-                    <span
-                        class="text-[11px] sm:text-xs md:text-sm font-semibold text-gray-700 mt-2 text-center">Pelatihan</span>
-                </a>
-                <a href="{{ route('sertifikat.index') }}" class="flex flex-col items-center cursor-pointer group">
-                    <div
-                        class="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-2xl bg-orange-100/70 border border-orange-200 flex items-center justify-center text-orange-500 shadow-sm group-hover:scale-105 transition">
-                        <i class="fa-solid fa-award text-xl sm:text-2xl md:text-3xl"></i>
-                    </div>
-                    <span
-                        class="text-[11px] sm:text-xs md:text-sm font-semibold text-gray-700 mt-2 text-center">Sertifikat</span>
-                </a>
-
-                {{-- Dokumen --}}
-                <a href="{{ url('user-surat') }}" class="flex flex-col items-center cursor-pointer group">
-                    <div
-                        class="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-2xl bg-orange-100/70 border border-orange-200 flex items-center justify-center text-orange-500 shadow-sm group-hover:scale-105 transition">
-                        <i class="fa-solid fa-file-lines text-xl sm:text-2xl md:text-3xl"></i>
-                    </div>
-                    <span
-                        class="text-[11px] sm:text-xs md:text-sm font-semibold text-gray-700 mt-2 text-center">Legalku</span>
-                </a>
-
-                {{-- Inspirator --}}
-                <div onclick="showServiceMessage('E-Recruitment')" class="flex flex-col items-center cursor-pointer group">
-                    <div
-                        class="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-2xl bg-orange-100/70 border border-orange-200 flex items-center justify-center text-orange-500 shadow-sm group-hover:scale-105 transition">
-                        <i class="fa-solid fa-user-plus text-xl sm:text-2xl md:text-3xl"></i>
-                    </div>
-                    <span
-                        class="text-[11px] sm:text-xs md:text-sm font-semibold text-gray-700 mt-2 text-center">Inspirator</span>
-                </div>
-
-                {{-- Struktur --}}
-                <div onclick="showServiceMessage('Struktur')" class="flex flex-col items-center cursor-pointer group">
-                    <div
-                        class="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-2xl bg-orange-100/70 border border-orange-200 flex items-center justify-center text-orange-500 shadow-sm group-hover:scale-105 transition">
-                        <i class="fa-solid fa-users-rectangle text-xl sm:text-2xl md:text-3xl"></i>
-                    </div>
-                    <span
-                        class="text-[11px] sm:text-xs md:text-sm font-semibold text-gray-700 mt-2 text-center">Struktur</span>
-                </div>
-
-                {{-- E-Organisasi --}}
-                <a href="{{ url('about') }}" class="flex flex-col items-center cursor-pointer group">
-                    <div
-                        class="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-2xl bg-orange-100/70 border border-orange-200 flex items-center justify-center text-orange-500 shadow-sm group-hover:scale-105 transition">
-                        <i class="fa-solid fa-sitemap text-xl sm:text-2xl md:text-3xl"></i>
-                    </div>
-                    <span
-                        class="text-[11px] sm:text-xs md:text-sm font-semibold text-gray-700 mt-2 text-center">E-Organisasi</span>
-                </a>
-
-                {{-- Artikel --}}
-                <a href="#" class="flex flex-col items-center cursor-pointer group">
-                    <div
-                        class="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-2xl bg-orange-100/70 border border-orange-200 flex items-center justify-center text-orange-500 shadow-sm group-hover:scale-105 transition">
-                        <i class="fa-solid fa-newspaper text-xl sm:text-2xl md:text-3xl"></i>
-                    </div>
-                    <span
-                        class="text-[11px] sm:text-xs md:text-sm font-semibold text-gray-700 mt-2 text-center">Artikel</span>
-                </a>
-
-                {{-- Marchaindise --}}
-                <a href="{{ route('merchandise.index') }}" class="flex flex-col items-center cursor-pointer group">
-                    <div
-                        class="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-2xl bg-orange-100/70 border border-orange-200 flex items-center justify-center text-orange-500 shadow-sm group-hover:scale-105 transition">
-                        <i class="fa-solid fa-shirt text-xl sm:text-2xl md:text-3xl"></i>
-                    </div>
-                    <span
-                        class="text-[11px] sm:text-xs md:text-sm font-semibold text-gray-700 mt-2 text-center">Merchandise</span>
-                </a>
-
-                {{-- <div onclick="showServiceMessage('Semua Menu')" class="flex flex-col items-center cursor-pointer group">
-                    <div
-                        class="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-orange-500 border border-orange-600 flex items-center justify-center text-white shadow-md group-hover:scale-105 transition">
-                        <i class="fa-solid fa-grip text-xl sm:text-2xl"></i>
-                    </div>
-                    <span class="text-[11px] sm:text-xs font-semibold text-gray-700 mt-2 text-center">Lainnya</span>
-                </div> --}}
-            </div>
-        </div>
-
-        {{-- PELATIHAN --}}
-        <div class="mt-4 px-5 mb-6">
-            <h3 class="text-base font-bold text-gray-900 mb-4">Pelatihan Unggulan</h3>
-            <div id="cardSlider"
-                class="flex overflow-x-auto space-x-4 px-5 no-scrollbar scroll-smooth snap-x snap-mandatory">
-                @forelse ($pelatihans as $pelatihan)
-                    @php
-                        // Daftar pilihan kombinasi gradien Tailwind CSS
-                        $gradients = [
-                            'from-cyan-400 to-blue-600',
-                            'from-emerald-400 to-teal-600',
-                            'from-orange-400 to-amber-600',
-                            'from-violet-400 to-purple-600',
-                            'from-rose-400 to-pink-600',
-                        ];
-
-                        // Memilih warna secara berurutan berdasarkan index loop, lalu berulang kembali jika habis
-                        $currentGradient = $gradients[$loop->index % count($gradients)];
-                    @endphp
-
-                    <!-- Card Pelatihan Dinamis -->
-                    <div
-                        class="snap-start min-w-[280px] w-[82%] sm:w-[300px] flex-shrink-0 bg-gradient-to-br {{ $currentGradient }} rounded-3xl p-5 text-white shadow-lg relative overflow-hidden flex flex-col justify-between h-[190px]">
-
-                        <!-- Efek Lingkaran Latar Belakang -->
-                        <div class="absolute -right-8 -bottom-8 w-32 h-32 bg-white/5 rounded-full pointer-events-none">
-                        </div>
-
-                        <div class="z-10">
-                            {{-- Badge Status "Coming Soon" --}}
-                            @if ($pelatihan->status == 'akan datang')
-                                <div class="mb-2">
-                                    <span
-                                        class="px-2.5 py-1 bg-amber-400 text-amber-900 text-[9px] font-extrabold uppercase rounded-full tracking-wider shadow-sm">Coming
-                                        Soon</span>
-                                </div>
-                            @endif
-                            <h2 class="text-lg font-black tracking-wide truncate">{{ $pelatihan->judul }}</h2>
-                            @if ($pelatihan->status == 'akan datang')
-                                <p class="mt-2 text-xs opacity-90 font-medium leading-relaxed">
-                                    Eksklusif untuk profesional dan praktisi hukum. Program sertifikasi lanjutan segera
-                                    hadir untuk mempertajam analisis Anda.
-                                </p>
-                            @else
-                                <div class="mt-2 text-xs opacity-90 space-y-0.5 font-medium">
-                                    <p>• Kuota:
-                                        {{ $pelatihan->kuota > 0 ? $pelatihan->kuota . ' Peserta' : 'Tidak Terbatas' }}</p>
-                                    <p class="font-semibold text-white/80">• Biaya Pelatihan</p>
-                                    <p class="text-lg font-extrabold text-white">Rp
-                                        {{ number_format($pelatihan->harga, 0, ',', '.') }}</p>
-                                </div>
-                            @endif
-                        </div>
-
-                        <div class="z-10">
-                            <a href="{{ route('user-pelatihan.show', $pelatihan->id) }}"
-                                class="bg-white text-gray-900 hover:bg-gray-100 font-bold text-xs px-4 py-2 rounded-full shadow transition inline-block">
-                                Lihat Detail
-                            </a>
-                        </div>
-                    </div>
-                @empty
-                    <div
-                        class="min-w-[280px] w-full flex-shrink-0 bg-gray-100 rounded-3xl p-5 text-gray-500 shadow-inner relative flex flex-col justify-center items-center h-[190px]">
-                        <i class="fa-solid fa-book-open text-3xl mb-2"></i>
-                        <p class="text-sm font-semibold">Belum ada pelatihan tersedia.</p>
-                        <p class="text-xs">Silakan cek kembali nanti.</p>
-                    </div>
-                @endforelse
-
-                <!-- Card Coming Soon Tambahan (Selalu Tampil di Akhir Slider) -->
-                <div
-                    class="snap-start min-w-[280px] w-[82%] sm:w-[300px] flex-shrink-0 bg-gradient-to-br from-amber-500/10 to-orange-500/10 border-2 border-dashed border-orange-400/50 rounded-3xl p-5 text-gray-800 shadow-sm relative overflow-hidden flex flex-col justify-between h-[190px]">
-                    <div class="absolute -right-8 -bottom-8 w-32 h-32 bg-orange-500/5 rounded-full pointer-events-none">
-                    </div>
-                    <div class="z-10">
-                        <div class="flex items-center space-x-2 mb-2">
-                            <span
-                                class="px-2.5 py-0.5 bg-orange-500 text-white text-[10px] font-extrabold uppercase rounded-full tracking-wider shadow-sm">Segera
-                                Hadir</span>
-                        </div>
-                        <h2 class="text-base font-black tracking-wide text-gray-900 truncate">Pelatihan & Event
-                            Baru
-                        </h2>
-                        <p class="mt-1.5 text-xs text-gray-500 font-medium leading-relaxed">
-                            Nantikan jadwal pelatihan berkendara dan agenda mobilitas seru berikutnya dari kami.
-                        </p>
-                    </div>
-                    <div class="z-10 flex items-center space-x-2 text-xs font-bold text-orange-600">
-                        <i class="fa-regular fa-clock"></i>
-                        <span>Stay Tuned!</span>
-                    </div>
+                <div class="slide-item min-w-full w-full relative overflow-hidden">
+                    <img src="{{ asset('b3.jpeg') }}" alt="Banner 2" class="w-full h-auto object-contain">
                 </div>
             </div>
 
-            <!-- Dots Indicator -->
-            @if ($pelatihans->count() > 0)
-                <div class="flex justify-center items-center space-x-1.5 mt-4" id="dotIndicators">
-                    @foreach ($pelatihans as $index => $pelatihan)
-                        <button onclick="scrollToCard({{ $index }})"
-                            class="dot w-2 h-2 bg-gray-300 rounded-full cursor-pointer transition-all duration-300 {{ $loop->first ? 'active-dot' : '' }}"></button>
-                    @endforeach
-                    {{-- Dot untuk card "Coming Soon" --}}
-                    <button onclick="scrollToCard({{ $pelatihans->count() }})"
-                        class="dot w-2 h-2 bg-gray-300 rounded-full cursor-pointer transition-all duration-300"></button>
-                </div>
-            @endif
+            <!-- Indikator Dots -->
+            <div class="absolute bottom-3 right-4 z-30 flex space-x-1.5" id="slider-dots">
+                <button class="dot h-2 w-5 bg-white rounded-full transition-all duration-300" data-index="0"></button>
+                <button class="dot h-2 w-2 bg-white/50 rounded-full transition-all duration-300" data-index="1"></button>
+                <button class="dot h-2 w-2 bg-white/50 rounded-full transition-all duration-300" data-index="2"></button>
+            </div>
         </div>
 
+        <!-- Skrip JavaScript Slider Banner -->
         <script>
             document.addEventListener("DOMContentLoaded", function() {
-                const slider = document.getElementById('cardSlider');
-                if (!slider) return;
+                const container = document.getElementById("banner-slider-container");
+                if (!container) return;
 
-                const dots = document.querySelectorAll('#dotIndicators .dot');
-                const cards = slider.querySelectorAll('.snap-start');
-                if (cards.length <= 1) return; // Jangan jalankan jika kartu hanya 1 atau kurang
-
+                const slider = container.querySelector(".heroSlider");
+                const slides = container.querySelectorAll(".slide-item");
+                const dots = container.querySelectorAll("#slider-dots .dot");
                 let currentIndex = 0;
-                let autoScrollInterval;
+                const totalSlides = slides.length;
+                const intervalTime = 2000;
 
-                // Fungsi untuk update active dot
-                function updateActiveDot() {
-                    const scrollLeft = slider.scrollLeft;
-                    // Hitung index berdasarkan posisi scroll, lebih toleran
-                    const cardWidth = cards[0].offsetWidth;
-                    const gap = 16; // space-x-4
-                    const activeIndex = Math.round(scrollLeft / (cardWidth + gap));
-
-                    if (activeIndex !== currentIndex) {
-                        currentIndex = activeIndex;
-                    }
-
+                function updateSlider() {
+                    slider.style.transform = `translateX(-${currentIndex * 100}%)`;
                     dots.forEach((dot, index) => {
                         if (index === currentIndex) {
-                            dot.classList.add('active-dot');
+                            dot.classList.remove("w-2", "bg-white/50");
+                            dot.classList.add("w-5", "bg-white");
                         } else {
-                            dot.classList.remove('active-dot');
-                        }
-                    });
-                }
-
-                // Fungsi untuk scroll ke card tertentu
-                window.scrollToCard = function(index) {
-                    currentIndex = index;
-                    const cardWidth = cards[0].offsetWidth;
-                    const gap = 16; // space-x-4
-                    slider.scrollTo({
-                        left: index * (cardWidth + gap),
-                        behavior: 'smooth'
-                    });
-                    updateActiveDot();
-                    resetAutoScroll(); // Reset timer saat navigasi manual
-                }
-
-                function nextCard() {
-                    let nextIndex = (currentIndex + 1) % cards.length;
-                    scrollToCard(nextIndex);
-                }
-
-                function startAutoScroll() {
-                    stopAutoScroll(); // Hentikan dulu jika sudah ada
-                    autoScrollInterval = setInterval(nextCard, 5000); // Ganti kartu setiap 5 detik
-                }
-
-                function stopAutoScroll() {
-                    clearInterval(autoScrollInterval);
-                }
-
-                function resetAutoScroll() {
-                    stopAutoScroll();
-                    startAutoScroll();
-                }
-
-                // Event listener saat user scroll manual
-                slider.addEventListener('scroll', updateActiveDot);
-                slider.addEventListener('mouseenter', stopAutoScroll);
-                slider.addEventListener('mouseleave', startAutoScroll);
-
-                // Inisialisasi dan mulai auto-scroll
-                startAutoScroll();
-            });
-        </script>
-
-        <!-- Bagian Berita Tranding (Sesuai Screenshot) -->
-        <div class="px-5">
-            <div class="flex justify-between items-center mb-3">
-                <h3 class="text-base font-bold text-gray-900">Berita Tranding</h3>
-                <button onclick="showServiceMessage('Semua Berita')"
-                    class="text-xs font-semibold text-orange-500 hover:underline">Lihat Semua</button>
-            </div>
-            <div class="space-y-3">
-                <!-- News Item 1 -->
-                <div class="bg-white rounded-3xl p-3.5 shadow-sm border border-gray-100 flex items-center space-x-3.5 cursor-pointer hover:bg-gray-50 transition"
-                    onclick="showServiceMessage('Berita: Terima Pengurus Komunitas Jeep')">
-                    <div class="w-24 h-20 rounded-2xl overflow-hidden shrink-0 bg-gray-200">
-                        <img src="https://placehold.co/200x150/orange/white?text=Jeep" alt="Jeep"
-                            class="w-full h-full object-cover">
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <p class="text-[10px] text-gray-400 font-medium flex items-center space-x-1">
-                            <i class="fa-regular fa-clock"></i>
-                            <span>about a year ago • Admin g...</span>
-                        </p>
-                        <h4 class="text-xs font-bold text-gray-900 mt-1 line-clamp-2 leading-snug">Terima
-                            Pengurus
-                            Komunitas Jeep</h4>
-                        <span class="text-[11px] font-bold text-blue-600 mt-1 inline-block">Berita
-                            Selengkapnya</span>
-                    </div>
-                </div>
-
-                <!-- News Item 2 -->
-                <div class="bg-white rounded-3xl p-3.5 shadow-sm border border-gray-100 flex items-center space-x-3.5 cursor-pointer hover:bg-gray-50 transition"
-                    onclick="showServiceMessage('Berita: Kunjungi Bengkel UKM di Bandung')">
-                    <div class="w-24 h-20 rounded-2xl overflow-hidden shrink-0 bg-gray-200">
-                        <img src="https://placehold.co/200x150/blue/white?text=UKM" alt="UKM"
-                            class="w-full h-full object-cover">
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <p class="text-[10px] text-gray-400 font-medium flex items-center space-x-1">
-                            <i class="fa-regular fa-clock"></i>
-                            <span>about a year ago • Admin g...</span>
-                        </p>
-                        <h4 class="text-xs font-bold text-gray-900 mt-1 line-clamp-2 leading-snug">Kunjungi
-                            Bengkel
-                            UKM di Bandung, Dorong</h4>
-                        <span class="text-[11px] font-bold text-blue-600 mt-1 inline-block">Berita
-                            Selengkapnya</span>
-                    </div>
-                </div>
-
-                <!-- News Item 3 -->
-                <div class="bg-white rounded-3xl p-3.5 shadow-sm border border-gray-100 flex items-center space-x-3.5 cursor-pointer hover:bg-gray-50 transition"
-                    onclick="showServiceMessage('Berita: Ketua MPR RI Bamsoet Buka Ajang Balap Motor')">
-                    <div class="w-24 h-20 rounded-2xl overflow-hidden shrink-0 bg-gray-200">
-                        <img src="https://placehold.co/200x150/amber/white?text=Balap" alt="Balap"
-                            class="w-full h-full object-cover">
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <p class="text-[10px] text-gray-400 font-medium flex items-center space-x-1">
-                            <i class="fa-regular fa-clock"></i>
-                            <span>3 years ago • Admin</span>
-                        </p>
-                        <h4 class="text-xs font-bold text-gray-900 mt-1 line-clamp-2 leading-snug">Ketua MPR RI
-                            Bamsoet Buka Ajang Balap Motor</h4>
-                        <span class="text-[11px] font-bold text-blue-600 mt-1 inline-block">Berita
-                            Selengkapnya</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-        {{-- Iklan Banner Carousel (Full Gambar) --}}
-        <div class="px-5">
-            <div class="relative w-full overflow-hidden rounded-3xl shadow-xl shadow-orange-500/10">
-                <!-- Slider Container -->
-                <div id="adSlider" class="flex transition-transform duration-500 ease-out snap-x snap-mandatory">
-
-                    <!-- Slide 1 -->
-                    <div
-                        class="min-w-full snap-start relative rounded-3xl overflow-hidden flex-shrink-0 aspect-[16/9] sm:aspect-[21/9]">
-                        <a href="#" class="block w-full h-full">
-                            <img src="https://images.unsplash.com/photo-1558981403-c5f9899a28bc?w=800&auto=format&fit=crop&q=60"
-                                alt="Iklan 1" class="w-full h-full object-cover">
-                        </a>
-                    </div>
-
-                    <!-- Slide 2 -->
-                    <div
-                        class="min-w-full snap-start relative rounded-3xl overflow-hidden flex-shrink-0 aspect-[16/9] sm:aspect-[21/9]">
-                        <a href="#" class="block w-full h-full">
-                            <img src="https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?w=800&auto=format&fit=crop&q=60"
-                                alt="Iklan 2" class="w-full h-full object-cover">
-                        </a>
-                    </div>
-
-                    <!-- Slide 3 -->
-                    <div
-                        class="min-w-full snap-start relative rounded-3xl overflow-hidden flex-shrink-0 aspect-[16/9] sm:aspect-[21/9]">
-                        <a href="{{ route('user-pelatihan.index') }}" class="block w-full h-full">
-                            <img src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=800&auto=format&fit=crop&q=60"
-                                alt="Iklan 3" class="w-full h-full object-cover">
-                        </a>
-                    </div>
-
-                </div>
-
-                <!-- Indikator Titik (Dots) untuk Slider -->
-                <div class="absolute bottom-3 left-0 right-0 flex justify-center space-x-1.5 z-20 pointer-events-none">
-                    <span class="ad-dot w-2 h-2 rounded-full bg-white/60 transition-all duration-300"></span>
-                    <span class="ad-dot w-2 h-2 rounded-full bg-white/60 transition-all duration-300"></span>
-                    <span class="ad-dot w-2 h-2 rounded-full bg-white/60 transition-all duration-300"></span>
-                </div>
-            </div>
-        </div>
-
-        <script>
-            // Skrip Pendukung untuk Auto Slide Banner Iklan
-            document.addEventListener("DOMContentLoaded", function() {
-                const slider = document.getElementById('adSlider');
-                if (!slider) return;
-
-                const dots = document.querySelectorAll('.ad-dot');
-                const totalSlides = dots.length;
-                let currentSlide = 0;
-
-                function updateDots() {
-                    dots.forEach((dot, index) => {
-                        if (index === currentSlide) {
-                            dot.classList.remove('bg-white/60', 'w-2');
-                            dot.classList.add('bg-white', 'w-5');
-                        } else {
-                            dot.classList.remove('bg-white', 'w-5');
-                            dot.classList.add('bg-white/60', 'w-2');
+                            dot.classList.remove("w-5", "bg-white");
+                            dot.classList.add("w-2", "bg-white/50");
                         }
                     });
                 }
 
                 function nextSlide() {
-                    currentSlide = (currentSlide + 1) % totalSlides;
-                    slider.style.transform = `translateX(-${currentSlide * 100}%)`;
-                    updateDots();
+                    currentIndex = (currentIndex + 1) % totalSlides;
+                    updateSlider();
                 }
 
-                let slideInterval = setInterval(nextSlide, 4000);
+                let slideInterval = setInterval(nextSlide, intervalTime);
 
-                slider.addEventListener('mouseenter', () => clearInterval(slideInterval));
-                slider.addEventListener('mouseleave', () => {
-                    slideInterval = setInterval(nextSlide, 4000);
+                dots.forEach((dot, index) => {
+                    dot.addEventListener("click", function() {
+                        currentIndex = index;
+                        updateSlider();
+                        clearInterval(slideInterval);
+                        slideInterval = setInterval(nextSlide, intervalTime);
+                    });
                 });
-
-                updateDots();
             });
         </script>
 
-        <div class="px-5">
-            <div class="flex justify-between items-center mb-3">
-                <h3 class="text-base font-bold text-gray-900">Berita Terbaru</h3>
-                <button onclick="showServiceMessage('Semua Berita')"
-                    class="text-xs font-semibold text-orange-500 hover:underline">Lihat Semua</button>
+        <!-- KTA / Pendaftaran Anggota (Modern & Responsif) -->
+        @if (isset($isRegistered) && $isRegistered)
+            <div class="relative group mt-1 md:mt-0">
+                <div
+                    class="absolute -inset-1 bg-gradient-to-r from-blue-600 to-amber-500 rounded-2xl md:rounded-3xl blur opacity-25 group-hover:opacity-40 transition duration-500">
+                </div>
+
+                <div
+                    class="relative bg-gradient-to-br from-slate-900 via-slate-900 to-slate-950 border border-slate-700/60 rounded-2xl md:rounded-3xl p-4 md:p-6 shadow-2xl flex items-center justify-between overflow-hidden">
+                    <div
+                        class="absolute top-0 right-0 -mt-4 -mr-4 w-32 h-32 bg-blue-500/10 rounded-full blur-2xl pointer-events-none">
+                    </div>
+
+                    <!-- Informasi Anggota -->
+                    <div class="space-y-1.5 md:space-y-2 z-10">
+                        <div class="flex items-center space-x-2 mb-1">
+                            <span class="text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-wider">
+                                KTA {{ $anggota->card->latestBerlaku->jabatan ?? 'Anggota' }}
+                            </span>
+                            <span
+                                class="px-2.5 py-0.5 bg-blue-500/15 border border-blue-500/30 text-blue-400 font-bold text-[9px] md:text-[10px] uppercase rounded-full shadow-sm">
+                                {{ $status_anggota ?? 'Aktif' }}
+                            </span>
+                        </div>
+                        <div class="font-mono font-black text-amber-400 text-sm md:text-xl tracking-widest drop-shadow">
+                            {{ $nama_anggota ?? 'DR. H. ARIS M.' }}
+                        </div>
+                        <p class="text-xs md:text-sm text-slate-200 font-extrabold uppercase tracking-wide mt-1">
+
+                            {{ $no_ktpa ?? '7371 2094 0000 3127' }}
+                        </p>
+                    </div>
+
+                    <!-- Chip Kartu Digital -->
+                    <div
+                        class="w-16 h-12 md:w-20 md:h-14 rounded-xl bg-gradient-to-br from-slate-800 via-slate-900 to-slate-950 border border-slate-700/80 p-2 flex flex-col justify-between shrink-0 shadow-lg z-10">
+                        <div class="flex justify-between items-start">
+                            <span class="text-[7px] md:text-[8px] text-slate-400 font-black tracking-wider">BAKUMDA</span>
+                            <div class="w-2 h-2 rounded-full bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.8)]"></div>
+                        </div>
+                        <div
+                            class="w-6 md:w-7 h-3 md:h-3.5 bg-gradient-to-r from-amber-400/30 to-amber-200/40 border border-amber-400/40 rounded-[3px] ml-auto flex items-center justify-center">
+                            <div class="w-full h-[1px] bg-amber-400/50"></div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="space-y-3">
-                <!-- News Item 1 -->
-                <div class="bg-white rounded-3xl p-3.5 shadow-sm border border-gray-100 flex items-center space-x-3.5 cursor-pointer hover:bg-gray-50 transition"
-                    onclick="showServiceMessage('Berita: Terima Pengurus Komunitas Jeep')">
-                    <div class="w-24 h-20 rounded-2xl overflow-hidden shrink-0 bg-gray-200">
-                        <img src="https://placehold.co/200x150/orange/white?text=Jeep" alt="Jeep"
-                            class="w-full h-full object-cover">
+        @else
+            <!-- Tampilan Pendaftaran Anggota Baru -->
+            <a href="#"
+                class="mt-1 md:mt-0 bg-slate-900 border border-slate-800 rounded-3xl p-5 md:p-6 shadow-xl flex flex-col justify-between transition-transform duration-300 hover:scale-[1.02] group">
+                <div>
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Formulir Online</span>
+                        <span
+                            class="px-2.5 py-0.5 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-bold text-[10px] uppercase rounded-full">Buka</span>
                     </div>
-                    <div class="flex-1 min-w-0">
-                        <p class="text-[10px] text-gray-400 font-medium flex items-center space-x-1">
-                            <i class="fa-regular fa-clock"></i>
-                            <span>about a year ago • Admin g...</span>
-                        </p>
-                        <h4 class="text-xs font-bold text-gray-900 mt-1 line-clamp-2 leading-snug">Terima
-                            Pengurus
-                            Komunitas Jeep</h4>
-                        <span class="text-[11px] font-bold text-blue-600 mt-1 inline-block">Berita
-                            Selengkapnya</span>
+                    <h4
+                        class="font-black text-white text-base md:text-lg tracking-wide group-hover:text-blue-400 transition">
+                        Pendaftaran Anggota Baru
+                    </h4>
+                    <p class="text-xs sm:text-sm text-slate-400 font-medium mt-1">
+                        Daftarkan diri Anda sebagai anggota resmi BAKUMDA sekarang.
+                    </p>
+                </div>
+                <div class="pt-4 mt-3 border-t border-slate-800 flex items-center justify-between">
+                    <span class="text-[11px] text-slate-400 font-medium">Proses Cepat & Mudah</span>
+                    <div
+                        class="bg-blue-600 group-hover:bg-blue-500 text-white font-bold text-xs px-4 py-2 rounded-full shadow transition">
+                        Daftar Sekarang
                     </div>
+                </div>
+            </a>
+        @endif
+    </div>
+    <br>
+
+    <div
+        class="bg-white text-slate-900 rounded-t-[2.5rem] -mt-4 pt-10 px-6 sm:px-12 shadow-2xl relative z-20 flex-1 space-y-8 pb-12">
+
+        <!-- ========================================== -->
+        <!-- MENU UTAMA (KONDISI MOBILE vs DESKTOP)     -->
+        <!-- ========================================== -->
+        <div>
+
+            <!-- Grid Menu: 4 Kolom untuk Mobile (<= 13 Inch), 8 Kolom untuk Desktop (> 13 Inch) -->
+            <div class="grid grid-cols-4 min-[1281px]:grid-cols-8 gap-y-6 gap-x-4">
+
+                <!-- Menu 1 (Mobile: Pelatihan, Desktop: Konsultasi) -->
+                <a href="{{ route('user-pelatihan.index') }}" class="flex flex-col items-center cursor-pointer group">
+                    <div
+                        class="w-16 h-16 md:w-18 md:h-18 rounded-2xl bg-gradient-to-tr from-blue-700 to-indigo-600 flex items-center justify-center text-white shadow-md shadow-blue-500/20 group-hover:scale-105 transition">
+                        <!-- Icon Mobile (<= 13 Inch) -->
+                        <i class="fa-solid fa-graduation-cap max-[1280px]:block min-[1281px]:hidden text-2xl"></i>
+                        <!-- Icon Desktop (> 13 Inch) -->
+                        <i class="fa-solid fa-graduation-cap hidden max-[1280px]:hidden min-[1281px]:block text-xl"></i>
+                    </div>
+                    <span class="text-xs font-semibold text-slate-700 mt-2 text-center leading-tight">Pelatihan</span>
+                </a>
+
+                <!-- Menu 2 (Mobile: Sertifikat, Desktop: Advokasi) -->
+                <a href="{{ route('sertifikat.index') }}" class="flex flex-col items-center cursor-pointer group">
+                    <div
+                        class="w-16 h-16 md:w-18 md:h-18 rounded-2xl bg-gradient-to-tr from-blue-800 to-blue-600 flex items-center justify-center text-white shadow-md shadow-blue-500/20 group-hover:scale-105 transition">
+                        <i class="fa-solid fa-certificate max-[1280px]:block min-[1281px]:hidden text-2xl"></i>
+                        <i class="fa-solid fa-certificate hidden max-[1280px]:hidden min-[1281px]:block text-xl"></i>
+                    </div>
+                    <span class="text-xs font-semibold text-slate-700 mt-2 text-center leading-tight">Sertifikat</span>
+                </a>
+
+                <!-- Menu 3 (Mobile: Legalku, Desktop: UU & Perda) -->
+                <a href="{{ url('/user-surat') }}" class="flex flex-col items-center cursor-pointer group">
+                    <div
+                        class="w-16 h-16 md:w-18 md:h-18 rounded-2xl bg-gradient-to-tr from-slate-800 to-blue-900 flex items-center justify-center text-white shadow-md shadow-blue-500/20 group-hover:scale-105 transition">
+                        <i class="fa-solid fa-scale-balanced max-[1280px]:block min-[1281px]:hidden text-2xl"></i>
+                        <i class="fa-solid fa-scale-balanced hidden max-[1280px]:hidden min-[1281px]:block text-xl"></i>
+                    </div>
+                    <span class="text-xs font-semibold text-slate-700 mt-2 text-center leading-tight">Legalku</span>
+                </a>
+
+                <!-- Menu 4 (Mobile: Inspirator, Desktop: Paralegal) -->
+                <a href="" class="flex flex-col items-center cursor-pointer group">
+                    <div
+                        class="w-16 h-16 md:w-18 md:h-18 rounded-2xl bg-gradient-to-tr from-blue-600 to-cyan-700 flex items-center justify-center text-white shadow-md shadow-blue-500/20 group-hover:scale-105 transition">
+                        <i class="fa-solid fa-lightbulb max-[1280px]:block min-[1281px]:hidden text-2xl"></i>
+                        <i class="fa-solid fa-lightbulb hidden max-[1280px]:hidden min-[1281px]:block text-xl"></i>
+                    </div>
+                    <span class="text-xs font-semibold text-slate-700 mt-2 text-center leading-tight">Inspirator</span>
+                </a>
+
+                <a href="" class="flex flex-col items-center cursor-pointer group">
+                    <div
+                        class="w-16 h-16 md:w-18 md:h-18 rounded-2xl bg-gradient-to-tr from-blue-600 to-cyan-700 flex items-center justify-center text-white shadow-md shadow-blue-500/20 group-hover:scale-105 transition">
+                        <i class="fa-solid fa-newspaper max-[1280px]:block min-[1281px]:hidden text-2xl"></i>
+                        <i class="fa-solid fa-newspaper hidden max-[1280px]:hidden min-[1281px]:block text-xl"></i>
+                    </div>
+                    <span class="text-xs font-semibold text-slate-700 mt-2 text-center leading-tight">Artikel</span>
+                </a>
+
+                <!-- Menu 5 (Mobile: Struktur, Desktop: Dokumen) -->
+                <a href="" class="flex flex-col items-center cursor-pointer group">
+                    <div
+                        class="w-16 h-16 md:w-18 md:h-18 rounded-2xl bg-gradient-to-tr from-amber-600 to-yellow-600 flex items-center justify-center text-white shadow-md shadow-amber-500/20 group-hover:scale-105 transition">
+                        <i class="fa-solid fa-sitemap max-[1280px]:block min-[1281px]:hidden text-2xl"></i>
+                        <i class="fa-solid fa-sitemap hidden max-[1280px]:hidden min-[1281px]:block text-xl"></i>
+                    </div>
+                    <span class="text-xs font-semibold text-slate-700 mt-2 text-center leading-tight">Struktur</span>
+                </a>
+
+                <!-- Menu 6 (Mobile: E-Organisasi, Desktop: Mediator) -->
+                <a href="{{ url('/about') }}" class="flex flex-col items-center cursor-pointer group">
+                    <div
+                        class="w-16 h-16 md:w-18 md:h-18 rounded-2xl bg-gradient-to-tr from-blue-900 to-slate-900 flex items-center justify-center text-white shadow-md shadow-blue-500/20 group-hover:scale-105 transition">
+                        <i class="fa-solid fa-network-wired max-[1280px]:block min-[1281px]:hidden text-2xl"></i>
+                        <i class="fa-solid fa-network-wired hidden max-[1280px]:hidden min-[1281px]:block text-xl"></i>
+                    </div>
+                    <span class="text-xs font-semibold text-slate-700 mt-2 text-center leading-tight">E-Organisasi</span>
+                </a>
+
+                <!-- Menu 7 (Mobile: Merchandise, Desktop: Darurat) -->
+                <a href="{{ route('merchandise.index') }}"
+                    class="menu-item-auth flex flex-col items-center cursor-pointer group">
+                    <div
+                        class="w-16 h-16 md:w-18 md:h-18 rounded-2xl bg-gradient-to-tr from-red-600 to-rose-800 flex items-center justify-center text-white shadow-md shadow-red-500/20 group-hover:scale-105 transition">
+                        <i class="fa-solid fa-handshake max-[1280px]:block min-[1281px]:hidden text-2xl"></i>
+                        <i class="fa-solid fa-handshake hidden max-[1280px]:hidden min-[1281px]:block text-xl"></i>
+                    </div>
+                    <span class="text-xs font-semibold text-slate-700 mt-2 text-center leading-tight">Kerja Sama</span>
+                </a>
+
+
+
+            </div>
+        </div>
+
+        <!-- Program Bantuan Hukum (Slider) -->
+        <div id="slider-container-pelatihan" class="relative">
+            <br>
+            <br>
+            <div class="flex justify-between items-center mb-4">
+                <div>
+                    <h3 class="text-lg font-extrabold text-slate-900 leading-tight">Program Pelatihan</h3>
+                    <span class="text-xs text-slate-400 font-medium">Geser otomatis atau gunakan tombol</span>
                 </div>
 
-                <!-- News Item 2 -->
-                <div class="bg-white rounded-3xl p-3.5 shadow-sm border border-gray-100 flex items-center space-x-3.5 cursor-pointer hover:bg-gray-50 transition"
-                    onclick="showServiceMessage('Berita: Kunjungi Bengkel UKM di Bandung')">
-                    <div class="w-24 h-20 rounded-2xl overflow-hidden shrink-0 bg-gray-200">
-                        <img src="https://placehold.co/200x150/blue/white?text=UKM" alt="UKM"
-                            class="w-full h-full object-cover">
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <p class="text-[10px] text-gray-400 font-medium flex items-center space-x-1">
-                            <i class="fa-regular fa-clock"></i>
-                            <span>about a year ago • Admin g...</span>
-                        </p>
-                        <h4 class="text-xs font-bold text-gray-900 mt-1 line-clamp-2 leading-snug">Kunjungi
-                            Bengkel
-                            UKM di Bandung, Dorong</h4>
-                        <span class="text-[11px] font-bold text-blue-600 mt-1 inline-block">Berita
-                            Selengkapnya</span>
-                    </div>
+                <!-- Tombol Navigasi Manual -->
+                <div class="flex items-center space-x-2">
+                    <button id="slide-left-btn"
+                        class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center transition shadow-sm">
+                        <i class="fa-solid fa-chevron-left text-xs"></i>
+                    </button>
+                    <button id="slide-right-btn"
+                        class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center transition shadow-sm">
+                        <i class="fa-solid fa-chevron-right text-xs"></i>
+                    </button>
                 </div>
+            </div>
 
-                <!-- News Item 3 -->
-                <div class="bg-white rounded-3xl p-3.5 shadow-sm border border-gray-100 flex items-center space-x-3.5 cursor-pointer hover:bg-gray-50 transition"
-                    onclick="showServiceMessage('Berita: Ketua MPR RI Bamsoet Buka Ajang Balap Motor')">
-                    <div class="w-24 h-20 rounded-2xl overflow-hidden shrink-0 bg-gray-200">
-                        <img src="https://placehold.co/200x150/amber/white?text=Balap" alt="Balap"
-                            class="w-full h-full object-cover">
+            <!-- Slider Container dengan Tambahan CSS Inline untuk Menyembunyikan Scrollbar secara Total -->
+            <div id="pelatihan-slider"
+                class="flex overflow-x-auto space-x-4 pb-4 -mx-4 sm:-mx-6 px-4 sm:px-6 snap-x snap-mandatory scroll-smooth"
+                style="scrollbar-width: none; -ms-overflow-style: none;">
+
+                <!-- CSS tambahan khusus untuk webkit (Chrome, Safari, Edge) agar scrollbar benar-benar hilang -->
+                <style>
+                    #pelatihan-slider::-webkit-scrollbar {
+                        display: none;
+                    }
+                </style>
+
+                @foreach ($pelatihans as $index => $pelatihan)
+                    @php
+                        $bgGradient = match ($index % 3) {
+                            0 => 'from-blue-800 to-indigo-900',
+                            1 => 'from-slate-800 to-blue-900',
+                            default => 'from-slate-900 to-slate-800',
+                        };
+                    @endphp
+
+                    <a href="{{ route('user-pelatihan.show', $pelatihan) }}"
+                        class="menu-item-auth snap-start shrink-0 w-[280px] sm:w-[320px] bg-gradient-to-br {{ $bgGradient }} rounded-2xl p-6 text-white shadow-md flex flex-col justify-between h-[180px] transition-transform duration-300 hover:scale-105">
+                        <div>
+                            <h4 class="font-black text-base tracking-wide">{{ $pelatihan->judul }}</h4>
+                            <div class="mt-2 text-xs opacity-90 space-y-1 font-medium">
+                                <p>• Mulai:
+                                    {{ \Carbon\Carbon::parse($pelatihan->tanggal_mulai)->translatedFormat('d F Y') }}</p>
+                                <p class="text-sm font-extrabold text-amber-400 mt-1">
+                                    Rp {{ number_format($pelatihan->harga, 0, ',', '.') }}
+                                </p>
+                            </div>
+                        </div>
+                        <div class="bg-white text-slate-900 font-bold text-xs px-4 py-2 rounded-full shadow w-max">
+                            Lihat Detail
+                        </div>
+                    </a>
+                @endforeach
+            </div>
+        </div>
+
+
+        <!-- Berita & Artikel Hukum -->
+        <div class="space-y-4 pb-6">
+            <h3 class="text-lg font-extrabold text-slate-900">Artikel & Informasi Terbaru</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                @forelse ($artikels as $artikel)
+                    <!-- Menghapus class 'menu-item-auth' pada card artikel -->
+                    <a href="{{ route('artikel.show.public', $artikel) }}"
+                        class="bg-slate-50 border border-slate-100 rounded-2xl p-4 flex items-center space-x-4 cursor-pointer hover:border-blue-200 hover:shadow-md transition-all duration-200 group">
+                        <img src="{{ $artikel->gambar ? asset('storage/' . $artikel->gambar) : 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=200&auto=format&fit=crop&q=60' }}"
+                            alt="{{ $artikel->judul }}" class="w-20 h-20 rounded-xl object-cover shrink-0">
+                        <div class="flex-1 min-w-0">
+                            <p class="text-xs text-slate-400 font-medium">
+                                {{ \Carbon\Carbon::parse($artikel->tanggal)->diffForHumans() }} •
+                                {{ $artikel->kategori->nama ?? 'Umum' }}</p>
+                            <h4
+                                class="text-sm font-bold text-slate-900 truncate mt-1 group-hover:text-blue-600 transition-colors">
+                                {{ $artikel->judul }}</h4>
+                            <p class="text-xs text-slate-500 mt-1 line-clamp-2">
+                                {{ Str::limit(strip_tags($artikel->isi), 100) }}</p>
+                        </div>
+                    </a>
+                @empty
+                    <div
+                        class="md:col-span-2 text-center py-12 bg-slate-50 rounded-2xl border border-dashed border-slate-200">
+                        <p class="text-sm text-slate-500 font-medium">Belum ada artikel yang dipublikasikan.</p>
                     </div>
-                    <div class="flex-1 min-w-0">
-                        <p class="text-[10px] text-gray-400 font-medium flex items-center space-x-1">
-                            <i class="fa-regular fa-clock"></i>
-                            <span>3 years ago • Admin</span>
-                        </p>
-                        <h4 class="text-xs font-bold text-gray-900 mt-1 line-clamp-2 leading-snug">Ketua MPR RI
-                            Bamsoet Buka Ajang Balap Motor</h4>
-                        <span class="text-[11px] font-bold text-blue-600 mt-1 inline-block">Berita
-                            Selengkapnya</span>
-                    </div>
-                </div>
+                @endforelse
             </div>
         </div>
     </div>
+
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+    <!-- Script JavaScript untuk Slider Pelatihan -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const slider = document.getElementById("pelatihan-slider");
+            const btnLeft = document.getElementById("slide-left-btn");
+            const btnRight = document.getElementById("slide-right-btn");
+            const container = document.getElementById("slider-container");
+
+            let autoSlideInterval;
+
+            function scrollNext() {
+                if (!slider) return;
+                if (slider.scrollLeft + slider.clientWidth >= slider.scrollWidth - 10) {
+                    slider.scrollTo({
+                        left: 0,
+                        behavior: 'smooth'
+                    });
+                } else {
+                    slider.scrollBy({
+                        left: 300,
+                        behavior: 'smooth'
+                    });
+                }
+            }
+
+            function scrollPrev() {
+                if (!slider) return;
+                slider.scrollBy({
+                    left: -300,
+                    behavior: 'smooth'
+                });
+            }
+
+            function startAutoplay() {
+                autoSlideInterval = setInterval(scrollNext, 3500);
+            }
+
+            function stopAutoplay() {
+                clearInterval(autoSlideInterval);
+            }
+
+            if (btnRight) btnRight.addEventListener("click", scrollNext);
+            if (btnLeft) btnLeft.addEventListener("click", scrollPrev);
+
+            if (container) {
+                container.addEventListener("mouseenter", stopAutoplay);
+                container.addEventListener("mouseleave", startAutoplay);
+            }
+
+            startAutoplay();
+        });
+    </script>
 @endsection

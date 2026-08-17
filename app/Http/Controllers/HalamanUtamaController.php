@@ -7,6 +7,7 @@ use App\Models\Pelatihan;
 use App\Models\Anggota;
 use App\Models\Sertifikat;
 use App\Models\AnggotaCard;
+use App\Models\Artikel;
 use Illuminate\Support\Facades\Auth; // Tambahkan ini
 
 class HalamanUtamaController extends Controller
@@ -20,7 +21,7 @@ class HalamanUtamaController extends Controller
 
         $pelatihans = Pelatihan::latest()->get();
         $user = Auth::user();
-
+        $artikels = Artikel::where('status', 'published')->latest()->get();
         $isRegistered = false;
         $nama_anggota = '';
         $no_ktpa = '';
@@ -42,7 +43,7 @@ class HalamanUtamaController extends Controller
             }
         }
 
-        return view('welcome', compact('pelatihans', 'isRegistered', 'nama_anggota', 'no_ktpa', 'status_anggota'));
+        return view('welcome', compact('pelatihans', 'isRegistered', 'nama_anggota', 'no_ktpa', 'status_anggota', 'artikels'));
     }
 
     /**
@@ -116,5 +117,18 @@ class HalamanUtamaController extends Controller
         $latestBerlaku = $anggotaCard->latestBerlaku;
 
         return view('admin.keanggotaan.kartu-anggota-publik', compact('anggotaCard', 'latestBerlaku'));
+    }
+
+    public function show(Artikel $artikel)
+    {
+        // Pastikan hanya artikel yang berstatus 'published' yang bisa diakses publik.
+        // Route model binding sudah menangani 404 jika tidak ditemukan.
+        // Kita tambahkan pengecekan status.
+        if ($artikel->status !== 'published') {
+            abort(404);
+        }
+
+        // Arahkan ke view untuk menampilkan detail artikel.
+        return view('user.artikel.show', compact('artikel'));
     }
 }

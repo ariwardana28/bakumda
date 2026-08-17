@@ -41,9 +41,10 @@
                     @if ($currentStatus === 'aktif' && isset($anggota->card))
                         <div class="space-y-6" x-data="{ zoomCard: false }">
 
+                            {{-- Notifikasi Sukses --}}
                             @if (session('success'))
                                 <div
-                                    class="p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 dark:bg-emerald-900/30 dark:border-emerald-800 dark:text-emerald-400 text-xs font-medium">
+                                    class="p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 dark:bg-emerald-950/50 dark:border-emerald-800/50 dark:text-emerald-400 text-xs font-medium">
                                     {{ session('success') }}
                                 </div>
                             @endif
@@ -53,14 +54,15 @@
                                 <!-- KIRI: PREVIEW KARTU FISIK -->
                                 <div class="lg:col-span-1">
                                     <div
-                                        class="bg-white dark:bg-gray-800 p-6 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm text-center space-y-4">
+                                        class="bg-white dark:bg-gray-900 p-6 rounded-2xl border border-gray-200 dark:border-gray-800 shadow-sm text-center space-y-4">
 
                                         <div class="flex items-center justify-between">
-                                            <h3 class="text-xs uppercase tracking-wider font-semibold text-gray-400">
+                                            <h3
+                                                class="text-xs uppercase tracking-wider font-semibold text-gray-500 dark:text-gray-400">
                                                 Preview Kartu Anggota
                                             </h3>
                                             <span
-                                                class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-orange-50 dark:bg-orange-950/50 text-orange-600 dark:text-orange-400 border border-orange-100 dark:border-orange-900/50"
+                                                class="text-[10px] font-semibold px-2.5 py-0.5 rounded-full bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-900/50"
                                                 x-text="isFlipped ? 'Sisi Belakang' : 'Sisi Depan'"></span>
                                         </div>
 
@@ -83,8 +85,8 @@
                                             }
                                         </style>
 
-                                        <!-- Wrapper Utama dengan Efek Perspektif -->
-                                        <div class="relative w-[280px] h-[480px] mx-auto perspective-1000">
+                                        <!-- Wrapper Utama dengan Efek Perspektif (Ukuran Fleksibel Mengikuti Aspek Rasio Kartu) -->
+                                        <div class="relative w-full max-w-[280px] aspect-[1/1.58] mx-auto perspective-1000">
 
                                             <!-- Kartu Flipper (Kontainer yang Berputar) -->
                                             <div class="relative w-full h-full duration-700 transform-style-3d transition-transform"
@@ -94,57 +96,62 @@
                                                 <!-- KONTAINER 1: SISI DEPAN KARTU -->
                                                 <!-- ============================================== -->
                                                 <div
-                                                    class="absolute inset-0 w-full h-full rounded-2xl shadow-lg border bg-white backface-hidden overflow-hidden transform-style-3d">
+                                                    class="absolute inset-0 w-full h-full rounded-2xl shadow-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 backface-hidden overflow-hidden transform-style-3d">
                                                     <img src="{{ asset('background.png') }}"
-                                                        class="absolute inset-0 w-full h-full object-cover">
+                                                        class="absolute inset-0 w-full h-full object-fill">
 
-                                                    <div class="relative z-10 w-full h-full">
-                                                        <!-- Foto -->
+                                                    <div
+                                                        class="relative z-10 w-full h-full p-[6%] flex flex-col justify-between">
+                                                        <!-- Bagian Atas / Header Kartu jika diperlukan -->
+                                                        <div class="flex justify-between items-center"></div>
+
+                                                        <!-- Bagian Tengah (Foto & QR Code) menggunakan persentase agar responsif presisi -->
                                                         <div
-                                                            class="absolute top-[201px] left-[50px] w-[95px] h-[129px] overflow-hidden rounded-sm flex items-center justify-center bg-black">
+                                                            class="absolute top-[41.5%] left-[17.8%] w-[34%] aspect-[95/129] overflow-hidden rounded-sm flex items-center justify-center bg-gray-900">
                                                             @if (optional($anggotaCard->anggota)->foto)
                                                                 <img src="{{ asset('storage/' . optional($anggotaCard->anggota)->foto) }}"
                                                                     class="w-full h-full object-cover">
                                                             @else
                                                                 <div
-                                                                    class="flex flex-col items-center justify-center text-gray-300">
-                                                                    <i class="fa-solid fa-user text-3xl"></i>
-                                                                    <span class="text-[8px] mt-1">No Foto</span>
+                                                                    class="flex flex-col items-center justify-center text-gray-400">
+                                                                    <i class="fa-solid fa-user text-2xl"></i>
+                                                                    <span class="text-[7px] mt-1">No Foto</span>
                                                                 </div>
                                                             @endif
                                                         </div>
 
                                                         <!-- QR Code + NIA -->
                                                         <div
-                                                            class="absolute top-[205px] left-[152px] w-[80px] flex flex-col items-center">
+                                                            class="absolute top-[42.2%] left-[54.3%] w-[28%] flex flex-col items-center">
                                                             <div
-                                                                class="w-[78px] h-[78px] bg-white p-1 flex items-center justify-center">
+                                                                class="w-full aspect-square bg-white p-1 flex items-center justify-center shadow-xs">
                                                                 @if ($anggotaCard->qr_code)
                                                                     <img src="{{ asset('storage/' . $anggotaCard->qr_code) }}"
                                                                         class="w-full h-full object-contain">
                                                                 @else
                                                                     <div
-                                                                        class="text-[8px] text-gray-400 text-center leading-tight">
-                                                                        Belum<br>Terbit</div>
+                                                                        class="text-[7px] text-gray-400 text-center leading-tight">
+                                                                        Belum<br>Terbit
+                                                                    </div>
                                                                 @endif
                                                             </div>
                                                             @if ($anggotaCard->card_id)
                                                                 <span
-                                                                    class="text-[8px] font-bold text-gray-900 font-sans tracking-tight mt-1 whitespace-nowrap">
+                                                                    class="text-[7.5px] font-bold text-gray-900 font-sans tracking-tight mt-1 whitespace-nowrap">
                                                                     {{ $anggotaCard->card_id }}
                                                                 </span>
                                                             @endif
                                                         </div>
 
                                                         <!-- Nama & Jabatan -->
-                                                        <div class="absolute top-[342px] inset-x-0 px-4 text-center">
+                                                        <div class="absolute top-[71.2%] inset-x-4 text-center">
                                                             <h2
-                                                                class="text-[11px] font-extrabold text-gray-900 uppercase tracking-tight leading-snug">
+                                                                class="text-[10.5px] font-extrabold text-gray-900 uppercase tracking-tight leading-snug truncate">
                                                                 {{ optional($anggotaCard->anggota)->nama }}
                                                             </h2>
                                                             @if (!empty(optional($anggotaCard->latestBerlaku)->jabatan))
                                                                 <p
-                                                                    class="text-[9.5px] font-bold text-gray-800 uppercase tracking-wider mt-0.5">
+                                                                    class="text-[9px] font-bold text-gray-800 uppercase tracking-wider mt-0.5 truncate">
                                                                     {{ optional($anggotaCard->latestBerlaku)->jabatan }}
                                                                 </p>
                                                             @endif
@@ -152,8 +159,9 @@
 
                                                         <!-- Masa Berlaku -->
                                                         @if (!empty(optional($anggotaCard->latestBerlaku)->berlaku))
-                                                            <div class="absolute bottom-[20px] left-[18px]">
-                                                                <p class="text-[8px] font-bold text-gray-900 font-sans">
+                                                            <div class="absolute bottom-[4.2%] left-[6.5%]"
+                                                                style="transform: none;">
+                                                                <p class="text-[7.5px] font-bold text-gray-900 font-sans">
                                                                     Berlaku s/d
                                                                     {{ \Carbon\Carbon::parse(optional($anggotaCard->latestBerlaku)->berlaku)->translatedFormat('d F Y') }}
                                                                 </p>
@@ -166,63 +174,53 @@
                                                 <!-- KONTAINER 2: SISI BELAKANG KARTU -->
                                                 <!-- ============================================== -->
                                                 <div
-                                                    class="absolute inset-0 w-full h-full rounded-2xl shadow-lg border bg-white backface-hidden rotate-y-180 overflow-hidden transform-style-3d">
+                                                    class="absolute inset-0 w-full h-full rounded-2xl shadow-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 backface-hidden rotate-y-180 overflow-hidden transform-style-3d">
                                                     <img src="{{ asset('belakang.png') }}"
-                                                        class="absolute inset-0 w-full h-full object-cover">
+                                                        class="absolute inset-0 w-full h-full object-fill">
 
-                                                    <div class="relative z-10 w-full h-full">
+                                                    <div class="relative z-10 w-full h-full p-6">
                                                         <!-- NIK -->
-                                                        <div class="absolute top-[100px] left-[30px] pr-4 text-left">
-                                                            <p class="text-[7px] font-semibold text-gray-600 uppercase">
-                                                            </p>
+                                                        <div class="absolute top-[21%] left-[10.5%] pr-4 text-left">
                                                             <p
-                                                                class="text-[9px] font-bold text-gray-900 font-sans tracking-wide">
+                                                                class="text-[8.5px] font-bold text-gray-900 font-sans tracking-wide">
                                                                 {{-- {{ optional($anggotaCard->anggota)->no_ktp ?? '-' }} --}}
                                                             </p>
                                                         </div>
 
                                                         <!-- Tempat, Tanggal Lahir -->
-                                                        <div class="absolute top-[130px] left-[30px] pr-4 text-left">
-                                                            <p class="text-[7px] font-semibold text-gray-600 uppercase">
-                                                                {{-- Tempat, Tanggal Lahir</p> --}}
+                                                        <div class="absolute top-[27%] left-[10.5%] pr-4 text-left">
                                                             <p
-                                                                class="text-[9px] font-bold text-gray-900 font-sans tracking-wide">
-                                                                {{-- {{ optional($anggotaCard->anggota)->tempat_lahir }},
-                                                                {{ optional($anggotaCard->anggota)->tanggal_lahir ? \Carbon\Carbon::parse(optional($anggotaCard->anggota)->tanggal_lahir)->translatedFormat('d F Y') : '' }} --}}
+                                                                class="text-[8.5px] font-bold text-gray-900 font-sans tracking-wide">
+                                                                {{-- Data Tempat & Tanggal Lahir --}}
                                                             </p>
                                                         </div>
 
                                                         <!-- Alamat -->
                                                         <div
-                                                            class="absolute top-[160px] left-[30px] right-[30px] text-left">
-                                                            <p class="text-[7px] font-semibold text-gray-600 uppercase">
-                                                                {{-- Alamat</p> --}}
+                                                            class="absolute top-[33.3%] left-[10.5%] right-[10.5%] text-left">
                                                             <p
-                                                                class="text-[9px] font-bold text-gray-900 font-sans tracking-wide leading-snug">
-                                                                {{-- {{ optional($anggotaCard->anggota)->alamat ?? '-' }} --}}
+                                                                class="text-[8.5px] font-bold text-gray-900 font-sans tracking-wide leading-snug">
+                                                                {{-- Data Alamat --}}
                                                             </p>
                                                         </div>
 
                                                         <!-- Diterbitkan -->
-                                                        <div class="absolute top-[215px] left-[30px] pr-4 text-left">
-                                                            <p class="text-[7px] font-semibold text-gray-600 uppercase">
-                                                                {{-- Diterbitkan</p> --}}
+                                                        <div class="absolute top-[44.8%] left-[10.5%] pr-4 text-left">
                                                             <p
-                                                                class="text-[9px] font-bold text-gray-900 font-sans tracking-wide">
-                                                                {{-- {{ optional($anggotaCard->latestBerlaku)->diterbitkan ? \Carbon\Carbon::parse(optional($anggotaCard->latestBerlaku)->diterbitkan)->translatedFormat('d F Y') : '-' }} --}}
+                                                                class="text-[8.5px] font-bold text-gray-900 font-sans tracking-wide">
+                                                                {{-- Data Diterbitkan --}}
                                                             </p>
                                                         </div>
                                                     </div>
                                                 </div>
 
                                             </div>
-
                                         </div>
 
                                         <!-- Tombol Aksi -->
                                         <div class="pt-2 flex flex-col gap-2">
                                             <button type="button" @click="isFlipped = !isFlipped"
-                                                class="w-full px-3 py-2 text-xs font-semibold rounded-xl bg-orange-50 text-orange-600 hover:bg-orange-100 border border-orange-100 transition flex items-center justify-center gap-1.5 shadow-sm">
+                                                class="w-full px-3 py-2 text-xs font-semibold rounded-xl bg-blue-50 hover:bg-blue-100 dark:bg-blue-950/40 dark:hover:bg-blue-900/50 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-800/50 transition flex items-center justify-center gap-1.5 shadow-sm">
                                                 <i class="fa-solid fa-rotate transition-transform duration-500"
                                                     :class="{ 'rotate-180': isFlipped }"></i>
                                                 <span
@@ -230,39 +228,39 @@
                                             </button>
 
                                             <div class="flex flex-col sm:flex-row gap-2 justify-center">
-                                                <button type="button" @click="zoomCard = true" 
-                                                    class="px-3 py-2 text-xs font-semibold rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600 transition flex items-center justify-center gap-1.5">
+                                                <button type="button" @click="zoomCard = true"
+                                                    class="px-3 py-2 text-xs font-semibold rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700/60 transition flex items-center justify-center gap-1.5">
                                                     <i class="fa-solid fa-magnifying-glass-plus"></i>
                                                     <span>Perbesar Kartu</span>
                                                 </button>
 
                                                 <a href="{{ route('admin.anggota-card.download', $anggotaCard->id) }}"
                                                     target="_blank"
-                                                    class="px-3 py-2 text-xs font-semibold rounded-xl bg-orange-600 hover:bg-orange-700 text-white transition flex items-center justify-center gap-1.5 shadow-sm">
+                                                    class="px-3 py-2 text-xs font-semibold rounded-xl bg-blue-600 hover:bg-blue-700 text-white transition flex items-center justify-center gap-1.5 shadow-sm">
                                                     <i class="fa-solid fa-download"></i>
                                                     <span>Unduh Kartu</span>
                                                 </a>
                                             </div>
                                         </div>
 
-                                        <p class="text-[11px] text-gray-400 mt-1">Tampilan presisi kartu anggota fisik
-                                            BAKUMDA.</p>
+                                        <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-1">Tampilan presisi kartu
+                                            anggota fisik BAKUMDA.</p>
                                     </div>
                                 </div>
 
                                 <!-- KANAN: INFORMASI LENGKAP KARTU -->
                                 <div class="hidden lg:block lg:col-span-2 space-y-6" x-data="{ showHistory: false }">
                                     <div
-                                        class="bg-white dark:bg-gray-800 p-6 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm space-y-4">
+                                        class="bg-white dark:bg-gray-900 p-6 rounded-2xl border border-gray-200 dark:border-gray-800 shadow-sm space-y-4">
                                         <div
-                                            class="flex items-center justify-between border-b border-gray-100 dark:border-gray-700 pb-3">
+                                            class="flex items-center justify-between border-b border-gray-200 dark:border-gray-800 pb-3">
                                             <h3
                                                 class="text-sm font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
                                                 <i class="fa-solid fa-circle-check text-emerald-500"></i>
                                                 <span>Informasi Lengkap Kartu Anggota (Aktif)</span>
                                             </h3>
                                             <span
-                                                class="px-2.5 py-1 text-[10px] font-semibold bg-emerald-50 text-emerald-600 rounded-full border border-emerald-200">
+                                                class="px-2.5 py-1 text-[10px] font-semibold bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 rounded-full border border-emerald-200 dark:border-emerald-800/50">
                                                 Status: Aktif / Terbit
                                             </span>
                                         </div>
@@ -270,13 +268,14 @@
                                         <!-- Tombol & Konten Riwayat Masa Berlaku -->
                                         <div>
                                             <button type="button" @click="showHistory = !showHistory"
-                                                class="w-full flex items-center justify-between text-left px-4 py-3 rounded-xl bg-gray-50 dark:bg-gray-700/30 hover:bg-gray-100 dark:hover:bg-gray-700/50 transition duration-200">
+                                                class="w-full flex items-center justify-between text-left px-4 py-3 rounded-xl bg-gray-50 dark:bg-gray-800/50 hover:bg-gray-100 dark:hover:bg-gray-800 transition duration-200 border border-gray-200/60 dark:border-gray-700/50">
                                                 <div class="flex items-center gap-2">
-                                                    <i class="fa-solid fa-history text-gray-400 text-xs"></i>
+                                                    <i
+                                                        class="fa-solid fa-history text-gray-400 dark:text-gray-500 text-xs"></i>
                                                     <span class="text-xs font-bold text-gray-800 dark:text-gray-200">Riwayat
                                                         Masa Berlaku Kartu</span>
                                                 </div>
-                                                <i class="fa-solid fa-chevron-down text-gray-400 text-xs transition-transform"
+                                                <i class="fa-solid fa-chevron-down text-gray-400 dark:text-gray-500 text-xs transition-transform"
                                                     :class="{ 'rotate-180': showHistory }"></i>
                                             </button>
 
@@ -284,7 +283,7 @@
                                                 <div class="mt-2 space-y-2 max-h-48 overflow-y-auto pr-2 pl-1">
                                                     @forelse ($anggotaCard->berlakuHistory->sortByDesc('diterbitkan') as $riwayat)
                                                         <div
-                                                            class="flex items-start justify-between text-xs p-3 rounded-xl bg-gray-100 dark:bg-gray-900/30">
+                                                            class="flex items-start justify-between text-xs p-3 rounded-xl bg-gray-50 dark:bg-gray-800/40 border border-gray-200/60 dark:border-gray-800">
                                                             <div class="space-y-0.5">
                                                                 <p class="font-bold text-gray-900 dark:text-white">
                                                                     {{ $riwayat->jabatan }}</p>
@@ -300,91 +299,102 @@
                                                             </div>
                                                         </div>
                                                     @empty
-                                                        <p class="text-xs text-center text-gray-400 py-4">Belum ada riwayat.
-                                                        </p>
+                                                        <p
+                                                            class="text-xs text-center text-gray-400 dark:text-gray-500 py-4">
+                                                            Belum ada riwayat.</p>
                                                     @endforelse
                                                 </div>
                                             </div>
                                         </div>
 
                                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-                                            <div class="bg-gray-50 dark:bg-gray-700/30 p-3 rounded-xl">
-                                                <span class="block text-gray-400 mb-0.5">Nama Lengkap</span>
+                                            <div
+                                                class="bg-gray-50 dark:bg-gray-800/40 p-3 rounded-xl border border-gray-200/60 dark:border-gray-800">
+                                                <span class="block text-gray-500 dark:text-gray-400 mb-0.5">Nama
+                                                    Lengkap</span>
                                                 <span
                                                     class="font-bold text-gray-900 dark:text-white uppercase">{{ $anggotaCard->anggota->nama ?? '-' }}</span>
                                             </div>
 
-                                            <div class="bg-gray-50 dark:bg-gray-700/30 p-3 rounded-xl">
-                                                <span class="block text-gray-400 mb-0.5">Nomor Induk Anggota (NIA)</span>
+                                            <div
+                                                class="bg-gray-50 dark:bg-gray-800/40 p-3 rounded-xl border border-gray-200/60 dark:border-gray-800">
+                                                <span class="block text-gray-500 dark:text-gray-400 mb-0.5">Nomor Induk
+                                                    Anggota (NIA)</span>
                                                 <span
-                                                    class="font-bold text-orange-600 dark:text-orange-400">{{ $anggotaCard->card_id ?? '-' }}</span>
+                                                    class="font-bold text-blue-600 dark:text-blue-400">{{ $anggotaCard->card_id ?? '-' }}</span>
                                             </div>
 
-                                            <div class="bg-gray-50 dark:bg-gray-700/30 p-3 rounded-xl">
-                                                <span class="block text-gray-400 mb-0.5">Jabatan</span>
+                                            <div
+                                                class="bg-gray-50 dark:bg-gray-800/40 p-3 rounded-xl border border-gray-200/60 dark:border-gray-800">
+                                                <span class="block text-gray-500 dark:text-gray-400 mb-0.5">Jabatan</span>
                                                 <span
                                                     class="font-semibold text-gray-800 dark:text-gray-200">{{ optional($anggotaCard->latestBerlaku)->jabatan ?? '-' }}</span>
                                             </div>
 
-                                            <div class="bg-gray-50 dark:bg-gray-700/30 p-3 rounded-xl">
-                                                <span class="block text-gray-400 mb-0.5">NIK / No. Identitas</span>
+                                            <div
+                                                class="bg-gray-50 dark:bg-gray-800/40 p-3 rounded-xl border border-gray-200/60 dark:border-gray-800">
+                                                <span class="block text-gray-500 dark:text-gray-400 mb-0.5">NIK / No.
+                                                    Identitas</span>
                                                 <span
                                                     class="font-semibold text-gray-800 dark:text-gray-200">{{ $anggotaCard->anggota->no_ktp ?? '-' }}</span>
                                             </div>
 
-                                            <div class="bg-gray-50 dark:bg-gray-700/30 p-3 rounded-xl">
-                                                <span class="block text-gray-400 mb-0.5">Tanggal Diterbitkan</span>
+                                            <div
+                                                class="bg-gray-50 dark:bg-gray-800/40 p-3 rounded-xl border border-gray-200/60 dark:border-gray-800">
+                                                <span class="block text-gray-500 dark:text-gray-400 mb-0.5">Tanggal
+                                                    Diterbitkan</span>
                                                 <span class="font-semibold text-gray-800 dark:text-gray-200">
                                                     {{ optional($anggotaCard->latestBerlaku)->diterbitkan ? \Carbon\Carbon::parse(optional($anggotaCard->latestBerlaku)->diterbitkan)->translatedFormat('d F Y') : '-' }}
                                                 </span>
                                             </div>
 
-                                            <div class="bg-gray-50 dark:bg-gray-700/30 p-3 rounded-xl">
-                                                <span class="block text-gray-400 mb-0.5">Masa Berlaku Kartu</span>
+                                            <div
+                                                class="bg-gray-50 dark:bg-gray-800/40 p-3 rounded-xl border border-gray-200/60 dark:border-gray-800">
+                                                <span class="block text-gray-500 dark:text-gray-400 mb-0.5">Masa Berlaku
+                                                    Kartu</span>
                                                 <span class="font-semibold text-gray-800 dark:text-gray-200">
                                                     {{ optional($anggotaCard->latestBerlaku)->berlaku ? \Carbon\Carbon::parse(optional($anggotaCard->latestBerlaku)->berlaku)->translatedFormat('d F Y') : '-' }}
                                                 </span>
                                             </div>
 
-                                            <div class="bg-gray-50 dark:bg-gray-700/30 p-3 rounded-xl">
-                                                <span class="block text-gray-400 mb-0.5">Email</span>
+                                            <div
+                                                class="bg-gray-50 dark:bg-gray-800/40 p-3 rounded-xl border border-gray-200/60 dark:border-gray-800">
+                                                <span class="block text-gray-500 dark:text-gray-400 mb-0.5">Email</span>
                                                 <span
                                                     class="font-semibold text-gray-800 dark:text-gray-200">{{ $anggotaCard->anggota->email ?? '-' }}</span>
                                             </div>
 
-                                            <div class="bg-gray-50 dark:bg-gray-700/30 p-3 rounded-xl">
-                                                <span class="block text-gray-400 mb-0.5">Nomor HP / WhatsApp</span>
+                                            <div
+                                                class="bg-gray-50 dark:bg-gray-800/40 p-3 rounded-xl border border-gray-200/60 dark:border-gray-800">
+                                                <span class="block text-gray-500 dark:text-gray-400 mb-0.5">Nomor HP /
+                                                    WhatsApp</span>
                                                 <span
                                                     class="font-semibold text-gray-800 dark:text-gray-200">{{ $anggotaCard->anggota->no_hp ?? '-' }}</span>
                                             </div>
 
-                                            <div class="md:col-span-2 bg-gray-50 dark:bg-gray-700/30 p-3 rounded-xl">
-                                                <span class="block text-gray-400 mb-0.5">Alamat Lengkap</span>
+                                            <div
+                                                class="md:col-span-2 bg-gray-50 dark:bg-gray-800/40 p-3 rounded-xl border border-gray-200/60 dark:border-gray-800">
+                                                <span class="block text-gray-500 dark:text-gray-400 mb-0.5">Alamat
+                                                    Lengkap</span>
                                                 <span
                                                     class="font-semibold text-gray-800 dark:text-gray-200">{{ $anggotaCard->anggota->alamat ?? '-' }}</span>
                                             </div>
                                         </div>
 
-                                        <!-- Tombol Aksi Edit -->
-                                        <div class="flex justify-end pt-4 border-t border-gray-100 dark:border-gray-700">
-                                            @if (isset($pendingEditRequest) && $pendingEditRequest->latestStatus->status === 'approved')
-                                                <a href="{{ route('user-anggota.edit', $anggota->id) }}"
-                                                    class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white text-xs font-semibold rounded-xl transition flex items-center gap-2">
-                                                    <i class="fa-solid fa-pen-to-square"></i>
-                                                    <span>Lanjutkan Perubahan Data</span>
-                                                </a>
-                                            @elseif ($pendingEditRequest && $pendingEditRequest->latestStatus->status === 'proses')
-                                                <button type="button" @click="showCancelRequestModal = true"
-                                                    class="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white text-xs font-semibold rounded-xl transition flex items-center gap-2">
-                                                    <i class="fa-solid fa-hourglass-half"></i>
-                                                    <span>Lihat & Batalkan Permintaan</span>
-                                                </button>
+                                        <!-- Tombol Aksi Edit / Pengajuan -->
+                                        <div class="flex justify-end pt-4 border-t border-gray-200 dark:border-gray-800">
+                                            @if (isset($pending))
+                                                <span
+                                                    class="px-3 py-2 text-xs font-semibold rounded-xl bg-amber-50 dark:bg-amber-950/50 text-amber-600 dark:text-amber-400 border border-amber-200 dark:border-amber-800/50 flex items-center gap-1.5">
+                                                    <i class="fa-solid fa-clock"></i>
+                                                    <span>Pengajuan Perubahan Sedang Diproses</span>
+                                                </span>
                                             @else
-                                                <button type="button" @click="showEditModal = true"
-                                                    class="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white text-xs font-semibold rounded-xl transition flex items-center gap-2">
-                                                    <i class="fa-solid fa-paper-plane"></i>
-                                                    <span>Ajukan Perubahan Data</span>
-                                                </button>
+                                                <a href="{{ route('admin.anggota-card.edit', $anggotaCard->id) }}"
+                                                    class="px-4 py-2 text-xs font-semibold rounded-xl bg-blue-600 hover:bg-blue-700 text-white transition flex items-center gap-1.5 shadow-sm">
+                                                    <i class="fa-solid fa-pen-to-square"></i>
+                                                    <span>Ajukan Perubahan Kartu</span>
+                                                </a>
                                             @endif
                                         </div>
                                     </div>
@@ -392,140 +402,120 @@
 
                             </div>
 
-                            <!-- MODAL PERBESAR (ZOOM) KARTU ANGGOTA -->
-                            <div x-show="zoomCard" class="fixed inset-0 z-50 overflow-y-auto" style="display: none;"
+                            <!-- MODAL PERBESAR KARTU (ZOOM) -->
+                            <div x-show="zoomCard" x-cloak
+                                class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
                                 x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0"
                                 x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-200"
                                 x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0">
 
-                                <!-- Backdrop dengan Efek Blur dan Transisi Gelap -->
-                                <div class="fixed inset-0 bg-gray-950/80 backdrop-blur-md transition-opacity"
-                                    @click="zoomCard = false"></div>
+                                <div class="relative bg-white dark:bg-gray-900 rounded-3xl p-6 max-w-lg w-full shadow-2xl border border-gray-200 dark:border-gray-800 space-y-4 text-center"
+                                    @click.outside="zoomCard = false">
 
-                                <!-- Container Modal -->
-                                <div class="flex items-center justify-center min-h-screen p-4 sm:p-6">
-                                    <div class="relative bg-white/90 dark:bg-gray-800/90 backdrop-blur-2xl rounded-3xl p-6 sm:p-8 shadow-2xl shadow-black/20 border border-gray-100 dark:border-gray-700/80 z-10 max-w-md w-full flex flex-col items-center transform transition-all"
-                                        x-transition:enter="transition ease-out duration-300 transform"
-                                        x-transition:enter-start="opacity-0 scale-95 translate-y-4"
-                                        x-transition:enter-end="opacity-100 scale-100 translate-y-0"
-                                        x-transition:leave="transition ease-in duration-200 transform"
-                                        x-transition:leave-start="opacity-100 scale-100 translate-y-0"
-                                        x-transition:leave-end="opacity-0 scale-95 translate-y-4">
+                                    <div class="flex items-center justify-between">
+                                        <h3 class="text-sm font-bold text-gray-900 dark:text-gray-100">
+                                            Pratinjau Kartu Anggota (Diperbesar)
+                                        </h3>
+                                        <button type="button" @click="zoomCard = false"
+                                            class="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 rounded-xl">
+                                            <i class="fa-solid fa-xmark text-base"></i>
+                                        </button>
+                                    </div>
 
-                                        <!-- Header Modal -->
-                                        <div
-                                            class="flex justify-between items-center w-full mb-2 border-b border-gray-100 dark:border-gray-700/60 pb-3">
-                                            <div class="flex items-center gap-2.5">
+                                    <!-- Kartu Diperbesar dengan Flipper -->
+                                    <div class="relative w-full max-w-[320px] aspect-[1/1.58] mx-auto perspective-1000"
+                                        x-data="{ zoomFlipped: false }">
+                                        <div class="relative w-full h-full duration-700 transform-style-3d transition-transform"
+                                            :class="{ 'rotate-y-180': zoomFlipped }">
+
+                                            <!-- Sisi Depan (Zoom) -->
+                                            <div
+                                                class="absolute inset-0 w-full h-full rounded-2xl shadow-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 backface-hidden overflow-hidden transform-style-3d">
+                                                <img src="{{ asset('background.png') }}"
+                                                    class="absolute inset-0 w-full h-full object-fill">
                                                 <div
-                                                    class="w-7 h-7 rounded-xl bg-indigo-50 dark:bg-indigo-950/50 flex items-center justify-center text-indigo-600 dark:text-indigo-400">
-                                                    <i class="fa-solid fa-id-card text-xs"></i>
-                                                </div>
-                                                <h3
-                                                    class="text-xs font-bold uppercase tracking-wider text-gray-900 dark:text-white">
-                                                    Detail Kartu Anggota
-                                                </h3>
-                                            </div>
-                                            <button @click="zoomCard = false"
-                                                class="w-8 h-8 rounded-xl bg-gray-100 dark:bg-gray-700/60 text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 flex items-center justify-center transition-all">
-                                                <i class="fa-solid fa-xmark text-sm"></i>
-                                            </button>
-                                        </div>
-
-                                        <!-- KARTU UKURAN DIPERBESAR (SCALE) DENGAN EFEK BAYANGAN PREMIUM -->
-                                        <div
-                                            class="relative w-[280px] h-[480px] rounded-2xl overflow-hidden shadow-2xl shadow-gray-400/30 dark:shadow-black/60 border border-gray-200/60 dark:border-gray-700 transform scale-105 sm:scale-110 my-6 bg-white transition-transform duration-300">
-
-                                            <!-- Layer 1: Background Template -->
-                                            <img src="{{ asset('background.png') }}"
-                                                class="absolute inset-0 w-full h-full object-cover z-0"
-                                                alt="Background ID Card">
-
-                                            <!-- Layer 2: Konten Kartu -->
-                                            <div class="relative z-10 w-full h-full">
-
-                                                <!-- 1. Pas Foto -->
-                                                <div
-                                                    class="absolute top-[201px] left-[50px] w-[95px] h-[129px] overflow-hidden rounded-sm flex items-center justify-center bg-gray-900 shadow-inner">
-                                                    @if ($anggotaCard->anggota->foto ?? false)
-                                                        <img src="{{ asset('storage/' . $anggotaCard->anggota->foto) }}"
-                                                            class="w-full h-full object-cover">
-                                                    @else
-                                                        <div
-                                                            class="flex flex-col items-center justify-center text-gray-400">
-                                                            <i class="fa-solid fa-user text-3xl"></i>
-                                                            <span class="text-[8px] mt-1 font-medium">No Foto</span>
-                                                        </div>
-                                                    @endif
-                                                </div>
-
-                                                <!-- 2. QR Code + NIA -->
-                                                <div
-                                                    class="absolute top-[205px] left-[152px] w-[80px] flex flex-col items-center">
+                                                    class="relative z-10 w-full h-full p-[6%] flex flex-col justify-between">
+                                                    <div class="flex justify-between items-center"></div>
                                                     <div
-                                                        class="w-[78px] h-[78px] bg-white p-1.5 rounded-lg shadow-sm border border-gray-100 flex items-center justify-center">
-                                                        @if ($anggotaCard->qr_code)
-                                                            <img src="{{ asset('storage/' . $anggotaCard->qr_code) }}"
-                                                                class="w-full h-full object-contain">
+                                                        class="absolute top-[41.5%] left-[17.8%] w-[34%] aspect-[95/129] overflow-hidden rounded-sm flex items-center justify-center bg-gray-900">
+                                                        @if (optional($anggotaCard->anggota)->foto)
+                                                            <img src="{{ asset('storage/' . optional($anggotaCard->anggota)->foto) }}"
+                                                                class="w-full h-full object-cover">
                                                         @else
                                                             <div
-                                                                class="text-[8px] text-gray-400 text-center leading-tight font-medium">
-                                                                Belum<br>Terbit
+                                                                class="flex flex-col items-center justify-center text-gray-400">
+                                                                <i class="fa-solid fa-user text-3xl"></i>
+                                                                <span class="text-[9px] mt-1">No Foto</span>
                                                             </div>
                                                         @endif
                                                     </div>
-
-                                                    @if ($anggotaCard->card_id)
-                                                        <span
-                                                            class="text-[8px] font-bold text-gray-900 font-mono tracking-tight mt-1.5 whitespace-nowrap bg-white/90 backdrop-blur-sm px-1.5 py-0.5 rounded shadow-sm">
-                                                            {{ $anggotaCard->card_id }}
-                                                        </span>
-                                                    @endif
-                                                </div>
-
-                                                <!-- 3. Nama & Jabatan -->
-                                                <div class="absolute top-[342px] inset-x-0 px-4 text-center">
-                                                    <h2
-                                                        class="text-[11px] font-extrabold text-gray-900 uppercase tracking-tight leading-snug truncate drop-shadow-sm">
-                                                        {{ $anggotaCard->anggota->nama ?? '' }}
-                                                    </h2>
-
-                                                    @if (!empty(optional($anggotaCard->latestBerlaku)->jabatan))
-                                                        <p
-                                                            class="text-[9.5px] font-bold text-gray-800 uppercase tracking-wider mt-0.5 truncate">
-                                                            {{ optional($anggotaCard->latestBerlaku)->jabatan }}
-                                                        </p>
-                                                    @endif
-                                                </div>
-
-                                                <!-- 4. Masa Berlaku -->
-                                                @if (!empty(optional($anggotaCard->latestBerlaku)->berlaku))
-                                                    <div class="absolute bottom-[20px] left-[18px]">
-                                                        <p
-                                                            class="text-[8px] font-bold text-gray-900 font-sans tracking-wide">
-                                                            Berlaku s/d
-                                                            {{ \Carbon\Carbon::parse(optional($anggotaCard->latestBerlaku)->berlaku)->translatedFormat('d F Y') }}
-                                                        </p>
+                                                    <div
+                                                        class="absolute top-[42.2%] left-[54.3%] w-[28%] flex flex-col items-center">
+                                                        <div
+                                                            class="w-full aspect-square bg-white p-1 flex items-center justify-center shadow-xs">
+                                                            @if ($anggotaCard->qr_code)
+                                                                <img src="{{ asset('storage/' . $anggotaCard->qr_code) }}"
+                                                                    class="w-full h-full object-contain">
+                                                            @else
+                                                                <div
+                                                                    class="text-[8px] text-gray-400 text-center leading-tight">
+                                                                    Belum<br>Terbit
+                                                                </div>
+                                                            @endif
+                                                        </div>
+                                                        @if ($anggotaCard->card_id)
+                                                            <span
+                                                                class="text-[8.5px] font-bold text-gray-900 font-sans tracking-tight mt-1 whitespace-nowrap">
+                                                                {{ $anggotaCard->card_id }}
+                                                            </span>
+                                                        @endif
                                                     </div>
-                                                @endif
-
+                                                    <div class="absolute top-[71.2%] inset-x-4 text-center">
+                                                        <h2
+                                                            class="text-[12px] font-extrabold text-gray-900 uppercase tracking-tight leading-snug truncate">
+                                                            {{ optional($anggotaCard->anggota)->nama }}
+                                                        </h2>
+                                                        @if (!empty(optional($anggotaCard->latestBerlaku)->jabatan))
+                                                            <p
+                                                                class="text-[10px] font-bold text-gray-800 uppercase tracking-wider mt-0.5 truncate">
+                                                                {{ optional($anggotaCard->latestBerlaku)->jabatan }}
+                                                            </p>
+                                                        @endif
+                                                    </div>
+                                                    @if (!empty(optional($anggotaCard->latestBerlaku)->berlaku))
+                                                        <div class="absolute bottom-[4.2%] left-[6.5%]">
+                                                            <p class="text-[8.5px] font-bold text-gray-900 font-sans">
+                                                                Berlaku s/d
+                                                                {{ \Carbon\Carbon::parse(optional($anggotaCard->latestBerlaku)->berlaku)->translatedFormat('d F Y') }}
+                                                            </p>
+                                                        </div>
+                                                    @endif
+                                                </div>
                                             </div>
+
+                                            <!-- Sisi Belakang (Zoom) -->
+                                            <div
+                                                class="absolute inset-0 w-full h-full rounded-2xl shadow-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 backface-hidden rotate-y-180 overflow-hidden transform-style-3d">
+                                                <img src="{{ asset('belakang.png') }}"
+                                                    class="absolute inset-0 w-full h-full object-fill">
+                                                <div class="relative z-10 w-full h-full p-6">
+                                                    <!-- Data Belakang Kartu -->
+                                                </div>
+                                            </div>
+
                                         </div>
 
-                                        <!-- Footer Tombol Aksi -->
-                                        <div class="pt-2 flex items-center justify-end w-full gap-3">
-                                            <a href="{{ route('admin.anggota-card.download', $anggotaCard->id) }}"
-                                                target="_blank"
-                                                class="px-4 py-2.5 text-xs font-semibold rounded-xl bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white transition-all duration-200 flex items-center justify-center gap-2 shadow-md shadow-indigo-500/25">
-                                                <i class="fa-solid fa-download"></i>
-                                                <span>Unduh Kartu</span>
-                                            </a>
-                                            <button type="button" @click="zoomCard = false"
-                                                class="px-5 py-2.5 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700/80 dark:hover:bg-gray-700 active:scale-95 text-gray-700 dark:text-gray-200 text-xs font-semibold rounded-xl transition-all duration-200 shadow-sm">
-                                                Tutup
+                                        <!-- Tombol Putar di Modal -->
+                                        <div class="mt-4">
+                                            <button type="button" @click="zoomFlipped = !zoomFlipped"
+                                                class="px-4 py-2 text-xs font-semibold rounded-xl bg-blue-50 hover:bg-blue-100 dark:bg-blue-950/40 dark:hover:bg-blue-900/50 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-800/50 transition flex items-center justify-center gap-1.5 mx-auto">
+                                                <i class="fa-solid fa-rotate transition-transform duration-500"
+                                                    :class="{ 'rotate-180': zoomFlipped }"></i>
+                                                <span x-text="zoomFlipped ? 'Lihat Sisi Depan' : 'Putar Kartu'"></span>
                                             </button>
                                         </div>
-
                                     </div>
+
                                 </div>
                             </div>
 

@@ -4,42 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'Dashboard - BAKUMDA')</title>
-    <script>
-        window.tailwind = window.tailwind || {};
-        window.tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        brand: {
-                            50: '#eff6ff',
-                            100: '#dbeafe',
-                            200: '#bfdbfe',
-                            300: '#93c5fd',
-                            400: '#60a5fa',
-                            500: '#3b82f6',
-                            600: '#2563eb',
-                            700: '#1d4ed8',
-                            800: '#1e40af',
-                            900: '#1e3a8a',
-                        },
-                    },
-                },
-            },
-        };
-    </script>
+    <title>@yield('title', 'BAKUMDA - Bantuan Hukum Daerah')</title>
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
-        rel="stylesheet">
+    <!-- FontAwesome CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <!-- Alpine.js CDN -->
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <style>
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: #f1f5f9;
-        }
-
         .no-scrollbar::-webkit-scrollbar {
             display: none;
         }
@@ -52,190 +24,209 @@
     @stack('styles')
 </head>
 
-<body class="min-h-screen text-gray-800 flex flex-col transition-all duration-300 bg-slate-50"
-    x-data="{ sidebarOpen: false }">
+<body class="bg-slate-950 font-sans text-slate-100 antialiased min-h-screen flex flex-col">
 
-    <div class="flex min-h-screen w-full">
-        <!-- Sidebar (Hanya tampil di layar besar/desktop, lg dan ke atas) -->
-        <aside :class="sidebarOpen ? '2xl:w-64' : '2xl:w-20'"
-            class="hidden 2xl:flex bg-slate-900 text-slate-300 flex-col justify-between border-r border-slate-800 shrink-0 fixed h-full left-0 top-0 z-40 transition-all duration-300">
-            <div>
-                <div class="p-4 xl:p-5 flex items-center space-x-3 border-b border-slate-800 h-[85px]"
-                    :class="sidebarOpen ? 'justify-start' : 'justify-center'">
+    <!-- ================================================= -->
+    <!-- VIEW 1: TAMPILAN ANDROID / MOBILE                 -->
+    <!-- ================================================= -->
+    <div id="view-android-container" class="w-full 2xl:hidden flex-1 flex flex-col relative bg-slate-900">
+
+        <!-- Header Tetap (Sticky) -->
+        <header class="sticky top-0 left-0 right-0 z-40 px-6 sm:px-12 pt-8 pb-4 bg-slate-900/80 backdrop-blur-md border-b border-slate-800/50">
+            <div
+                class="flex items-center justify-between relative z-10">
+                <div class="flex items-center space-x-2.5">
+                    <img src="{{ asset('log.png') }}" alt="Logo" class="h-10 sm:h-12 w-auto object-contain">
+                </div>
+                <div class="flex items-center space-x-3">
                     <div
-                        class="w-10 h-10 rounded-xl border-2 border-orange-500 p-0.5 flex items-center justify-center bg-orange-100 text-gray-700 overflow-hidden shadow-md shrink-0 transition-all">
-                        <img src="{{ asset('bakumda.png') }}" alt="Profile"
-                            class="w-full h-full rounded-lg object-cover">
+                        class="flex items-center bg-slate-800/85 backdrop-blur-md border border-slate-700/60 rounded-full px-3.5 py-1.5 shadow-inner">
+                        <i class="fa-solid fa-magnifying-glass text-xs text-slate-400 mr-2"></i>
+                        <span class="text-xs text-slate-300 font-medium tracking-wide">Pencarian...</span>
                     </div>
-                    <div class="overflow-hidden" x-show="sidebarOpen" x-transition>
-                        <h2 class="text-sm font-black text-white tracking-wide truncate">BAKUMDA</h2>
-                        <span class="text-[10px] text-orange-400 font-extrabold uppercase tracking-widest">Web
-                            Portal</span>
+                    <div class="relative">
+                        <button
+                            class="w-9 h-9 rounded-full bg-slate-800/80 border border-slate-700/60 flex items-center justify-center text-slate-300 hover:text-white transition">
+                            <i class="fa-regular fa-bell text-sm"></i>
+                        </button>
+                        <span
+                            class="absolute -top-0.5 -right-0.5 w-4 h-4 bg-amber-500 text-slate-950 font-extrabold text-[9px] flex items-center justify-center rounded-full shadow">8</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Konten Utama yang Bisa di-scroll -->
+        <main class="flex-1 overflow-y-auto px-6 sm:px-12 pt-6 pb-28">
+            @yield('content')
+        </main>
+
+        <!-- Mobile Bottom Navigation Bar -->
+        <div
+            class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-100 px-6 py-2.5 flex items-center justify-around z-50 shadow-[0_-4px_20px_rgba(0,0,0,0.06)]">
+            <!-- 1. Beranda -->
+            <a href="{{url('/')}}" class="flex flex-col items-center text-blue-700 py-1">
+                <div class="w-9 h-9 rounded-full bg-blue-50 flex items-center justify-center"> {{-- @TODO: Ganti dengan route('dashboard') --}}
+                    <i class="fa-solid fa-house text-base"></i>
+                </div>
+                <span class="text-[10px] font-bold mt-0.5">Beranda</span>
+            </a>
+
+            <!-- 2. Artikel -->
+            <a href="" class="flex flex-col items-center text-slate-400 hover:text-blue-700 py-1 transition">
+                <div class="w-9 h-9 rounded-full flex items-center justify-center">
+                    <i class="fa-solid fa-newspaper text-base"></i>
+                </div>
+                <span class="text-[10px] font-medium mt-0.5">Artikel</span>
+            </a>
+
+            <!-- 3. QR (Scan) -->
+            <div class="relative -top-5">
+                <a href="{{ route('kartu-anggota.cek.form') }}"
+                    class="w-14 h-14 rounded-full bg-gradient-to-tr from-red-700 to-rose-900 text-white flex items-center justify-center shadow-lg border-4 border-white transition-transform hover:scale-105">
+                    <i class="fa-solid fa-qrcode text-xl"></i>
+                </a>
+            </div>
+
+            <!-- 4. Kartu -->
+            <a href="{{ route('user-anggota.index') }}" class="flex flex-col items-center text-slate-400 hover:text-blue-700 py-1 transition">
+                <div class="w-9 h-9 rounded-full flex items-center justify-center">
+                    <i class="fa-solid fa-id-card text-base"></i>
+                </div>
+                <span class="text-[10px] font-medium mt-0.5">Kartu</span>
+            </a>
+
+            <!-- 5. Profil --> {{-- @TODO: Ganti dengan route('profile.edit') --}}
+            <a href="{{ route('profile.show') }}" class="flex flex-col items-center text-slate-400 hover:text-blue-700 py-1 transition">
+                <div class="w-9 h-9 rounded-full flex items-center justify-center">
+                    <i class="fa-solid fa-user text-base"></i>
+                </div>
+                <span class="text-[10px] font-medium mt-0.5">Profil</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- ================================================= -->
+    <!-- VIEW 2: DESKTOP MODE                              -->
+    <!-- ================================================= -->
+    <div id="view-desktop-container" x-data="{ sidebarOpen: false }"
+        class="hidden 2xl:flex flex-1 flex-row h-screen overflow-hidden">
+
+        <!-- Sidebar Navigation (Kiri) - Tetap diam / sticky -->
+        <aside :class="sidebarOpen ? 'w-64' : 'w-20'"
+            class="bg-slate-900 border-r border-slate-800 flex flex-col justify-between h-screen z-30 shadow-2xl shrink-0 transition-all duration-300">
+            <div>
+                <!-- Brand Header -->
+                <div class="p-6 border-b border-slate-800 flex items-center space-x-3 overflow-hidden">
+                    <div
+                        class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-700 to-amber-500 flex items-center justify-center text-white font-black text-lg shadow-lg shrink-0 overflow-hidden">
+                        <img src="{{ asset('bakumda.png') }}" alt="Avatar" class="w-full h-full object-cover">
+                    </div>
+                    <div x-show="sidebarOpen" x-transition.opacity class="truncate">
+                        <h1 class="font-extrabold text-white text-base tracking-wider">BAKUMDA</h1>
+                        <p class="text-[10px] text-slate-400 font-medium">Bantuan Hukum Daerah</p>
                     </div>
                 </div>
 
-                <nav class="p-3 xl:p-4 space-y-1.5 text-sm font-semibold">
+                <!-- Navigation Links -->
+                <nav class="p-3 space-y-1.5 overflow-y-auto max-h-[calc(100vh-280px)]">
                     <a href="{{ url('/') }}"
-                        class="flex items-center space-x-3 px-4 py-3 rounded-xl bg-orange-500 text-white shadow-lg shadow-orange-500/20 transition"
-                        :class="sidebarOpen ? 'justify-start' : 'justify-center'" title="Beranda">
-                        <i class="fa-solid fa-house w-5 text-center"></i>
-                        <span x-show="sidebarOpen">Beranda</span>
+                        class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl bg-blue-600 text-white font-bold text-sm shadow-md shadow-blue-600/20">
+                        <i class="fa-solid fa-house w-5 text-center shrink-0 text-base"></i>
+                        <span x-show="sidebarOpen" x-transition.opacity class="truncate">Beranda</span>
                     </a>
-                    <a href="{{ route('user-pelatihan.index') }}"
-                        class="flex items-center space-x-3 px-4 py-3 rounded-xl hover:bg-slate-800 text-slate-300 hover:text-white transition"
-                        :class="sidebarOpen ? 'justify-start' : 'justify-center'" title="Pelatihan">
-                        <i class="fa-solid fa-graduation-cap w-5 text-center"></i>
-                        <span x-show="sidebarOpen">Pelatihan</span>
+                    <a href=""
+                        class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/60 font-medium text-sm transition">
+                        <i class="fa-solid fa-newspaper  w-5 text-center shrink-0 text-base"></i>
+                        <span x-show="sidebarOpen" x-transition.opacity class="truncate">Artikel</span>
+                    </a>
+                    <a href="{{ route('kartu-anggota.cek.form') }}"
+                        class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/60 font-medium text-sm transition">
+                        <i class="fa-solid fa-qrcode w-5 text-center shrink-0 text-base"></i>
+                        <span x-show="sidebarOpen" x-transition.opacity class="truncate">Scan</span>
                     </a>
                     <a href="{{ route('user-anggota.index') }}"
-                        class="flex items-center space-x-3 px-4 py-3 rounded-xl hover:bg-slate-800 text-slate-300 hover:text-white transition"
-                        :class="sidebarOpen ? 'justify-start' : 'justify-center'" title="Kartu Anggota">
-                        <i class="fa-solid fa-id-card w-5 text-center"></i>
-                        <span x-show="sidebarOpen">Kartu Anggota</span>
+                        class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/60 font-medium text-sm transition">
+                        <i class="fa-solid fa-id-card  w-5 text-center shrink-0 text-base"></i>
+                        <span x-show="sidebarOpen" x-transition.opacity class="truncate">Kartu</span>
                     </a>
-                    <a href="{{ route('sertifikat.index') }}"
-                        class="flex items-center space-x-3 px-4 py-3 rounded-xl hover:bg-slate-800 text-slate-300 hover:text-white transition"
-                        :class="sidebarOpen ? 'justify-start' : 'justify-center'" title="Sertifikat">
-                        <i class="fa-solid fa-award w-5 text-center"></i>
-                        <span x-show="sidebarOpen">Sertifikat</span>
-                    </a>
-                    <a href="#" onclick="showServiceMessage('Menu Artikel & Berita')"
-                        class="flex items-center space-x-3 px-4 py-3 rounded-xl hover:bg-slate-800 text-slate-300 hover:text-white transition"
-                        :class="sidebarOpen ? 'justify-start' : 'justify-center'" title="Artikel">
-                        <i class="fa-solid fa-newspaper w-5 text-center"></i>
-                        <span x-show="sidebarOpen">Artikel</span>
-                    </a>
-                    <a href="#" onclick="showServiceMessage('Menu Kalender Event')"
-                        class="flex items-center space-x-3 px-4 py-3 rounded-xl hover:bg-slate-800 text-slate-300 hover:text-white transition"
-                        :class="sidebarOpen ? 'justify-start' : 'justify-center'" title="Kalender Event">
-                        <i class="fa-regular fa-calendar-days w-5 text-center"></i>
-                        <span x-show="sidebarOpen">Kalender Event</span>
+                    <a href="{{ route('profile.show') }}"
+                        class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/60 font-medium text-sm transition">
+                        <i class="fa-solid fa-user-shield w-5 text-center shrink-0 text-base"></i>
+                        <span x-show="sidebarOpen" x-transition.opacity class="truncate">Profile</span>
                     </a>
                 </nav>
             </div>
 
-            <div class="p-3 xl:p-4 border-t border-slate-800 bg-slate-950/40">
-                <div class="flex items-center" :class="sidebarOpen ? 'justify-between' : 'justify-center'">
-                    <div class="flex items-center space-x-3 overflow-hidden">
-                        <div
-                            class="w-9 h-9 rounded-full bg-orange-500/20 text-orange-400 font-bold flex items-center justify-center shrink-0">
-                            {{ substr(Auth::user()->name ?? 'G', 0, 1) }}
-                        </div>
-                        <div class="truncate" x-show="sidebarOpen" x-transition.opacity>
-                            <p class="text-xs font-bold text-white truncate">{{ Auth::user()->name ?? 'Guest' }}</p>
-                            <p class="text-[10px] text-slate-400 truncate">Member Aktif</p>
-                        </div>
-                    </div>
-                    <button onclick="showServiceMessage('Pengaturan Akun')"
-                        class="text-slate-400 hover:text-white transition p-1" title="Pengaturan">
-                        <i class="fa-solid fa-gear text-sm"></i>
-                    </button>
+            <!-- User Info & Logout Footer -->
+            <div class="border-t border-slate-800 bg-slate-900/50 flex flex-col">
+
+                <!-- Hidden Logout Form -->
+                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                    @csrf
+                </form>
+                <!-- Tombol Logout -->
+                <div class="px-3 pb-3">
+                    <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
+                        class="flex items-center space-x-3 px-3.5 py-2 rounded-xl text-red-400 hover:bg-red-500/10 font-medium text-sm transition">
+                        <i class="fa-solid fa-right-from-bracket w-5 text-center shrink-0 text-base"></i>
+                        <span x-show="sidebarOpen" x-transition.opacity class="truncate">Logout</span>
+                    </a>
                 </div>
-                <button @click="sidebarOpen = !sidebarOpen"
-                    class="w-full mt-4 flex items-center text-slate-400 hover:text-white py-2 px-3 rounded-lg hover:bg-slate-800 transition-colors"
-                    :class="sidebarOpen ? 'justify-between' : 'justify-center'">
-                    <span class="text-xs font-semibold" x-show="sidebarOpen" x-transition.opacity>Tutup Menu</span>
-                    <i class="fa-solid" :class="sidebarOpen ? 'fa-chevron-left' : 'fa-chevron-right'"></i>
-                </button>
+                <!-- User Profile Info -->
+                <div class="p-4 flex items-center space-x-3 overflow-hidden">
+                    <div
+                        class="w-9 h-9 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-amber-400 font-bold text-xs shrink-0">
+                        AM</div>
+                    <div x-show="sidebarOpen" x-transition.opacity class="overflow-hidden truncate">
+                        <h4 class="text-xs font-bold text-white truncate">DR. H. ARIS M.</h4>
+                        <p class="text-[10px] text-slate-400 truncate">Advokat / Konsultan</p>
+                    </div>
+                </div>
+
             </div>
         </aside>
 
-        <!-- Header Mobile & Tablet (Tampil di layar kecil hingga lg) -->
-        <header
-            class="2xl:hidden fixed top-0 left-0 right-0 px-5 pt-4 pb-3 flex items-center justify-between bg-white shadow-sm z-40 border-b border-gray-100">
-            <div class="flex items-center space-x-3">
-                <img src="{{ asset('bakumda.png') }}" alt="Profile"
-                    class="w-10 h-10 rounded-xl object-cover shadow-sm">
-                <h1 class="text-base font-bold text-gray-900 tracking-tight">BAKUMDA</h1>
-            </div>
-            <div class="flex items-center space-x-2.5">
-                <button onclick="showNotificationModal()"
-                    class="relative w-9 h-9 rounded-full flex items-center justify-center text-orange-500 hover:bg-orange-50 transition">
-                    <i class="fa-regular fa-bell text-lg"></i>
-                    <span class="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full ring-1 ring-white"></span>
-                </button>
-                <button onclick="showServiceMessage('Bantuan CS')"
-                    class="w-9 h-9 rounded-full bg-orange-500 text-white flex items-center justify-center shadow-md hover:bg-orange-600 transition text-sm">
-                    <i class="fa-solid fa-headset"></i>
-                </button>
-            </div>
-        </header>
-
-        <!-- Bottom Navigation Bar (Tampil di layar kecil hingga lg) -->
-        <div
-            class="2xl:hidden fixed bottom-0 left-0 right-0 h-16 bg-white shadow-[0_-5px_20px_-5px_rgba(0,0,0,0.05)] z-40 flex justify-center items-center border-t border-gray-100">
-            <div class="flex justify-around items-center w-full max-w-md px-4">
-                <a href="{{ url('/') }}"
-                    class="flex flex-col items-center space-y-0.5 text-gray-400 hover:text-orange-500 transition">
-                    <i class="fa-solid fa-house text-lg"></i>
-                    <span class="text-[10px] font-bold">Beranda</span>
-                </a>
-                <a href="{{ route('kartu-anggota.cek.form') }}"
-                    class="flex flex-col items-center space-y-0.5 text-gray-400 hover:text-orange-500 transition">
-                    <i class="fa-solid fa-id-card-clip text-lg"></i>
-                    <span class="text-[10px] font-bold">Artikel</span>
-                </a>
-                <a href="{{ route('kartu-anggota.cek.form') }}"
-                    class="w-14 h-14 rounded-full bg-orange-500 text-white flex items-center justify-center -mt-7 shadow-lg shadow-orange-500/40 border-4 border-white">
-                    <img src="{{ asset('cd.png') }}" alt="QR Code" class="w-7 h-7">
-                </a>
-                <a href="{{ route('user-anggota.index') }}"
-                    class="flex flex-col items-center space-y-0.5 text-gray-400 hover:text-orange-500 transition">
-                    <i class="fa-solid fa-id-card text-lg"></i>
-                    <span class="text-[10px] font-bold">Kartu</span>
-                </a>
-                <a href="{{ route('profile.show') }}"
-                    class="flex flex-col items-center space-y-0.5 text-gray-400 hover:text-orange-500 transition">
-                    <i class="fa-solid fa-user text-lg"></i>
-                    <span class="text-[10px] font-bold">Profil</span>
-                </a>
-            </div>
-        </div>
-
-        <!-- Konten Utama (Responsif menyesuaikan sidebar dan navigasi) -->
-        <main id="mainContentWrapper" :class="sidebarOpen ? '2xl:pl-64' : '2xl:pl-20'"
-            class="flex-1 w-full pt-16 pb-20 2xl:pt-0 2xl:pb-0 transition-all duration-300 bg-slate-50 flex flex-col min-h-screen">
-
-            <!-- Desktop & Tablet Header Top Bar -->
+        <!-- Main Desktop Content Area yang bisa discroll secara mandiri -->
+        <div class="flex-1 flex flex-col min-w-0 h-screen overflow-y-auto">
+            <!-- Top Bar - Sticky di bagian atas area konten -->
             <header
-                class="hidden 2xl:flex bg-white border-b border-gray-200 px-8 py-5 items-center justify-between shrink-0 shadow-sm z-10 sticky top-0">
-                <div class="flex items-center gap-4">
+                class="bg-slate-900/80 backdrop-blur-md border-b border-slate-800 px-6 py-4 flex items-center justify-between sticky top-0 z-20">
+                <div class="flex items-center space-x-4">
+                    <!-- Tombol Burger Menu untuk Membuka/Menutup Sidebar -->
                     <button @click="sidebarOpen = !sidebarOpen"
-                        class="w-9 h-9 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-600 flex items-center justify-center transition shrink-0" title="Toggle Sidebar">
+                        class="w-10 h-10 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300 hover:text-white transition shadow-sm focus:outline-none">
                         <i class="fa-solid fa-bars text-sm"></i>
                     </button>
-                    <h1 class="text-base font-black text-gray-900 tracking-tight">@yield('title', 'Dashboard')</h1>
+
                 </div>
-                <div class="flex items-center space-x-3">
-                    <div class="relative">
-                        <input type="text" placeholder="Cari data..."
-                            class="bg-gray-100 text-xs text-gray-800 placeholder-gray-400 px-3.5 py-2 pl-9 rounded-xl border border-gray-200 focus:outline-none focus:border-orange-500 w-64 transition">
-                        <i class="fa-solid fa-magnifying-glass absolute left-3 top-2.5 text-gray-400 text-xs"></i>
+                <div class="items-center space-x-4 hidden sm:flex">
+                    <div class="relative w-72">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-xs text-slate-400"></i>
+                        <input type="text" placeholder="Cari pasal, layanan, atau konsultasi..."
+                            class="w-full bg-slate-800 border border-slate-700 text-xs text-white rounded-full pl-10 pr-4 py-2.5 focus:outline-none focus:border-blue-500 transition">
                     </div>
-                    <button onclick="showNotificationModal()"
-                        class="relative w-9 h-9 rounded-xl bg-gray-100 hover:bg-gray-200 text-orange-600 flex items-center justify-center transition shrink-0">
-                        <i class="fa-regular fa-bell text-sm"></i>
-                        <span class="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full ring-2 ring-white"></span>
-                    </button>
+                    <div class="relative">
+                        <button
+                            class="w-10 h-10 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-300 hover:text-white transition">
+                            <i class="fa-regular fa-bell text-sm"></i>
+                        </button>
+                        <span
+                            class="absolute top-1 right-1 w-4 h-4 bg-amber-500 text-slate-950 font-extrabold text-[9px] flex items-center justify-center rounded-full shadow">8</span>
+                    </div>
                 </div>
             </header>
 
-            <!-- Bagian Konten Isi (Dibatasi max-w agar optimal di layar hingga 13 inch) -->
-            <div class="px-4 py-6 md:px-8 md:py-10 max-w-7xl mx-auto w-full flex-1">
+            <!-- Desktop Content Slot -->
+            <div class="flex-1">
                 @yield('content')
             </div>
-        </main>
+        </div>
     </div>
 
     <script>
-        document.addEventListener("DOMContentLoaded", function() {});
-
-        function showServiceMessage(msg) {
+        function showAlert(msg) {
             alert(msg);
-        }
-
-        function showNotificationModal() {
-            alert("Tidak ada notifikasi baru.");
         }
     </script>
     @stack('scripts')

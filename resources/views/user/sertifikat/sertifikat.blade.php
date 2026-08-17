@@ -125,18 +125,18 @@
                             <tbody>
                                 @forelse($daftarNilai as $index => $itemNilai)
                                     <tr>
-                                        <td>{{ $index + 1 }}</td>
-                                        <td class="text-left">
+                                        <td style="color: #000">{{ $index + 1 }}</td>
+                                        <td class="text-left" style="color: #000">
                                             {{ optional($itemNilai->materi)->judul ?? 'Materi Pelatihan' }}</td>
-                                        <td>{{ number_format($itemNilai->nilai_total_soal ?? $itemNilai->nilai, 2) }}</td>
-                                        <td>{{ number_format($itemNilai->nilai ?? 0, 2) }}</td>
-                                        <td>
+                                        <td style="color: #000">{{ number_format($itemNilai->nilai_total_soal ?? $itemNilai->nilai, 2) }}</td>
+                                        <td style="color: #000">{{ number_format($itemNilai->nilai ?? 0, 2) }}</td>
+                                        <td style="color: #000">
                                             <b>{{ strtoupper($itemNilai->status) }}</b>
                                         </td>
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="5" class="text-center py-3 text-slate-500">Tidak ada data materi.
+                                        <td colspan="5" class="text-center py-3 text-slate-500" style="color: #000">Tidak ada data materi.
                                         </td>
                                     </tr>
                                 @endforelse

@@ -69,4 +69,14 @@ class ProfileController extends Controller
 
         return Redirect::to('/');
     }
+
+    public function aturanPengguna(Request $request): View
+    {
+        return view('profile.aturan');
+    }
+
+    public function kebijakanPrivasi(Request $request): View
+    {
+        return view('profile.kebijakan');
+    }
 }

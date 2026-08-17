@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Pelatihan;
 use App\Models\Anggota;
 use App\Models\Sertifikat;
+use App\Models\AnggotaBerlaku;
 use App\Models\AnggotaCard;
 use App\Models\Artikel;
 use Illuminate\Support\Facades\Auth; // Tambahkan ini
@@ -130,5 +131,14 @@ class HalamanUtamaController extends Controller
 
         // Arahkan ke view untuk menampilkan detail artikel.
         return view('user.artikel.show', compact('artikel'));
+    }
+
+    public function Korwil()
+    {
+        $korwils = AnggotaBerlaku::with('anggotaCard.anggota')
+            ->where('jabatan', 'like', 'KORWIL%') // Menambahkan filter untuk jabatan Korwil
+            ->latest()
+            ->paginate(10);
+        return view('user.korwil.index',compact('korwils'));
     }
 }

@@ -49,12 +49,12 @@
                                 </div>
                             @endif
 
-                            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6" x-data="{ isFlipped: false }">
+                            <div class="flex flex-col lg:flex-row gap-6 items-stretch" x-data="{ isFlipped: false }">
 
                                 <!-- KIRI: PREVIEW KARTU FISIK -->
-                                <div class="lg:col-span-1">
+                                <div class="lg:w-1/3 flex flex-col">
                                     <div
-                                        class="bg-white dark:bg-gray-900 p-6 rounded-2xl border border-gray-200 dark:border-gray-800 shadow-sm text-center space-y-4">
+                                        class="bg-white dark:bg-gray-900 p-6 rounded-2xl border border-gray-200 dark:border-gray-800 shadow-sm text-center space-y-4 flex flex-col justify-between h-full">
 
                                         <div class="flex items-center justify-between">
                                             <h3
@@ -85,8 +85,9 @@
                                             }
                                         </style>
 
-                                        <!-- Wrapper Utama dengan Efek Perspektif (Ukuran Fleksibel Mengikuti Aspek Rasio Kartu) -->
-                                        <div class="relative w-full max-w-[280px] aspect-[1/1.58] mx-auto perspective-1000">
+                                        <!-- Wrapper Utama dengan Efek Perspektif -->
+                                        <div
+                                            class="relative w-full max-w-[280px] aspect-[1/1.58] mx-auto perspective-1000 my-auto">
 
                                             <!-- Kartu Flipper (Kontainer yang Berputar) -->
                                             <div class="relative w-full h-full duration-700 transform-style-3d transition-transform"
@@ -102,10 +103,8 @@
 
                                                     <div
                                                         class="relative z-10 w-full h-full p-[6%] flex flex-col justify-between">
-                                                        <!-- Bagian Atas / Header Kartu jika diperlukan -->
                                                         <div class="flex justify-between items-center"></div>
 
-                                                        <!-- Bagian Tengah (Foto & QR Code) menggunakan persentase agar responsif presisi -->
                                                         <div
                                                             class="absolute top-[41.5%] left-[17.8%] w-[34%] aspect-[95/129] overflow-hidden rounded-sm flex items-center justify-center bg-gray-900">
                                                             @if (optional($anggotaCard->anggota)->foto)
@@ -120,7 +119,6 @@
                                                             @endif
                                                         </div>
 
-                                                        <!-- QR Code + NIA -->
                                                         <div
                                                             class="absolute top-[42.2%] left-[54.3%] w-[28%] flex flex-col items-center">
                                                             <div
@@ -143,7 +141,6 @@
                                                             @endif
                                                         </div>
 
-                                                        <!-- Nama & Jabatan -->
                                                         <div class="absolute top-[71.2%] inset-x-4 text-center">
                                                             <h2
                                                                 class="text-[10.5px] font-extrabold text-gray-900 uppercase tracking-tight leading-snug truncate">
@@ -157,7 +154,6 @@
                                                             @endif
                                                         </div>
 
-                                                        <!-- Masa Berlaku -->
                                                         @if (!empty(optional($anggotaCard->latestBerlaku)->berlaku))
                                                             <div class="absolute bottom-[4.2%] left-[6.5%]"
                                                                 style="transform: none;">
@@ -179,7 +175,6 @@
                                                         class="absolute inset-0 w-full h-full object-fill">
 
                                                     <div class="relative z-10 w-full h-full p-6">
-                                                        <!-- NIK -->
                                                         <div class="absolute top-[21%] left-[10.5%] pr-4 text-left">
                                                             <p
                                                                 class="text-[8.5px] font-bold text-gray-900 font-sans tracking-wide">
@@ -187,7 +182,6 @@
                                                             </p>
                                                         </div>
 
-                                                        <!-- Tempat, Tanggal Lahir -->
                                                         <div class="absolute top-[27%] left-[10.5%] pr-4 text-left">
                                                             <p
                                                                 class="text-[8.5px] font-bold text-gray-900 font-sans tracking-wide">
@@ -195,7 +189,6 @@
                                                             </p>
                                                         </div>
 
-                                                        <!-- Alamat -->
                                                         <div
                                                             class="absolute top-[33.3%] left-[10.5%] right-[10.5%] text-left">
                                                             <p
@@ -204,7 +197,6 @@
                                                             </p>
                                                         </div>
 
-                                                        <!-- Diterbitkan -->
                                                         <div class="absolute top-[44.8%] left-[10.5%] pr-4 text-left">
                                                             <p
                                                                 class="text-[8.5px] font-bold text-gray-900 font-sans tracking-wide">
@@ -249,141 +241,147 @@
                                 </div>
 
                                 <!-- KANAN: INFORMASI LENGKAP KARTU -->
-                                <div class="hidden lg:block lg:col-span-2 space-y-6" x-data="{ showHistory: false }">
+                                <div class="hidden lg:flex lg:w-2/3 flex-col" x-data="{ showHistory: false }">
                                     <div
-                                        class="bg-white dark:bg-gray-900 p-6 rounded-2xl border border-gray-200 dark:border-gray-800 shadow-sm space-y-4">
-                                        <div
-                                            class="flex items-center justify-between border-b border-gray-200 dark:border-gray-800 pb-3">
-                                            <h3
-                                                class="text-sm font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
-                                                <i class="fa-solid fa-circle-check text-emerald-500"></i>
-                                                <span>Informasi Lengkap Kartu Anggota (Aktif)</span>
-                                            </h3>
-                                            <span
-                                                class="px-2.5 py-1 text-[10px] font-semibold bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 rounded-full border border-emerald-200 dark:border-emerald-800/50">
-                                                Status: Aktif / Terbit
-                                            </span>
-                                        </div>
-
-                                        <!-- Tombol & Konten Riwayat Masa Berlaku -->
-                                        <div>
-                                            <button type="button" @click="showHistory = !showHistory"
-                                                class="w-full flex items-center justify-between text-left px-4 py-3 rounded-xl bg-gray-50 dark:bg-gray-800/50 hover:bg-gray-100 dark:hover:bg-gray-800 transition duration-200 border border-gray-200/60 dark:border-gray-700/50">
-                                                <div class="flex items-center gap-2">
-                                                    <i
-                                                        class="fa-solid fa-history text-gray-400 dark:text-gray-500 text-xs"></i>
-                                                    <span class="text-xs font-bold text-gray-800 dark:text-gray-200">Riwayat
-                                                        Masa Berlaku Kartu</span>
-                                                </div>
-                                                <i class="fa-solid fa-chevron-down text-gray-400 dark:text-gray-500 text-xs transition-transform"
-                                                    :class="{ 'rotate-180': showHistory }"></i>
-                                            </button>
-
-                                            <div x-show="showHistory" x-collapse style="display: none;">
-                                                <div class="mt-2 space-y-2 max-h-48 overflow-y-auto pr-2 pl-1">
-                                                    @forelse ($anggotaCard->berlakuHistory->sortByDesc('diterbitkan') as $riwayat)
-                                                        <div
-                                                            class="flex items-start justify-between text-xs p-3 rounded-xl bg-gray-50 dark:bg-gray-800/40 border border-gray-200/60 dark:border-gray-800">
-                                                            <div class="space-y-0.5">
-                                                                <p class="font-bold text-gray-900 dark:text-white">
-                                                                    {{ $riwayat->jabatan }}</p>
-                                                                <p class="text-gray-500 dark:text-gray-400">Diterbitkan:
-                                                                    {{ \Carbon\Carbon::parse($riwayat->diterbitkan)->translatedFormat('d F Y') }}
-                                                                </p>
-                                                            </div>
-                                                            <div class="text-right shrink-0 ml-4">
-                                                                <p class="font-semibold text-gray-800 dark:text-gray-200">
-                                                                    Berlaku s/d:
-                                                                    {{ \Carbon\Carbon::parse($riwayat->berlaku)->translatedFormat('d F Y') }}
-                                                                </p>
-                                                            </div>
-                                                        </div>
-                                                    @empty
-                                                        <p
-                                                            class="text-xs text-center text-gray-400 dark:text-gray-500 py-4">
-                                                            Belum ada riwayat.</p>
-                                                    @endforelse
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                                        class="bg-white dark:bg-gray-900 p-6 rounded-2xl border border-gray-200 dark:border-gray-800 shadow-sm space-y-4 flex flex-col justify-between h-full">
+                                        <div class="space-y-4">
                                             <div
-                                                class="bg-gray-50 dark:bg-gray-800/40 p-3 rounded-xl border border-gray-200/60 dark:border-gray-800">
-                                                <span class="block text-gray-500 dark:text-gray-400 mb-0.5">Nama
-                                                    Lengkap</span>
+                                                class="flex items-center justify-between border-b border-gray-200 dark:border-gray-800 pb-3">
+                                                <h3
+                                                    class="text-sm font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
+                                                    <i class="fa-solid fa-circle-check text-emerald-500"></i>
+                                                    <span>Informasi Lengkap Kartu Anggota (Aktif)</span>
+                                                </h3>
                                                 <span
-                                                    class="font-bold text-gray-900 dark:text-white uppercase">{{ $anggotaCard->anggota->nama ?? '-' }}</span>
-                                            </div>
-
-                                            <div
-                                                class="bg-gray-50 dark:bg-gray-800/40 p-3 rounded-xl border border-gray-200/60 dark:border-gray-800">
-                                                <span class="block text-gray-500 dark:text-gray-400 mb-0.5">Nomor Induk
-                                                    Anggota (NIA)</span>
-                                                <span
-                                                    class="font-bold text-blue-600 dark:text-blue-400">{{ $anggotaCard->card_id ?? '-' }}</span>
-                                            </div>
-
-                                            <div
-                                                class="bg-gray-50 dark:bg-gray-800/40 p-3 rounded-xl border border-gray-200/60 dark:border-gray-800">
-                                                <span class="block text-gray-500 dark:text-gray-400 mb-0.5">Jabatan</span>
-                                                <span
-                                                    class="font-semibold text-gray-800 dark:text-gray-200">{{ optional($anggotaCard->latestBerlaku)->jabatan ?? '-' }}</span>
-                                            </div>
-
-                                            <div
-                                                class="bg-gray-50 dark:bg-gray-800/40 p-3 rounded-xl border border-gray-200/60 dark:border-gray-800">
-                                                <span class="block text-gray-500 dark:text-gray-400 mb-0.5">NIK / No.
-                                                    Identitas</span>
-                                                <span
-                                                    class="font-semibold text-gray-800 dark:text-gray-200">{{ $anggotaCard->anggota->no_ktp ?? '-' }}</span>
-                                            </div>
-
-                                            <div
-                                                class="bg-gray-50 dark:bg-gray-800/40 p-3 rounded-xl border border-gray-200/60 dark:border-gray-800">
-                                                <span class="block text-gray-500 dark:text-gray-400 mb-0.5">Tanggal
-                                                    Diterbitkan</span>
-                                                <span class="font-semibold text-gray-800 dark:text-gray-200">
-                                                    {{ optional($anggotaCard->latestBerlaku)->diterbitkan ? \Carbon\Carbon::parse(optional($anggotaCard->latestBerlaku)->diterbitkan)->translatedFormat('d F Y') : '-' }}
+                                                    class="px-2.5 py-1 text-[10px] font-semibold bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 rounded-full border border-emerald-200 dark:border-emerald-800/50">
+                                                    Status: Aktif / Terbit
                                                 </span>
                                             </div>
 
-                                            <div
-                                                class="bg-gray-50 dark:bg-gray-800/40 p-3 rounded-xl border border-gray-200/60 dark:border-gray-800">
-                                                <span class="block text-gray-500 dark:text-gray-400 mb-0.5">Masa Berlaku
-                                                    Kartu</span>
-                                                <span class="font-semibold text-gray-800 dark:text-gray-200">
-                                                    {{ optional($anggotaCard->latestBerlaku)->berlaku ? \Carbon\Carbon::parse(optional($anggotaCard->latestBerlaku)->berlaku)->translatedFormat('d F Y') : '-' }}
-                                                </span>
+                                            <!-- Tombol & Konten Riwayat Masa Berlaku -->
+                                            <div>
+                                                <button type="button" @click="showHistory = !showHistory"
+                                                    class="w-full flex items-center justify-between text-left px-4 py-3 rounded-xl bg-gray-50 dark:bg-gray-800/50 hover:bg-gray-100 dark:hover:bg-gray-800 transition duration-200 border border-gray-200/60 dark:border-gray-700/50">
+                                                    <div class="flex items-center gap-2">
+                                                        <i
+                                                            class="fa-solid fa-history text-gray-400 dark:text-gray-500 text-xs"></i>
+                                                        <span
+                                                            class="text-xs font-bold text-gray-800 dark:text-gray-200">Riwayat
+                                                            Masa Berlaku Kartu</span>
+                                                    </div>
+                                                    <i class="fa-solid fa-chevron-down text-gray-400 dark:text-gray-500 text-xs transition-transform"
+                                                        :class="{ 'rotate-180': showHistory }"></i>
+                                                </button>
+
+                                                <div x-show="showHistory" x-collapse style="display: none;">
+                                                    <div class="mt-2 space-y-2 max-h-48 overflow-y-auto pr-2 pl-1">
+                                                        @forelse ($anggotaCard->berlakuHistory->sortByDesc('diterbitkan') as $riwayat)
+                                                            <div
+                                                                class="flex items-start justify-between text-xs p-3 rounded-xl bg-gray-50 dark:bg-gray-800/40 border border-gray-200/60 dark:border-gray-800">
+                                                                <div class="space-y-0.5">
+                                                                    <p class="font-bold text-gray-900 dark:text-white">
+                                                                        {{ $riwayat->jabatan }}</p>
+                                                                    <p class="text-gray-500 dark:text-gray-400">Diterbitkan:
+                                                                        {{ \Carbon\Carbon::parse($riwayat->diterbitkan)->translatedFormat('d F Y') }}
+                                                                    </p>
+                                                                </div>
+                                                                <div class="text-right shrink-0 ml-4">
+                                                                    <p
+                                                                        class="font-semibold text-gray-800 dark:text-gray-200">
+                                                                        Berlaku s/d:
+                                                                        {{ \Carbon\Carbon::parse($riwayat->berlaku)->translatedFormat('d F Y') }}
+                                                                    </p>
+                                                                </div>
+                                                            </div>
+                                                        @empty
+                                                            <p
+                                                                class="text-xs text-center text-gray-400 dark:text-gray-500 py-4">
+                                                                Belum ada riwayat.</p>
+                                                        @endforelse
+                                                    </div>
+                                                </div>
                                             </div>
 
-                                            <div
-                                                class="bg-gray-50 dark:bg-gray-800/40 p-3 rounded-xl border border-gray-200/60 dark:border-gray-800">
-                                                <span class="block text-gray-500 dark:text-gray-400 mb-0.5">Email</span>
-                                                <span
-                                                    class="font-semibold text-gray-800 dark:text-gray-200">{{ $anggotaCard->anggota->email ?? '-' }}</span>
-                                            </div>
+                                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                                                <div
+                                                    class="bg-gray-50 dark:bg-gray-800/40 p-3 rounded-xl border border-gray-200/60 dark:border-gray-800">
+                                                    <span class="block text-gray-500 dark:text-gray-400 mb-0.5">Nama
+                                                        Lengkap</span>
+                                                    <span
+                                                        class="font-bold text-gray-900 dark:text-white uppercase">{{ $anggotaCard->anggota->nama ?? '-' }}</span>
+                                                </div>
 
-                                            <div
-                                                class="bg-gray-50 dark:bg-gray-800/40 p-3 rounded-xl border border-gray-200/60 dark:border-gray-800">
-                                                <span class="block text-gray-500 dark:text-gray-400 mb-0.5">Nomor HP /
-                                                    WhatsApp</span>
-                                                <span
-                                                    class="font-semibold text-gray-800 dark:text-gray-200">{{ $anggotaCard->anggota->no_hp ?? '-' }}</span>
-                                            </div>
+                                                <div
+                                                    class="bg-gray-50 dark:bg-gray-800/40 p-3 rounded-xl border border-gray-200/60 dark:border-gray-800">
+                                                    <span class="block text-gray-500 dark:text-gray-400 mb-0.5">Nomor Induk
+                                                        Anggota (NIA)</span>
+                                                    <span
+                                                        class="font-bold text-blue-600 dark:text-blue-400">{{ $anggotaCard->card_id ?? '-' }}</span>
+                                                </div>
 
-                                            <div
-                                                class="md:col-span-2 bg-gray-50 dark:bg-gray-800/40 p-3 rounded-xl border border-gray-200/60 dark:border-gray-800">
-                                                <span class="block text-gray-500 dark:text-gray-400 mb-0.5">Alamat
-                                                    Lengkap</span>
-                                                <span
-                                                    class="font-semibold text-gray-800 dark:text-gray-200">{{ $anggotaCard->anggota->alamat ?? '-' }}</span>
+                                                <div
+                                                    class="bg-gray-50 dark:bg-gray-800/40 p-3 rounded-xl border border-gray-200/60 dark:border-gray-800">
+                                                    <span
+                                                        class="block text-gray-500 dark:text-gray-400 mb-0.5">Jabatan</span>
+                                                    <span
+                                                        class="font-semibold text-gray-800 dark:text-gray-200">{{ optional($anggotaCard->latestBerlaku)->jabatan ?? '-' }}</span>
+                                                </div>
+
+                                                <div
+                                                    class="bg-gray-50 dark:bg-gray-800/40 p-3 rounded-xl border border-gray-200/60 dark:border-gray-800">
+                                                    <span class="block text-gray-500 dark:text-gray-400 mb-0.5">NIK / No.
+                                                        Identitas</span>
+                                                    <span
+                                                        class="font-semibold text-gray-800 dark:text-gray-200">{{ $anggotaCard->anggota->no_ktp ?? '-' }}</span>
+                                                </div>
+
+                                                <div
+                                                    class="bg-gray-50 dark:bg-gray-800/40 p-3 rounded-xl border border-gray-200/60 dark:border-gray-800">
+                                                    <span class="block text-gray-500 dark:text-gray-400 mb-0.5">Tanggal
+                                                        Diterbitkan</span>
+                                                    <span class="font-semibold text-gray-800 dark:text-gray-200">
+                                                        {{ optional($anggotaCard->latestBerlaku)->diterbitkan ? \Carbon\Carbon::parse(optional($anggotaCard->latestBerlaku)->diterbitkan)->translatedFormat('d F Y') : '-' }}
+                                                    </span>
+                                                </div>
+
+                                                <div
+                                                    class="bg-gray-50 dark:bg-gray-800/40 p-3 rounded-xl border border-gray-200/60 dark:border-gray-800">
+                                                    <span class="block text-gray-500 dark:text-gray-400 mb-0.5">Masa
+                                                        Berlaku Kartu</span>
+                                                    <span class="font-semibold text-gray-800 dark:text-gray-200">
+                                                        {{ optional($anggotaCard->latestBerlaku)->berlaku ? \Carbon\Carbon::parse(optional($anggotaCard->latestBerlaku)->berlaku)->translatedFormat('d F Y') : '-' }}
+                                                    </span>
+                                                </div>
+
+                                                <div
+                                                    class="bg-gray-50 dark:bg-gray-800/40 p-3 rounded-xl border border-gray-200/60 dark:border-gray-800">
+                                                    <span
+                                                        class="block text-gray-500 dark:text-gray-400 mb-0.5">Email</span>
+                                                    <span
+                                                        class="font-semibold text-gray-800 dark:text-gray-200">{{ $anggotaCard->anggota->email ?? '-' }}</span>
+                                                </div>
+
+                                                <div
+                                                    class="bg-gray-50 dark:bg-gray-800/40 p-3 rounded-xl border border-gray-200/60 dark:border-gray-800">
+                                                    <span class="block text-gray-500 dark:text-gray-400 mb-0.5">Nomor HP /
+                                                        WhatsApp</span>
+                                                    <span
+                                                        class="font-semibold text-gray-800 dark:text-gray-200">{{ $anggotaCard->anggota->no_hp ?? '-' }}</span>
+                                                </div>
+
+                                                <div
+                                                    class="md:col-span-2 bg-gray-50 dark:bg-gray-800/40 p-3 rounded-xl border border-gray-200/60 dark:border-gray-800">
+                                                    <span class="block text-gray-500 dark:text-gray-400 mb-0.5">Alamat
+                                                        Lengkap</span>
+                                                    <span
+                                                        class="font-semibold text-gray-800 dark:text-gray-200">{{ $anggotaCard->anggota->alamat ?? '-' }}</span>
+                                                </div>
                                             </div>
                                         </div>
 
-                                        <!-- Tombol Aksi Edit / Pengajuan -->
+                                        <!-- Tombol Aksi / Status Pengajuan (Sudah Ditampilkan Kembali) -->
                                         <div class="flex justify-end pt-4 border-t border-gray-200 dark:border-gray-800">
-                                            @if (isset($pending))
+                                            @if (!empty($pending))
                                                 <span
                                                     class="px-3 py-2 text-xs font-semibold rounded-xl bg-amber-50 dark:bg-amber-950/50 text-amber-600 dark:text-amber-400 border border-amber-200 dark:border-amber-800/50 flex items-center gap-1.5">
                                                     <i class="fa-solid fa-clock"></i>
@@ -391,7 +389,7 @@
                                                 </span>
                                             @else
                                                 <a href="{{ route('admin.anggota-card.edit', $anggotaCard->id) }}"
-                                                    class="px-4 py-2 text-xs font-semibold rounded-xl bg-blue-600 hover:bg-blue-700 text-white transition flex items-center gap-1.5 shadow-sm">
+                                                    class="px-4 py-2 text-xs font-semibold rounded-xl bg-blue-600 hover:bg-blue-700 text-white transition flex items-center justify-center gap-1.5 shadow-sm">
                                                     <i class="fa-solid fa-pen-to-square"></i>
                                                     <span>Ajukan Perubahan Kartu</span>
                                                 </a>
@@ -399,7 +397,6 @@
                                         </div>
                                     </div>
                                 </div>
-
                             </div>
 
                             <!-- MODAL PERBESAR KARTU (ZOOM) -->

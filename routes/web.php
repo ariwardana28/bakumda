@@ -21,6 +21,7 @@ use App\Http\Controllers\UserMateriController;
 use App\Http\Controllers\Admin\SoalController;
 use App\Http\Controllers\ArtikelController;
 use App\Http\Controllers\UserProdukController;
+use App\Http\Controllers\Admin\KorwilController;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,6 +29,7 @@ use App\Http\Controllers\UserProdukController;
 |--------------------------------------------------------------------------
 */
 Route::get('/', [HalamanUtamaController::class, 'index'])->name('welcome');
+Route::get('/korwil', [HalamanUtamaController::class, 'korwil'])->name('korwil');
 Route::get('/artiekl/{artikel:slug}', [HalamanUtamaController::class, 'show'])->name('artikel.show.public');
 
 // Route untuk Pengecekan Sertifikat Publik
@@ -168,6 +170,8 @@ Route::middleware('auth')->group(function () {
 
     // --- Profile Management ---
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
+    Route::get('/profile/aturan-pengguna', [ProfileController::class, 'aturanPengguna'])->name('profile.aturan-pengguna');
+    Route::get('/profile/kebijakan-privasi', [ProfileController::class, 'kebijakanPrivasi'])->name('profile.kebijakan-privasi');
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
@@ -294,6 +298,10 @@ Route::middleware('auth')->group(function () {
 
         // --- Manajemen Produk ---
         Route::resource('produk', \App\Http\Controllers\Admin\ProdukController::class);
+        Route::resource('korwil', KorwilController::class);
+
+        // Endpoint untuk auto-fill form korwil
+        Route::get('/korwil/get-latest-data/{anggotaCard}', [KorwilController::class, 'getLatestKorwilData'])->name('korwil.get-latest-data');
     });
 });
 

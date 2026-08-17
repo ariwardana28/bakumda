@@ -60,7 +60,7 @@
         {{-- Filter Bar / Header Bagian Daftar --}}
         <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-2 border-b border-white/10 pb-4">
             <div>
-                <h2 class="text-xl md:text-2xl font-black text-white tracking-tight">Daftar Pelatihan Aktif</h2>
+                <h2 class="text-xl md:text-2xl font-black text-black tracking-tight">Daftar Pelatihan Aktif</h2>
                 <p class="text-xs md:text-sm text-slate-400 mt-1">Pilih pelatihan yang sesuai dengan jadwal dan kebutuhan
                     pengembangan profesional Anda.</p>
             </div>

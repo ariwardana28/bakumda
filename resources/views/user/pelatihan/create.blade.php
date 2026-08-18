@@ -134,6 +134,9 @@
                         {{-- Hidden Input untuk mengirim data approve pakta integritas --}}
                         <input type="hidden" name="pakta_integritas" id="hiddenPaktaIntegritas" value="{{ old('pakta_integritas') }}">
 
+                        {{-- Hidden Input untuk kode referral --}}
+                        <input type="hidden" name="referral_code" id="hiddenReferralCode" value="{{ old('referral_code') }}">
+
                         {{-- 1. Nama Lengkap & No KTP --}}
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                             <div>
@@ -363,6 +366,41 @@
         </div>
     </div>
 
+    {{-- Modal Kode Referral --}}
+    <div id="modalReferral" class="fixed inset-0 z-[60] hidden flex items-center justify-center bg-slate-950/60 backdrop-blur-sm p-4">
+        <div class="bg-white dark:bg-slate-900 rounded-[2rem] max-w-sm w-full p-6 sm:p-8 shadow-2xl border border-slate-200 dark:border-slate-800 transform transition-all">
+            <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-100 dark:border-slate-800">
+                <h3 class="text-base font-extrabold text-slate-900 dark:text-white uppercase tracking-wider">Punya Kode Referral?</h3>
+                <button type="button" id="btnCloseReferralModal" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <div class="space-y-4">
+                <p class="text-xs text-slate-600 dark:text-slate-300">
+                    Jika Anda memiliki kode referral, masukkan di bawah ini untuk mendapatkan benefit. Jika tidak, Anda bisa melanjutkan pendaftaran.
+                </p>
+
+                <div>
+                    <label for="referral_code_input" class="block text-[10px] sm:text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">Kode Referral</label>
+                    <input type="text" id="referral_code_input" placeholder="Masukkan kode di sini"
+                        class="w-full px-4 py-3 text-sm rounded-xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-800/50 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-500 uppercase tracking-widest font-mono">
+                </div>
+            </div>
+
+            <div class="mt-6 flex flex-col sm:flex-row-reverse items-center gap-3 pt-4 border-t border-slate-100 dark:border-slate-800">
+                <button type="button" id="btnApplyReferral"
+                    class="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-orange-500 hover:bg-orange-600 text-white text-xs font-bold shadow-md transition">
+                    Terapkan & Lanjutkan
+                </button>
+                <button type="button" id="btnSkipReferral"
+                    class="w-full sm:w-auto px-5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 text-xs font-bold text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 hover:bg-slate-100 transition">
+                    Lanjutkan Tanpa Kode
+                </button>
+            </div>
+        </div>
+    </div>
+
     @push('scripts')
         <script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
         <script>
@@ -412,18 +450,33 @@
             const hiddenPaktaIntegritas = document.getElementById('hiddenPaktaIntegritas');
             const btnConfirmSubmit = document.getElementById('btnConfirmSubmit');
             const formPendaftaran = document.getElementById('formPendaftaran');
+            const modalReferral = document.getElementById('modalReferral');
+            const btnCloseReferralModal = document.getElementById('btnCloseReferralModal');
+            const btnApplyReferral = document.getElementById('btnApplyReferral');
+            const btnSkipReferral = document.getElementById('btnSkipReferral');
+            const referralInput = document.getElementById('referral_code_input');
+            const hiddenReferralCode = document.getElementById('hiddenReferralCode');
 
             btnOpenModal.addEventListener('click', function() {
-                if (formPendaftaran.checkValidity()) {
+                // if (formPendaftaran.checkValidity()) {
                     modalSyarat.classList.remove('hidden');
-                } else {
-                    formPendaftaran.reportValidity();
-                }
+                // } else {
+                //     formPendaftaran.reportValidity();
+                // }
             });
 
             function closeModalSyarat() {
                 modalSyarat.classList.add('hidden');
             }
+
+            function openReferralModal() {
+                modalReferral.classList.remove('hidden');
+            }
+
+            function closeReferralModal() {
+                modalReferral.classList.add('hidden');
+            }
+
 
             checkboxIntegritas.addEventListener('change', function() {
                 if (this.checked) {
@@ -437,10 +490,24 @@
 
             btnConfirmSubmit.addEventListener('click', function() {
                 if (checkboxIntegritas.checked) {
-                    // Masukkan nilai '1' (approve) ke dalam input tersembunyi sebelum submit
-                    hiddenPaktaIntegritas.value = "1";
-                    formPendaftaran.submit();
+                    // Setujui pakta integritas
+                    hiddenPaktaIntegritas.value = "approve";
+                    // Tutup modal syarat dan buka modal referral
+                    closeModalSyarat();
+                    openReferralModal();
                 }
+            });
+
+            // Logika Modal Referral
+            btnCloseReferralModal.addEventListener('click', closeReferralModal);
+
+            btnApplyReferral.addEventListener('click', function() {
+                hiddenReferralCode.value = referralInput.value.trim().toUpperCase();
+                formPendaftaran.submit();
+            });
+
+            btnSkipReferral.addEventListener('click', function() {
+                formPendaftaran.submit();
             });
 
             // Sinkronisasi state jika terjadi redirect kembali karena error validasi
@@ -460,107 +527,109 @@
                 const regencySelect = document.getElementById('kota');
                 const districtSelect = document.getElementById('kecamatan');
                 const villageSelect = document.getElementById('kelurahan');
+                
+                const oldValues = {
+                    provinsi: "{{ old('provinsi') }}",
+                    kota: "{{ old('kota') }}",
+                    kecamatan: "{{ old('kecamatan') }}",
+                    kelurahan: "{{ old('kelurahan') }}"
+                };
 
-                fetch('https://www.emsifa.com/api-wilayah-indonesia/api/provinces.json')
-                    .then(response => response.json())
-                    .then(provinces => {
-                        provinceSelectInstance.clearOptions();
-                        provinceSelectInstance.addOption({ value: "", text: "-- Pilih Provinsi --" });
-                        provinces.forEach(province => {
-                            provinceSelectInstance.addOption({ value: province.name, text: province.name, data_id: province.id });
-                        });
+                function resetDropdown(instance, placeholder) {
+                    instance.clear();
+                    instance.clearOptions();
+                    instance.addOption({ value: "", text: placeholder });
+                    instance.setValue("");
+                    instance.disable();
+                }
+
+                // Fetch Provinces
+                fetch('https://www.emsifa.com/api-wilayah-indonesia/api/provinces.json').then(response => response.json()).then(provinces => {
+                    provinceSelectInstance.clearOptions();
+                    provinceSelectInstance.addOption({ value: "", text: "-- Pilih Provinsi --" });
+                    provinces.forEach(p => provinceSelectInstance.addOption({ value: p.name, text: p.name, 'data-id': p.id }));
+                    if (oldValues.provinsi) {
+                        provinceSelectInstance.setValue(oldValues.provinsi);
+                    } else {
                         provinceSelectInstance.setValue("");
-                    });
-
-                provinceSelect.addEventListener('change', function() {
-                    const selectedValue = this.value;
-                    let provinceId = "";
-                    let options = provinceSelectInstance.options;
-                    for (let key in options) {
-                        if (options[key].value === selectedValue) {
-                            provinceId = options[key].data_id;
-                            break;
-                        }
                     }
+                });
 
-                    regencySelectInstance.clearOptions();
-                    regencySelectInstance.addOption({ value: "", text: "-- Pilih Kota/Kabupaten --" });
-                    regencySelectInstance.setValue("");
+                // Province Change Event
+                provinceSelectInstance.on('change', function(value) {
+                    resetDropdown(regencySelectInstance, '-- Pilih Kota/Kabupaten --');
+                    resetDropdown(districtSelectInstance, '-- Pilih Kecamatan --');
+                    resetDropdown(villageSelectInstance, '-- Pilih Kelurahan/Desa --');
 
-                    districtSelectInstance.clearOptions();
-                    districtSelectInstance.addOption({ value: "", text: "-- Pilih Kecamatan --" });
-                    districtSelectInstance.setValue("");
+                    if (!value) return;
 
-                    villageSelectInstance.clearOptions();
-                    villageSelectInstance.addOption({ value: "", text: "-- Pilih Kelurahan/Desa --" });
-                    villageSelectInstance.setValue("");
-
-                    if (provinceId) {
+                    const provinceId = provinceSelectInstance.options[value]['data-id'];
+                    regencySelectInstance.enable();
+                    regencySelectInstance.load(function(callback) {
                         fetch(`https://www.emsifa.com/api-wilayah-indonesia/api/regencies/${provinceId}.json`)
                             .then(response => response.json())
                             .then(regencies => {
-                                regencies.forEach(regency => {
-                                    regencySelectInstance.addOption({ value: regency.name, text: regency.name, data_id: regency.id });
-                                });
-                            });
-                    }
+                                const options = regencies.map(r => ({ value: r.name, text: r.name, 'data-id': r.id }));
+                                callback(options);
+                                if (oldValues.kota) {
+                                    regencySelectInstance.setValue(oldValues.kota);
+                                    oldValues.kota = null; // Prevent re-triggering
+                                }
+                            }).catch(() => callback());
+                    });
                 });
 
-                regencySelect.addEventListener('change', function() {
-                    const selectedValue = this.value;
-                    let regencyId = "";
-                    let options = regencySelectInstance.options;
-                    for (let key in options) {
-                        if (options[key].value === selectedValue) {
-                            regencyId = options[key].data_id;
-                            break;
-                        }
-                    }
+                // Regency Change Event
+                regencySelectInstance.on('change', function(value) {
+                    resetDropdown(districtSelectInstance, '-- Pilih Kecamatan --');
+                    resetDropdown(villageSelectInstance, '-- Pilih Kelurahan/Desa --');
 
-                    districtSelectInstance.clearOptions();
-                    districtSelectInstance.addOption({ value: "", text: "-- Pilih Kecamatan --" });
-                    districtSelectInstance.setValue("");
+                    if (!value) return;
 
-                    villageSelectInstance.clearOptions();
-                    villageSelectInstance.addOption({ value: "", text: "-- Pilih Kelurahan/Desa --" });
-                    villageSelectInstance.setValue("");
-
-                    if (regencyId) {
+                    const regencyId = regencySelectInstance.options[value]['data-id'];
+                    districtSelectInstance.enable();
+                    districtSelectInstance.load(function(callback) {
                         fetch(`https://www.emsifa.com/api-wilayah-indonesia/api/districts/${regencyId}.json`)
                             .then(response => response.json())
                             .then(districts => {
-                                districts.forEach(district => {
-                                    districtSelectInstance.addOption({ value: district.name, text: district.name, data_id: district.id });
-                                });
-                            });
-                    }
+                                const options = districts.map(d => ({ value: d.name, text: d.name, 'data-id': d.id }));
+                                callback(options);
+                                if (oldValues.kecamatan) {
+                                    districtSelectInstance.setValue(oldValues.kecamatan);
+                                    oldValues.kecamatan = null;
+                                }
+                            }).catch(() => callback());
+                    });
                 });
 
-                districtSelect.addEventListener('change', function() {
-                    const selfValue = this.value;
-                    let districtId = "";
-                    let options = districtSelectInstance.options;
-                    for (let key in options) {
-                        if (options[key].value === selfValue) {
-                            districtId = options[key].data_id;
-                            break;
-                        }
-                    }
+                // District Change Event
+                districtSelectInstance.on('change', function(value) {
+                    resetDropdown(villageSelectInstance, '-- Pilih Kelurahan/Desa --');
 
-                    villageSelectInstance.clearOptions();
-                    villageSelectInstance.addOption({ value: "", text: "-- Pilih Kelurahan/Desa --" });
-                    villageSelectInstance.setValue("");
+                    if (!value) return;
 
-                    if (districtId) {
+                    const districtId = districtSelectInstance.options[value]['data-id'];
+                    villageSelectInstance.enable();
+                    villageSelectInstance.load(function(callback) {
                         fetch(`https://www.emsifa.com/api-wilayah-indonesia/api/villages/${districtId}.json`)
                             .then(response => response.json())
                             .then(villages => {
-                                villages.forEach(village => {
-                                    villageSelectInstance.addOption({ value: village.name, text: village.name });
-                                });
-                            });
-                    }
+                                const options = villages.map(v => ({ value: v.name, text: v.name, 'data-id': v.id }));
+                                callback(options);
+                                if (oldValues.kelurahan) {
+                                    villageSelectInstance.setValue(oldValues.kelurahan);
+                                    oldValues.kelurahan = null;
+                                }
+                            }).catch(() => callback());
+                    });
                 });
+
+                // Initial state
+                if (!oldValues.provinsi) {
+                    regencySelectInstance.clearOptions();
+                    districtSelectInstance.disable();
+                    villageSelectInstance.disable();
+                }
             });
         </script>
     @endpush

@@ -968,7 +968,7 @@
                         class="relative overflow-hidden rounded-2xl md:rounded-3xl bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 p-6 sm:p-10 md:p-12 text-white shadow-xl md:shadow-2xl border border-slate-800/80 group">
                         <!-- Efek Backdrop Glow & Pattern Dekoratif -->
                         <div
-                            class="absolute -right-20 -top-20 w-64 md:w-96 h-64 md:h-96 bg-orange-500/15 rounded-full blur-3xl pointer-events-none transition-all duration-700 group-hover:scale-125">
+                            class="absolute -right-20 -top-20 w-64 md:w-96 h-64 md:h-96 bg-red-500/15 rounded-full blur-3xl pointer-events-none transition-all duration-700 group-hover:scale-125">
                         </div>
                         <div
                             class="absolute -left-20 -bottom-20 w-60 md:w-80 h-60 md:h-80 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none">
@@ -976,14 +976,14 @@
 
                         <div class="relative z-10 max-w-2xl space-y-4 md:space-y-5">
                             <span
-                                class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-orange-500/20 border border-orange-500/30 text-orange-300 text-[10px] md:text-xs font-semibold tracking-wide uppercase shadow-inner backdrop-blur-md">
-                                <i class="fa-solid fa-shield-halved text-orange-400"></i> Keanggotaan Resmi BAKUMDA
+                                class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-red-500/20 border border-red-500/30 text-red-300 text-[10px] md:text-xs font-semibold tracking-wide uppercase shadow-inner backdrop-blur-md">
+                                <i class="fa-solid fa-shield-halved text-red-400"></i> Keanggotaan Resmi BAKUMDA
                             </span>
 
                             <h1
                                 class="text-2xl sm:text-3xl md:text-5xl font-extrabold leading-[1.2] md:leading-[1.15] tracking-tight text-white">
                                 Bergabunglah Bersama Jaringan Masyarakat <span
-                                    class="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-indigo-300">Hukum
+                                    class="text-transparent bg-clip-text bg-gradient-to-r from-red-400 to-indigo-300">Hukum
                                     Indonesia</span>
                             </h1>
 
@@ -994,7 +994,7 @@
 
                             <div class="pt-2 md:pt-3 flex flex-wrap items-center gap-3">
                                 <a href="{{ route('user-anggota.create') }}"
-                                    class="inline-flex items-center gap-2 px-5 md:px-7 py-3 md:py-3.5 rounded-xl md:rounded-2xl bg-orange-600 hover:bg-orange-500 text-white font-bold text-xs shadow-lg shadow-orange-600/30 transition-all duration-300 hover:scale-[1.03] active:scale-95">
+                                    class="inline-flex items-center gap-2 px-5 md:px-7 py-3 md:py-3.5 rounded-xl md:rounded-2xl bg-red-600 hover:bg-red-500 text-white font-bold text-xs shadow-lg shadow-red-600/30 transition-all duration-300 hover:scale-[1.03] active:scale-95">
                                     <span>Mulai Pendaftaran Sekarang</span>
                                     <i
                                         class="fa-solid fa-arrow-right text-xs transition-transform duration-300 group-hover:translate-x-1"></i>
@@ -1027,10 +1027,10 @@
                         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6">
                             <!-- Card 1 -->
                             <div
-                                class="group p-5 md:p-7 rounded-2xl md:rounded-3xl bg-white border border-slate-200/80 shadow-sm hover:shadow-xl hover:border-orange-500/30 transition-all duration-300 flex flex-col justify-between hover:-translate-y-1">
+                                class="group p-5 md:p-7 rounded-2xl md:rounded-3xl bg-white border border-slate-200/80 shadow-sm hover:shadow-xl hover:border-red-500/30 transition-all duration-300 flex flex-col justify-between hover:-translate-y-1">
                                 <div class="space-y-3 md:space-y-4">
                                     <div
-                                        class="w-12 h-12 md:w-14 md:h-14 rounded-xl md:rounded-2xl bg-orange-50 text-orange-600 flex items-center justify-center text-lg md:text-xl font-bold transition-transform duration-300 group-hover:scale-110 shadow-sm">
+                                        class="w-12 h-12 md:w-14 md:h-14 rounded-xl md:rounded-2xl bg-red-50 text-red-600 flex items-center justify-center text-lg md:text-xl font-bold transition-transform duration-300 group-hover:scale-110 shadow-sm">
                                         <i class="fa-solid fa-id-card"></i>
                                     </div>
                                     <h3 class="font-extrabold text-sm sm:text-base text-slate-900">Kartu Anggota Resmi
@@ -1095,7 +1095,7 @@
                             <div
                                 class="p-4 rounded-xl bg-slate-50 border border-slate-100 space-y-2 transition-all hover:bg-slate-100/80">
                                 <span
-                                    class="inline-block px-2 py-0.5 rounded bg-orange-500/10 text-[11px] font-black text-orange-600 font-mono">01</span>
+                                    class="inline-block px-2 py-0.5 rounded bg-red-500/10 text-[11px] font-black text-red-600 font-mono">01</span>
                                 <h4 class="font-extrabold text-xs sm:text-sm text-slate-900">Isi Formulir Online</h4>
                                 <p class="text-[11px] sm:text-xs text-slate-500 leading-relaxed">Melengkapi identitas diri
                                     dan informasi domisili secara valid.</p>
@@ -1104,7 +1104,7 @@
                             <div
                                 class="p-4 rounded-xl bg-slate-50 border border-slate-100 space-y-2 transition-all hover:bg-slate-100/80">
                                 <span
-                                    class="inline-block px-2 py-0.5 rounded bg-orange-500/10 text-[11px] font-black text-orange-600 font-mono">02</span>
+                                    class="inline-block px-2 py-0.5 rounded bg-red-500/10 text-[11px] font-black text-red-600 font-mono">02</span>
                                 <h4 class="font-extrabold text-xs sm:text-sm text-slate-900">Upload Dokumen</h4>
                                 <p class="text-[11px] sm:text-xs text-slate-500 leading-relaxed">Mengunggah scan KTP dan
                                     pas foto terbaru ukuran 3x4.</p>
@@ -1113,7 +1113,7 @@
                             <div
                                 class="p-4 rounded-xl bg-slate-50 border border-slate-100 space-y-2 transition-all hover:bg-slate-100/80">
                                 <span
-                                    class="inline-block px-2 py-0.5 rounded bg-orange-500/10 text-[11px] font-black text-orange-600 font-mono">03</span>
+                                    class="inline-block px-2 py-0.5 rounded bg-red-500/10 text-[11px] font-black text-red-600 font-mono">03</span>
                                 <h4 class="font-extrabold text-xs sm:text-sm text-slate-900">Ikuti Pelatihan</h4>
                                 <p class="text-[11px] sm:text-xs text-slate-500 leading-relaxed">Wajib mengikuti program
                                     pelatihan yang telah ditentukan.</p>
@@ -1122,7 +1122,7 @@
                             <div
                                 class="p-4 rounded-xl bg-slate-50 border border-slate-100 space-y-2 transition-all hover:bg-slate-100/80">
                                 <span
-                                    class="inline-block px-2 py-0.5 rounded bg-orange-500/10 text-[11px] font-black text-orange-600 font-mono">04</span>
+                                    class="inline-block px-2 py-0.5 rounded bg-red-500/10 text-[11px] font-black text-red-600 font-mono">04</span>
                                 <h4 class="font-extrabold text-xs sm:text-sm text-slate-900">Verifikasi Pengurus</h4>
                                 <p class="text-[11px] sm:text-xs text-slate-500 leading-relaxed">Tim pengurus akan
                                     memvalidasi kelengkapan berkas Anda.</p>
@@ -1131,7 +1131,7 @@
                             <div
                                 class="p-4 rounded-xl bg-slate-50 border border-slate-100 space-y-2 transition-all hover:bg-slate-100/80">
                                 <span
-                                    class="inline-block px-2 py-0.5 rounded bg-orange-500/10 text-[11px] font-black text-orange-600 font-mono">05</span>
+                                    class="inline-block px-2 py-0.5 rounded bg-red-500/10 text-[11px] font-black text-red-600 font-mono">05</span>
                                 <h4 class="font-extrabold text-xs sm:text-sm text-slate-900">Penerbitan KTA</h4>
                                 <p class="text-[11px] sm:text-xs text-slate-500 leading-relaxed">Menerima NIA dan Kartu
                                     Tanda Anggota (KTA) BAKUMDA.</p>
@@ -1174,7 +1174,7 @@
 
                     <!-- Bottom Action Card -->
                     <div
-                        class="relative overflow-hidden p-6 sm:p-8 rounded-2xl md:rounded-3xl bg-gradient-to-r from-orange-600 via-indigo-600 to-orange-700 text-white shadow-xl flex flex-col sm:flex-row items-center justify-between gap-5">
+                        class="relative overflow-hidden p-6 sm:p-8 rounded-2xl md:rounded-3xl bg-gradient-to-r from-red-600 via-indigo-600 to-red-700 text-white shadow-xl flex flex-col sm:flex-row items-center justify-between gap-5">
                         <!-- Dekorasi Background Tipis -->
                         <div
                             class="absolute -right-10 -top-10 w-40 h-40 bg-white/10 rounded-full blur-2xl pointer-events-none">
@@ -1187,7 +1187,7 @@
                         </div>
 
                         <a href="{{ route('user-anggota.create') }}"
-                            class="z-10 shrink-0 inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-white text-orange-700 hover:bg-slate-100 font-extrabold text-xs shadow-lg transition-all duration-300 hover:scale-105 active:scale-95">
+                            class="z-10 shrink-0 inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-white text-red-700 hover:bg-slate-100 font-extrabold text-xs shadow-lg transition-all duration-300 hover:scale-105 active:scale-95">
                             <span>Lanjut ke Formulir</span>
                             <i class="fa-solid fa-arrow-right text-xs"></i>
                         </a>
@@ -1197,3 +1197,32 @@
 
         </div>
     @endsection
+
+    @push('scripts')
+        @if (isset($anggota) && $anggota)
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    const currentStatus = '{{ $currentStatus }}';
+                    const anggotaId = {{ $anggota->id }};
+                    const checkUrl = `{{ route('user-anggota.status.check', ':id') }}`.replace(':id', anggotaId);
+
+                    const statusCheckInterval = setInterval(() => {
+                        fetch(checkUrl)
+                            .then(response => {
+                                if (!response.ok) {
+                                    throw new Error('Network response was not ok');
+                                }
+                                return response.json();
+                            })
+                            .then(data => {
+                                if (data.status && data.status !== currentStatus) {
+                                    // Jika status berubah, muat ulang halaman
+                                    location.reload();
+                                }
+                            })
+                            .catch(error => console.error('Error checking status:', error));
+                    }, 5000); // Cek setiap 5 detik
+                });
+            </script>
+        @endif
+    @endpush

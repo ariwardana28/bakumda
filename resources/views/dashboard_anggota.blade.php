@@ -196,7 +196,7 @@
                     </div>
                 @else
                     <!-- Tampilan Pendaftaran Anggota Baru -->
-                    <a href="#"
+                    <div
                         class="mt-1 md:mt-0 bg-gradient-to-br from-blue-900 to-indigo-950 border border-blue-800/60 rounded-3xl p-5 md:p-6 shadow-xl flex flex-col justify-between transition-transform duration-300 hover:scale-[1.02] group">
                         <div class="flex items-center justify-between gap-4">
                             <div>
@@ -212,7 +212,7 @@
                                     Proses Cepat & Mudah.
                                 </p>
                             </div>
-                            <!-- Kartu mini/chip di sebelah kanan, sejajar secara vertikal dengan teks/tombol -->
+                            <!-- Kartu mini/chip di sebelah kanan -->
                             <div
                                 class="w-24 h-16 md:w-28 md:h-20 rounded-2xl bg-gradient-to-br from-slate-800 via-slate-900 to-slate-950 border border-slate-700/80 p-3 flex flex-col justify-between shrink-0 shadow-lg z-10 my-auto">
                                 <div class="flex justify-between items-start">
@@ -228,39 +228,79 @@
                                 </div>
                             </div>
                         </div>
+
                         <div
                             class="pt-4 mt-3 border-t border-blue-800/60 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                             <span class="text-[11px] text-blue-300 font-medium">Pastikan Anda Telah Memiliki Sertifikat
-                                DIKLATKUM
-                                Sebagai Syarat Utama Untuk Bergabung</span>
+                                DIKLATKUM Sebagai Syarat Utama Untuk Bergabung</span>
 
-                            <!-- Bungkus tombol berdampingan dengan style/warna berbeda -->
+                            <!-- Bungkus tombol berdampingan -->
                             <div class="flex items-center gap-2 shrink-0">
-                                <!-- Tombol Ikuti DIKLATKUM (Warna Biru/Indigo) + class menu-item-auth -->
-                                <div
-                                    class="menu-item-auth bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold text-xs px-4 py-2 rounded-full shadow transition cursor-pointer">
+                                <!-- Tombol Ikuti DIKLATKUM -->
+                                <a href="#"
+                                    class="menu-item-auth bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold text-xs px-4 py-2 rounded-full shadow transition cursor-pointer inline-flex items-center justify-center">
                                     IKUTI DIKLATKUM
-                                </div>
+                                </a>
 
-                                <!-- Tombol Daftar Keanggotaan (Warna Kuning/Oranye, Teks Putih dengan garis pinggir hitam) + class menu-item-auth -->
-                                <div
-                                    class="menu-item-auth bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-300 hover:to-orange-400 text-white font-bold text-xs px-4 py-2 rounded-full shadow transition cursor-pointer">
+                                <!-- Tombol Daftar Keanggotaan (Diubah menjadi tag <a> yang valid) -->
+                                <a href="{{ route('user-anggota.index') }}"
+                                    class="menu-item-auth bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-300 hover:to-orange-400 text-white font-bold text-xs px-4 py-2 rounded-full shadow transition cursor-pointer inline-flex items-center justify-center">
                                     DAFTAR KEANGGOTAAN
-                                </div>
+                                </a>
                             </div>
                         </div>
-                    </a>
+                    </div>
                 @endif
             </div>
             <br>
 
             <div
+                x-data="{ showAuthModal: false }"
                 class="bg-white text-slate-900 rounded-t-[2.5rem] rounded-b-[2.5rem] -mt-4 pt-10 px-6 sm:px-12 shadow-2xl relative z-20 flex-1 space-y-8 pb-12">
+
+                <!-- Modal Peringatan Akses -->
+                <div x-show="showAuthModal" x-transition:enter="transition ease-out duration-300"
+                    x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+                    x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100"
+                    x-transition:leave-end="opacity-0"
+                    class="fixed inset-0 bg-black bg-opacity-60 z-[99] flex items-center justify-center p-4" x-cloak>
+                    <div @click.away="showAuthModal = false"
+                        x-show="showAuthModal"
+                        x-transition:enter="transition ease-out duration-300"
+                        x-transition:enter-start="opacity-0 scale-90"
+                        x-transition:enter-end="opacity-100 scale-100"
+                        x-transition:leave="transition ease-in duration-200"
+                        x-transition:leave-start="opacity-100 scale-100"
+                        x-transition:leave-end="opacity-0 scale-90"
+                        class="bg-white rounded-2xl shadow-xl w-full max-w-md mx-auto p-6 text-center">
+                        <div class="mx-auto w-16 h-16 rounded-full bg-red-100 flex items-center justify-center mb-4">
+                            <i class="fa-solid fa-lock text-red-500 text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-800">Akses Terbatas</h3>
+                        <p class="text-slate-500 mt-2 mb-6">
+                            Fitur ini hanya tersedia untuk anggota terverifikasi. Silakan daftar menjadi anggota untuk menikmati semua fitur eksklusif.
+                        </p>
+                        <div class="flex flex-col sm:flex-row gap-3 justify-center">
+                            <button @click="showAuthModal = false"
+                                class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-3 px-5 rounded-xl transition">
+                                Nanti Saja
+                            </button>
+                            <a href="{{ route('user-anggota.index') }}"
+                                class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-5 rounded-xl shadow-lg shadow-blue-200 transition">
+                                Daftar Anggota
+                            </a>
+                        </div>
+                    </div>
+                </div>
 
                 <!-- ========================================== -->
                 <!-- MENU UTAMA (KONDISI MOBILE vs DESKTOP)     -->
                 <!-- ========================================== -->
                 <div>
+                    @php
+                        $isMember = isset($isRegistered) && $isRegistered;
+                        $authAction = $isMember ? '' : 'href="#" @click.prevent="showAuthModal = true"';
+                    @endphp
 
                     <!-- Grid Menu: 4 Kolom untuk Mobile (<= 13 Inch), 8 Kolom untuk Desktop (> 13 Inch) -->
                     <h3 class="text-lg font-extrabold text-slate-900 leading-tight">Fitur Eksklusif</h3><br>
@@ -296,7 +336,7 @@
                         </a>
 
                         <!-- Menu 3 (Mobile: Legalku, Desktop: UU & Perda) -->
-                        <a href="{{ url('/user-surat') }}" class="flex flex-col items-center cursor-pointer group">
+                        <a {!! $isMember ? 'href="'.url('/user-surat').'"' : $authAction !!} class="menu-item-auth flex flex-col items-center cursor-pointer group">
                             <div
                                 class="w-16 h-16 md:w-18 md:h-18 rounded-2xl bg-gradient-to-tr from-slate-800 to-blue-900 flex items-center justify-center text-white shadow-md shadow-blue-500/20 group-hover:scale-105 transition">
                                 <i
@@ -309,7 +349,7 @@
                         </a>
 
                         <!-- Menu 4 (Mobile: Inspirator, Desktop: Paralegal) -->
-                        <a href="" class="flex flex-col items-center cursor-pointer group">
+                        <a {!! $isMember ? 'href="'.route('user-referral.index').'"' : $authAction !!} class="menu-item-auth flex flex-col items-center cursor-pointer group">
                             <div
                                 class="w-16 h-16 md:w-18 md:h-18 rounded-2xl bg-gradient-to-tr from-blue-600 to-cyan-700 flex items-center justify-center text-white shadow-md shadow-blue-500/20 group-hover:scale-105 transition">
                                 <i class="fa-solid fa-lightbulb max-[1280px]:block min-[1281px]:hidden text-2xl"></i>
@@ -320,7 +360,7 @@
                                 class="text-xs font-semibold text-slate-700 mt-2 text-center leading-tight">Inspirator</span>
                         </a>
 
-                        <a href="" class="flex flex-col items-center cursor-pointer group">
+                        <a href="#" class="flex flex-col items-center cursor-pointer group">
                             <div
                                 class="w-16 h-16 md:w-18 md:h-18 rounded-2xl bg-gradient-to-tr from-blue-600 to-cyan-700 flex items-center justify-center text-white shadow-md shadow-blue-500/20 group-hover:scale-105 transition">
                                 <i class="fa-solid fa-newspaper max-[1280px]:block min-[1281px]:hidden text-2xl"></i>
@@ -332,7 +372,7 @@
                         </a>
 
                         <!-- Menu 5 (Mobile: Struktur, Desktop: Dokumen) -->
-                        <a href="{{route('korwil')}}" class="flex flex-col items-center cursor-pointer group">
+                        <a {!! $isMember ? 'href="'.route('korwil').'"' : $authAction !!} class="menu-item-auth flex flex-col items-center cursor-pointer group">
                             <div
                                 class="w-16 h-16 md:w-18 md:h-18 rounded-2xl bg-gradient-to-tr from-amber-600 to-yellow-600 flex items-center justify-center text-white shadow-md shadow-amber-500/20 group-hover:scale-105 transition">
                                 <i class="fa-solid fa-sitemap max-[1280px]:block min-[1281px]:hidden text-2xl"></i>
@@ -344,7 +384,7 @@
                         </a>
 
                         <!-- Menu 6 (Mobile: E-Organisasi, Desktop: Mediator) -->
-                        <a href="{{ url('/about') }}" class="flex flex-col items-center cursor-pointer group">
+                        <a {!! $isMember ? 'href="'.url('/about').'"' : $authAction !!} class="menu-item-auth flex flex-col items-center cursor-pointer group">
                             <div
                                 class="w-16 h-16 md:w-18 md:h-18 rounded-2xl bg-gradient-to-tr from-blue-900 to-slate-900 flex items-center justify-center text-white shadow-md shadow-blue-500/20 group-hover:scale-105 transition">
                                 <i
@@ -357,7 +397,7 @@
                         </a>
 
                         <!-- Menu 7 (Mobile: Merchandise, Desktop: Darurat) -->
-                        <a href="{{ route('merchandise.index') }}"
+                        <a {!! $isMember ? 'href="'.route('merchandise.index').'"' : $authAction !!}
                             class="menu-item-auth flex flex-col items-center cursor-pointer group">
                             <div
                                 class="w-16 h-16 md:w-18 md:h-18 rounded-2xl bg-gradient-to-tr from-red-600 to-rose-800 flex items-center justify-center text-white shadow-md shadow-red-500/20 group-hover:scale-105 transition">
@@ -687,7 +727,482 @@
 
             <!-- Desktop Content Slot -->
             <div class="flex-1">
-                @yield('content')
+                <!-- HERO BANNER & KTA / PENDAFTARAN            -->
+                <!-- ========================================== -->
+                <div class="grid grid-cols-1 gap-3 md:gap-6 mb-4 md:mb-8 relative z-7">
+
+                    <!-- Hero Banner Slider -->
+                    <div id="banner-slider-container"
+                        class="relative w-full overflow-hidden rounded-3xl shadow-xl border border-slate-800 mb-1 md:mb-4 z-10">
+                        <!-- Slider Track -->
+                        <div class="heroSlider flex transition-transform duration-700 ease-out w-full">
+                            <!-- Slide 1 -->
+                            <div class="slide-item min-w-full w-full relative overflow-hidden">
+                                <img src="{{ asset('b1.jpeg') }}" alt="Banner 1"
+                                    class="w-full h-auto object-contain">
+                            </div>
+                            <!-- Slide 2 -->
+                            <div class="slide-item min-w-full w-full relative overflow-hidden">
+                                <img src="{{ asset('b2.jpeg') }}" alt="Banner 2"
+                                    class="w-full h-auto object-contain">
+                            </div>
+                            <div class="slide-item min-w-full w-full relative overflow-hidden">
+                                <img src="{{ asset('b3.jpeg') }}" alt="Banner 3"
+                                    class="w-full h-auto object-contain">
+                            </div>
+                            <div class="slide-item min-w-full w-full relative overflow-hidden">
+                                <img src="{{ asset('b4.jpeg') }}" alt="Banner 4"
+                                    class="w-full h-auto object-contain">
+                            </div>
+                        </div>
+
+                        <!-- Indikator Dots -->
+                        <div class="absolute bottom-3 right-4 z-30 flex space-x-1.5" id="slider-dots">
+                            <button class="dot h-2 w-5 bg-white rounded-full transition-all duration-300"
+                                data-index="0"></button>
+                            <button class="dot h-2 w-2 bg-white/50 rounded-full transition-all duration-300"
+                                data-index="1"></button>
+                            <button class="dot h-2 w-2 bg-white/50 rounded-full transition-all duration-300"
+                                data-index="2"></button>
+                            <button class="dot h-2 w-2 bg-white/50 rounded-full transition-all duration-300"
+                                data-index="3"></button>
+                        </div>
+                    </div>
+
+                    <!-- Skrip JavaScript Slider Banner -->
+                    <script>
+                        document.addEventListener("DOMContentLoaded", function() {
+                            const container = document.getElementById("banner-slider-container");
+                            if (!container) return;
+
+                            const slider = container.querySelector(".heroSlider");
+                            const slides = container.querySelectorAll(".slide-item");
+                            const dots = container.querySelectorAll("#slider-dots .dot");
+                            let currentIndex = 0;
+                            const totalSlides = slides.length;
+                            const intervalTime = 2000;
+
+                            function updateSlider() {
+                                slider.style.transform = `translateX(-${currentIndex * 100}%)`;
+                                dots.forEach((dot, index) => {
+                                    if (index === currentIndex) {
+                                        dot.classList.remove("w-2", "bg-white/50");
+                                        dot.classList.add("w-5", "bg-white");
+                                    } else {
+                                        dot.classList.remove("w-5", "bg-white");
+                                        dot.classList.add("w-2", "bg-white/50");
+                                    }
+                                });
+                            }
+
+                            function nextSlide() {
+                                currentIndex = (currentIndex + 1) % totalSlides;
+                                updateSlider();
+                            }
+
+                            let slideInterval = setInterval(nextSlide, intervalTime);
+
+                            dots.forEach((dot, index) => {
+                                dot.addEventListener("click", function() {
+                                    currentIndex = index;
+                                    updateSlider();
+                                    clearInterval(slideInterval);
+                                    slideInterval = setInterval(nextSlide, intervalTime);
+                                });
+                            });
+                        });
+                    </script>
+
+                    <!-- KTA / Pendaftaran Anggota (Modern & Responsif) -->
+                    @if (isset($isRegistered) && $isRegistered)
+                        <div class="relative group mt-1 md:mt-0">
+                            <div
+                                class="absolute -inset-1 bg-gradient-to-r from-blue-900 to-indigo-950 rounded-2xl md:rounded-3xl blur opacity-25 group-hover:opacity-40 transition duration-500">
+                            </div>
+
+                            <div
+                                class="relative bg-gradient-to-br from-blue-900 to-indigo-950 border border-blue-800/60 rounded-2xl md:rounded-3xl p-4 md:p-6 shadow-2xl flex items-center justify-between overflow-hidden">
+                                <div
+                                    class="absolute top-0 right-0 -mt-4 -mr-4 w-32 h-32 bg-blue-500/10 rounded-full blur-2xl pointer-events-none">
+                                </div>
+
+                                <!-- Informasi Anggota -->
+                                <div class="space-y-1.5 md:space-y-2 z-10">
+                                    <div class="flex items-center space-x-2 mb-1">
+
+                                        <span
+                                            class="text-[10px] md:text-xs font-bold text-amber-300 uppercase tracking-wider">
+                                            Anda Telah Terdaftar
+                                        </span>
+                                    </div>
+                                    <div
+                                        class="font-mono font-black text-white text-sm md:text-xl tracking-widest drop-shadow">
+
+                                        {{ $nama_anggota ?? 'DR. H. ARIS M.' }}
+                                    </div>
+                                    <p
+                                        class="text-xs md:text-sm text-blue-200/80 font-extrabold uppercase tracking-wide mt-1">
+
+                                        {{ $no_ktpa ?? '7371 2094 0000 3127' }}
+                                    </p>
+                                </div>
+
+                                <!-- Chip Kartu Digital -->
+                                <div
+                                    class="w-24 h-16 md:w-28 md:h-20 rounded-2xl bg-gradient-to-br from-slate-800 via-slate-900 to-slate-950 border border-slate-700/80 p-3 flex flex-col justify-between shrink-0 shadow-lg z-10 my-auto">
+                                    <div class="flex justify-between items-start">
+                                        <span
+                                            class="text-[9px] md:text-[10px] text-slate-400 font-black tracking-wider">BAKUMDA</span>
+                                        <div
+                                            class="w-2.5 h-2.5 rounded-full bg-amber-400 shadow-[0_0_10px_rgba(251,191,36,0.9)]">
+                                        </div>
+                                    </div>
+                                    <div
+                                        class="w-8 md:w-10 h-4 md:h-5 bg-gradient-to-r from-amber-400/30 to-amber-200/40 border border-amber-400/40 rounded-[4px] ml-auto flex items-center justify-center">
+                                        <div class="w-full h-[1.5px] bg-amber-400/50"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    @else
+                        <!-- Tampilan Pendaftaran Anggota Baru -->
+                        <div
+                            class="mt-1 md:mt-0 bg-gradient-to-br from-blue-900 to-indigo-950 border border-blue-800/60 rounded-3xl p-5 md:p-6 shadow-xl flex flex-col justify-between transition-transform duration-300 hover:scale-[1.02] group">
+                            <div class="flex items-center justify-between gap-4">
+                                <div>
+                                    <div class="mb-2">
+                                        <span class="text-xs font-bold text-yellow-300 uppercase tracking-wider">Anda
+                                            Belum
+                                            Terdaftar</span>
+                                    </div>
+                                    <h4
+                                        class="font-black text-white text-base md:text-lg tracking-wide group-hover:text-blue-200 transition">
+                                        Ajukan Diri Menjadi Anggota BAKUMDA
+                                    </h4>
+                                    <p class="text-xs sm:text-sm text-blue-200/80 font-medium mt-1">
+                                        Proses Cepat & Mudah.
+                                    </p>
+                                </div>
+                                <!-- Kartu mini/chip di sebelah kanan -->
+                                <div
+                                    class="w-24 h-16 md:w-28 md:h-20 rounded-2xl bg-gradient-to-br from-slate-800 via-slate-900 to-slate-950 border border-slate-700/80 p-3 flex flex-col justify-between shrink-0 shadow-lg z-10 my-auto">
+                                    <div class="flex justify-between items-start">
+                                        <span
+                                            class="text-[9px] md:text-[10px] text-slate-400 font-black tracking-wider">BAKUMDA</span>
+                                        <div
+                                            class="w-2.5 h-2.5 rounded-full bg-amber-400 shadow-[0_0_10px_rgba(251,191,36,0.9)]">
+                                        </div>
+                                    </div>
+                                    <div
+                                        class="w-8 md:w-10 h-4 md:h-5 bg-gradient-to-r from-amber-400/30 to-amber-200/40 border border-amber-400/40 rounded-[4px] ml-auto flex items-center justify-center">
+                                        <div class="w-full h-[1.5px] bg-amber-400/50"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div
+                                class="pt-4 mt-3 border-t border-blue-800/60 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                                <span class="text-[11px] text-blue-300 font-medium">Pastikan Anda Telah Memiliki
+                                    Sertifikat
+                                    DIKLATKUM Sebagai Syarat Utama Untuk Bergabung</span>
+
+                                <!-- Bungkus tombol berdampingan -->
+                                <div class="flex items-center gap-2 shrink-0">
+                                    <!-- Tombol Ikuti DIKLATKUM -->
+                                    <a href="#"
+                                        class="menu-item-auth bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold text-xs px-4 py-2 rounded-full shadow transition cursor-pointer inline-flex items-center justify-center">
+                                        IKUTI DIKLATKUM
+                                    </a>
+
+                                    <!-- Tombol Daftar Keanggotaan (Diubah menjadi tag <a> yang valid) -->
+                                    <a href="{{ route('user-anggota.index') }}"
+                                        class="menu-item-auth bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-300 hover:to-orange-400 text-white font-bold text-xs px-4 py-2 rounded-full shadow transition cursor-pointer inline-flex items-center justify-center">
+                                        DAFTAR KEANGGOTAAN
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    @endif
+                </div>
+                <br>
+
+                <div
+                    class="bg-white text-slate-900 rounded-t-[2.5rem] rounded-b-[2.5rem] -mt-4 pt-10 px-6 sm:px-12 shadow-2xl relative z-20 flex-1 space-y-8 pb-12">
+
+                    <!-- ========================================== -->
+                    <!-- MENU UTAMA (KONDISI MOBILE vs DESKTOP)     -->
+                    <!-- ========================================== -->
+                    <div>
+
+                        <!-- Grid Menu: 4 Kolom untuk Mobile (<= 13 Inch), 8 Kolom untuk Desktop (> 13 Inch) -->
+                        <h3 class="text-lg font-extrabold text-slate-900 leading-tight">Fitur Eksklusif</h3><br>
+                        <div class="grid grid-cols-4 min-[1281px]:grid-cols-8 gap-y-6 gap-x-4">
+
+                            <!-- Menu 1 (Mobile: Pelatihan, Desktop: Konsultasi) -->
+                            <a href="{{ route('user-pelatihan.index') }}"
+                                class="flex flex-col items-center cursor-pointer group">
+                                <div
+                                    class="w-16 h-16 md:w-18 md:h-18 rounded-2xl bg-gradient-to-tr from-blue-700 to-indigo-600 flex items-center justify-center text-white shadow-md shadow-blue-500/20 group-hover:scale-105 transition">
+                                    <!-- Icon Mobile (<= 13 Inch) -->
+                                    <i
+                                        class="fa-solid fa-graduation-cap max-[1280px]:block min-[1281px]:hidden text-2xl"></i>
+                                    <!-- Icon Desktop (> 13 Inch) -->
+                                    <i
+                                        class="fa-solid fa-graduation-cap hidden max-[1280px]:hidden min-[1281px]:block text-xl"></i>
+                                </div>
+                                <span
+                                    class="text-xs font-semibold text-slate-700 mt-2 text-center leading-tight">Pelatihan</span>
+                            </a>
+
+                            <!-- Menu 2 (Mobile: Sertifikat, Desktop: Advokasi) -->
+                            <a href="{{ route('sertifikat.index') }}"
+                                class="flex flex-col items-center cursor-pointer group">
+                                <div
+                                    class="w-16 h-16 md:w-18 md:h-18 rounded-2xl bg-gradient-to-tr from-blue-800 to-blue-600 flex items-center justify-center text-white shadow-md shadow-blue-500/20 group-hover:scale-105 transition">
+                                    <i
+                                        class="fa-solid fa-certificate max-[1280px]:block min-[1281px]:hidden text-2xl"></i>
+                                    <i
+                                        class="fa-solid fa-certificate hidden max-[1280px]:hidden min-[1281px]:block text-xl"></i>
+                                </div>
+                                <span
+                                    class="text-xs font-semibold text-slate-700 mt-2 text-center leading-tight">Sertifikat</span>
+                            </a>
+
+                            <!-- Menu 3 (Mobile: Legalku, Desktop: UU & Perda) -->
+                            <a href="{{ url('/user-surat') }}"
+                                class="flex flex-col items-center cursor-pointer group">
+                                <div
+                                    class="w-16 h-16 md:w-18 md:h-18 rounded-2xl bg-gradient-to-tr from-slate-800 to-blue-900 flex items-center justify-center text-white shadow-md shadow-blue-500/20 group-hover:scale-105 transition">
+                                    <i
+                                        class="fa-solid fa-scale-balanced max-[1280px]:block min-[1281px]:hidden text-2xl"></i>
+                                    <i
+                                        class="fa-solid fa-scale-balanced hidden max-[1280px]:hidden min-[1281px]:block text-xl"></i>
+                                </div>
+                                <span
+                                    class="text-xs font-semibold text-slate-700 mt-2 text-center leading-tight">Legalku</span>
+                            </a>
+
+                            <!-- Menu 4 (Mobile: Inspirator, Desktop: Paralegal) -->
+                            <a href="" class="flex flex-col items-center cursor-pointer group">
+                                <div
+                                    class="w-16 h-16 md:w-18 md:h-18 rounded-2xl bg-gradient-to-tr from-blue-600 to-cyan-700 flex items-center justify-center text-white shadow-md shadow-blue-500/20 group-hover:scale-105 transition">
+                                    <i
+                                        class="fa-solid fa-lightbulb max-[1280px]:block min-[1281px]:hidden text-2xl"></i>
+                                    <i
+                                        class="fa-solid fa-lightbulb hidden max-[1280px]:hidden min-[1281px]:block text-xl"></i>
+                                </div>
+                                <span
+                                    class="text-xs font-semibold text-slate-700 mt-2 text-center leading-tight">Inspirator</span>
+                            </a>
+
+                            <a href="" class="flex flex-col items-center cursor-pointer group">
+                                <div
+                                    class="w-16 h-16 md:w-18 md:h-18 rounded-2xl bg-gradient-to-tr from-blue-600 to-cyan-700 flex items-center justify-center text-white shadow-md shadow-blue-500/20 group-hover:scale-105 transition">
+                                    <i
+                                        class="fa-solid fa-newspaper max-[1280px]:block min-[1281px]:hidden text-2xl"></i>
+                                    <i
+                                        class="fa-solid fa-newspaper hidden max-[1280px]:hidden min-[1281px]:block text-xl"></i>
+                                </div>
+                                <span
+                                    class="text-xs font-semibold text-slate-700 mt-2 text-center leading-tight">Artikel</span>
+                            </a>
+
+                            <!-- Menu 5 (Mobile: Struktur, Desktop: Dokumen) -->
+                            <a href="{{ route('korwil') }}" class="flex flex-col items-center cursor-pointer group">
+                                <div
+                                    class="w-16 h-16 md:w-18 md:h-18 rounded-2xl bg-gradient-to-tr from-amber-600 to-yellow-600 flex items-center justify-center text-white shadow-md shadow-amber-500/20 group-hover:scale-105 transition">
+                                    <i class="fa-solid fa-sitemap max-[1280px]:block min-[1281px]:hidden text-2xl"></i>
+                                    <i
+                                        class="fa-solid fa-sitemap hidden max-[1280px]:hidden min-[1281px]:block text-xl"></i>
+                                </div>
+                                <span
+                                    class="text-xs font-semibold text-slate-700 mt-2 text-center leading-tight">Korwil</span>
+                            </a>
+
+                            <!-- Menu 6 (Mobile: E-Organisasi, Desktop: Mediator) -->
+                            <a href="{{ url('/about') }}" class="flex flex-col items-center cursor-pointer group">
+                                <div
+                                    class="w-16 h-16 md:w-18 md:h-18 rounded-2xl bg-gradient-to-tr from-blue-900 to-slate-900 flex items-center justify-center text-white shadow-md shadow-blue-500/20 group-hover:scale-105 transition">
+                                    <i
+                                        class="fa-solid fa-network-wired max-[1280px]:block min-[1281px]:hidden text-2xl"></i>
+                                    <i
+                                        class="fa-solid fa-network-wired hidden max-[1280px]:hidden min-[1281px]:block text-xl"></i>
+                                </div>
+                                <span
+                                    class="text-xs font-semibold text-slate-700 mt-2 text-center leading-tight">E-Organisasi</span>
+                            </a>
+
+                            <!-- Menu 7 (Mobile: Merchandise, Desktop: Darurat) -->
+                            <a href="{{ route('merchandise.index') }}"
+                                class="menu-item-auth flex flex-col items-center cursor-pointer group">
+                                <div
+                                    class="w-16 h-16 md:w-18 md:h-18 rounded-2xl bg-gradient-to-tr from-red-600 to-rose-800 flex items-center justify-center text-white shadow-md shadow-red-500/20 group-hover:scale-105 transition">
+                                    <i
+                                        class="fa-solid fa-handshake max-[1280px]:block min-[1281px]:hidden text-2xl"></i>
+                                    <i
+                                        class="fa-solid fa-handshake hidden max-[1280px]:hidden min-[1281px]:block text-xl"></i>
+                                </div>
+                                <span class="text-xs font-semibold text-slate-700 mt-2 text-center leading-tight">Kerja
+                                    Sama</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Program Bantuan Hukum (Slider) -->
+                    <div id="slider-container-pelatihan" class="relative">
+                        <br>
+                        <br>
+                        <div class="flex justify-between items-center mb-4">
+                            <div>
+                                <h3 class="text-lg font-extrabold text-slate-900 leading-tight">Program Pelatihan</h3>
+                                <span class="text-xs text-slate-400 font-medium">Geser otomatis atau gunakan
+                                    tombol</span>
+                            </div>
+
+                            <!-- Tombol Navigasi Manual -->
+                            <div class="flex items-center space-x-2">
+                                <button id="slide-left-btn"
+                                    class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center transition shadow-sm">
+                                    <i class="fa-solid fa-chevron-left text-xs"></i>
+                                </button>
+                                <button id="slide-right-btn"
+                                    class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center transition shadow-sm">
+                                    <i class="fa-solid fa-chevron-right text-xs"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Slider Container dengan Tambahan CSS Inline untuk Menyembunyikan Scrollbar secara Total -->
+                        <div id="pelatihan-slider"
+                            class="flex overflow-x-auto space-x-4 pb-4 -mx-4 sm:-mx-6 px-4 sm:px-6 snap-x snap-mandatory scroll-smooth"
+                            style="scrollbar-width: none; -ms-overflow-style: none;">
+
+                            <!-- CSS tambahan khusus untuk webkit (Chrome, Safari, Edge) agar scrollbar benar-benar hilang -->
+                            <style>
+                                #pelatihan-slider::-webkit-scrollbar {
+                                    display: none;
+                                }
+                            </style>
+
+                            @foreach ($pelatihans as $index => $pelatihan)
+                                @php
+                                    $bgGradient = match ($index % 3) {
+                                        0 => 'from-blue-800 to-indigo-900',
+                                        1 => 'from-slate-800 to-blue-900',
+                                        default => 'from-slate-900 to-slate-800',
+                                    };
+                                @endphp
+
+                                <a href="{{ route('user-pelatihan.show', $pelatihan) }}"
+                                    class="menu-item-auth snap-start shrink-0 w-[280px] sm:w-[320px] bg-gradient-to-br {{ $bgGradient }} rounded-2xl p-6 text-white shadow-md flex flex-col justify-between h-[180px] transition-transform duration-300 hover:scale-105">
+                                    <div>
+                                        <h4 class="font-black text-base tracking-wide">{{ $pelatihan->judul }}</h4>
+                                        <div class="mt-2 text-xs opacity-90 space-y-1 font-medium">
+                                            <p>• Mulai:
+                                                {{ \Carbon\Carbon::parse($pelatihan->tanggal_mulai)->translatedFormat('d F Y') }}
+                                            </p>
+                                            <p class="text-sm font-extrabold text-amber-400 mt-1">
+                                                Rp {{ number_format($pelatihan->harga, 0, ',', '.') }}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div
+                                        class="bg-white text-slate-900 font-bold text-xs px-4 py-2 rounded-full shadow w-max">
+                                        Lihat Detail
+                                    </div>
+                                </a>
+                            @endforeach
+                        </div>
+                    </div>
+
+
+                    <!-- Berita & Artikel Hukum -->
+                    <div class="space-y-4 pb-6">
+                        <h3 class="text-lg font-extrabold text-slate-900">Artikel & Informasi Terbaru</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                            @forelse ($artikels as $artikel)
+                                <!-- Menghapus class 'menu-item-auth' pada card artikel -->
+                                <a href="{{ route('artikel.show.public', $artikel) }}"
+                                    class="bg-slate-50 border border-slate-100 rounded-2xl p-4 flex items-center space-x-4 cursor-pointer hover:border-blue-200 hover:shadow-md transition-all duration-200 group">
+                                    <img src="{{ $artikel->gambar ? asset('storage/' . $artikel->gambar) : 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?w=200&auto=format&fit=crop&q=60' }}"
+                                        alt="{{ $artikel->judul }}"
+                                        class="w-20 h-20 rounded-xl object-cover shrink-0">
+                                    <div class="flex-1 min-w-0">
+                                        <p class="text-xs text-slate-400 font-medium">
+                                            {{ \Carbon\Carbon::parse($artikel->tanggal)->diffForHumans() }} •
+                                            {{ $artikel->kategori->nama ?? 'Umum' }}</p>
+                                        <h4
+                                            class="text-sm font-bold text-slate-900 truncate mt-1 group-hover:text-blue-600 transition-colors">
+                                            {{ $artikel->judul }}</h4>
+                                        <p class="text-xs text-slate-500 mt-1 line-clamp-2">
+                                            {{ Str::limit(strip_tags($artikel->isi), 100) }}</p>
+                                    </div>
+                                </a>
+                            @empty
+                                <div
+                                    class="md:col-span-2 text-center py-12 bg-slate-50 rounded-2xl border border-dashed border-slate-200">
+                                    <p class="text-sm text-slate-500 font-medium">Belum ada artikel yang
+                                        dipublikasikan.
+                                    </p>
+                                </div>
+                            @endforelse
+                        </div>
+                    </div>
+                </div>
+                <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+                <!-- Script JavaScript untuk Slider Pelatihan -->
+                <script>
+                    document.addEventListener("DOMContentLoaded", function() {
+                        const slider = document.getElementById("pelatihan-slider");
+                        const btnLeft = document.getElementById("slide-left-btn");
+                        const btnRight = document.getElementById("slide-right-btn");
+                        const container = document.getElementById("slider-container");
+
+                        let autoSlideInterval;
+
+                        function scrollNext() {
+                            if (!slider) return;
+                            if (slider.scrollLeft + slider.clientWidth >= slider.scrollWidth - 10) {
+                                slider.scrollTo({
+                                    left: 0,
+                                    behavior: 'smooth'
+                                });
+                            } else {
+                                slider.scrollBy({
+                                    left: 300,
+                                    behavior: 'smooth'
+                                });
+                            }
+                        }
+
+                        function scrollPrev() {
+                            if (!slider) return;
+                            slider.scrollBy({
+                                left: -300,
+                                behavior: 'smooth'
+                            });
+                        }
+
+                        function startAutoplay() {
+                            autoSlideInterval = setInterval(scrollNext, 3500);
+                        }
+
+                        function stopAutoplay() {
+                            clearInterval(autoSlideInterval);
+                        }
+
+                        if (btnRight) btnRight.addEventListener("click", scrollNext);
+                        if (btnLeft) btnLeft.addEventListener("click", scrollPrev);
+
+                        if (container) {
+                            container.addEventListener("mouseenter", stopAutoplay);
+                            container.addEventListener("mouseleave", startAutoplay);
+                        }
+
+                        startAutoplay();
+                    });
+                </script>
             </div>
         </div>
     </div>

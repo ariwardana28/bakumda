@@ -13,6 +13,17 @@ return new class extends Migration
     {
         Schema::create('referral_transactions', function (Blueprint $table) {
             $table->id();
+            // Diubah constrained-nya ke tabel 'referral_codes' (sesuaikan nama tabel master kode referral Anda)
+            $table->foreignId('referral_code_id')->constrained('referral_codes')->onDelete('cascade');
+
+            $table->foreignId('referrer_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('referred_id')->constrained('users')->onDelete('cascade');
+
+            // Menggunakan decimal untuk nominal uang (contoh: total 12 digit, 2 digit di belakang koma)
+            $table->decimal('reward_amount', 12, 2)->default(0);
+
+            // Menggunakan string atau enum dengan nilai default 'pending'
+            $table->string('status')->default('pending'); // pending, ready_to_claim, claimed
             $table->timestamps();
         });
     }

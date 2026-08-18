@@ -59,11 +59,11 @@ class DashboardController extends Controller
                 ->where('user_id', $user->id)
                 ->first();
 
-            // Jika user adalah 'Anggota' tapi belum mendaftar sebagai anggota (data Anggota kosong),
-            // arahkan ke halaman welcome agar bisa mendaftar.
-            if (!$anggota) {
-                return redirect()->route('welcome');
-            }
+            // // Jika user adalah 'Anggota' tapi belum mendaftar sebagai anggota (data Anggota kosong),
+            // // arahkan ke halaman welcome agar bisa mendaftar.
+            // if (!$anggota) {
+            //     return redirect()->route('welcome');
+            // }
             return view('dashboard_anggota', compact('anggota', 'pelatihans', 'artikels', 'isRegistered', 'nama_anggota', 'no_ktpa', 'status_anggota')); // Arahkan ke dashboard khusus anggota
         }
 

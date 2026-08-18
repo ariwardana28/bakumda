@@ -55,4 +55,22 @@ class User extends Authenticatable
     {
         return $this->hasOne(\App\Models\Anggota::class);
     }
+
+    // Milik User (pemilik kode)
+    public function referralCodes()
+    {
+        return $this->hasMany(ReferralCode::class);
+    }
+
+    // Transaksi referral sebagai pemberi kode (referrer)
+    public function referralTransactionsAsReferrer()
+    {
+        return $this->hasMany(ReferralTransaction::class, 'referrer_id');
+    }
+
+    // Histori pencairan dana referral user
+    public function referralPayments()
+    {
+        return $this->hasMany(ReferralPayment::class);
+    }
 }

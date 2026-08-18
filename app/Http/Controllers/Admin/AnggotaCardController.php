@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\AnggotaPengajuan;
 use App\Models\AnggotaStatusPengajuan;
 use App\Models\AnggotaPembayaran;
+use App\Models\ReferralCode;
 use Illuminate\Support\Str;
 
 class AnggotaCardController extends Controller
@@ -84,6 +85,7 @@ class AnggotaCardController extends Controller
         $pendingEditRequest = $anggotaCard->anggota->pendingEditRequest;
         return view('admin.anggota_card.show', compact('anggotaCard', 'pendingEditRequest'));
     }
+
 
     public function status(Request $request, AnggotaCard $anggotaCard)
     {
@@ -171,7 +173,47 @@ class AnggotaCardController extends Controller
                 $pembayaran->save();
             }
 
+            // ==========================================
+            // --- GENERATE 2 KODE REFERRAL (8 DIGIT) ---
+            // ==========================================
+            // Ambil ID User pemilik kartu (pastikan relasi $anggotaCard->user_id / $anggotaCard->anggota->user_id ada)
+            // Sesuaikan cara mengambil user_id jika strukturnya berbeda (misal: $anggotaCard->user_id)
+            $userId = $anggotaCard->user_id ?? ($anggotaCard->anggota ? $anggotaCard->anggota->user_id : null);
+
+            if ($userId) {
+                // Cek apakah user ini sudah punya kode referral agar tidak duplikat berkali-kali
+                $existingReferral = ReferralCode::where('user_id', $userId)->exists();
+
+                if (!$existingReferral) {
+                    // Fungsi helper untuk membuat string acak 8 digit unik
+                    $generateUniqueCode = function () {
+                        do {
+                            $code = strtoupper(substr(md5(uniqid(mt_rand(), true)), 0, 8));
+                        } while (ReferralCode::where('code', $code)->exists());
+                        return $code;
+                    };
+
+                    // 1. Buat Kode Referral Tier 1 (Target 5x pakai)
+                    ReferralCode::create([
+                        'user_id'      => $userId,
+                        'code'         => $generateUniqueCode(),
+                        'tier_type'    => 'tier_5',
+                        'target_count' => 5,
+                        'current_uses' => 0,
+                    ]);
+
+                    // 2. Buat Kode Referral Tier 2 (Target 10x pakai)
+                    ReferralCode::create([
+                        'user_id'      => $userId,
+                        'code'         => $generateUniqueCode(),
+                        'tier_type'    => 'tier_10',
+                        'target_count' => 10,
+                        'current_uses' => 0,
+                    ]);
+                }
+            }
         }
+
         // Simpan riwayat status baru
         AnggotaStatus::create([
             'anggota_card_id' => $anggotaCard->id,
@@ -181,7 +223,7 @@ class AnggotaCardController extends Controller
         ]);
 
         return redirect()->route('admin.anggota-card.show', $anggotaCard->id)
-            ->with('success', 'Status kartu anggota berhasil diperbarui.');
+            ->with('success', 'Status kartu anggota berhasil diperbarui dan kode referral berhasil digenerate.');
     }
 
     public function simpanKartu(Request $request, AnggotaCard $anggotaCard)

@@ -431,4 +431,33 @@ class UserAnggotaController extends Controller
             'message' => 'Nomor sertifikat valid dan berhasil diverifikasi!'
         ]);
     }
+
+    /**
+     * Mengecek status keanggotaan terbaru untuk polling real-time.
+     *
+     * @param  \App\Models\Anggota  $anggota
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function checkStatus(Anggota $anggota)
+    {
+        // Otorisasi: Pastikan user yang login adalah pemilik data anggota.
+        if ($anggota->user_id !== Auth::id()) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        $anggota->load('card.latestStatus', 'card.latestBerlaku');
+
+        $currentStatus = optional($anggota->card->latestStatus)->status ? strtolower($anggota->card->latestStatus->status) : 'proses';
+
+        // Cek apakah kartu sudah kedaluwarsa dan ubah statusnya jika perlu
+        if ($currentStatus === 'aktif' && $anggota->card && $anggota->card->latestBerlaku) {
+            if (\Carbon\Carbon::parse($anggota->card->latestBerlaku->berlaku)->isPast()) {
+                $currentStatus = 'non-aktif';
+            }
+        }
+
+        return response()->json([
+            'status' => $currentStatus
+        ]);
+    }
 }

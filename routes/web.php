@@ -22,12 +22,14 @@ use App\Http\Controllers\Admin\SoalController;
 use App\Http\Controllers\ArtikelController;
 use App\Http\Controllers\UserProdukController;
 use App\Http\Controllers\Admin\KorwilController;
+use App\Http\Controllers\RefferalController;
 
 /*
 |--------------------------------------------------------------------------
 | Public Routes
 |--------------------------------------------------------------------------
 */
+
 Route::get('/', [HalamanUtamaController::class, 'index'])->name('welcome');
 Route::get('/korwil', [HalamanUtamaController::class, 'korwil'])->name('korwil');
 Route::get('/artiekl/{artikel:slug}', [HalamanUtamaController::class, 'show'])->name('artikel.show.public');
@@ -192,6 +194,9 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/user-anggota/check-certificate', [UserAnggotaController::class, 'checkCertificate'])->name('user-anggota.check-certificate');
 
+    Route::get('/anggota/status-check/{anggota}', [UserAnggotaController::class, 'checkStatus'])
+        ->name('user-anggota.status.check');
+
     Route::resource('user-anggota', UserAnggotaController::class)
         ->names('user-anggota')
         ->parameters(['user-anggota' => 'anggota']);
@@ -230,6 +235,10 @@ Route::middleware('auth')->group(function () {
     |--------------------------------------------------------------------------
     */
     Route::resource('artikel', ArtikelController::class)->names('user.artikel')->parameter('artikel', 'artikel:slug');
+
+    // Refferal
+    Route::resource('inspirator', App\Http\Controllers\ReferralController::class)
+        ->names('user-referral');
     /*
     |--------------------------------------------------------------------------
     | Admin Group Routes

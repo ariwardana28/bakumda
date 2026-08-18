@@ -13,6 +13,11 @@ return new class extends Migration
     {
         Schema::create('referral_codes', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->string('code');
+            $table->string('tier_type');
+            $table->string('target_count');
+            $table->string('current_uses');
             $table->timestamps();
         });
     }

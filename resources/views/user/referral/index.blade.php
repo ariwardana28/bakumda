@@ -88,10 +88,21 @@
                                 </div>
 
                                 @if ($isCompleted)
-                                    <button onclick="alert('Berhasil mengklaim reward untuk kode {{ $ref->code }}!')"
-                                        class="px-4 py-2 bg-gradient-to-r from-green-400 to-emerald-600 text-white text-[10px] font-black rounded-lg shadow-lg hover:scale-105 transition-transform animate-pulse">
-                                        KLAIM SEKARANG
-                                    </button>
+                                    @if ($ref->status === 'claimed')
+                                        <span
+                                            class="px-4 py-2 bg-slate-200 text-slate-500 text-[10px] font-black rounded-lg shadow-inner cursor-not-allowed">
+                                            <i class="fa-solid fa-check-double"></i> DIKLAIM
+                                        </span>
+                                    @else
+                                        <form action="{{ route('user-referral.claim') }}" method="POST">
+                                            @csrf
+                                            <input type="hidden" name="referral_code_id" value="{{ $ref->id }}">
+                                            <button type="submit"
+                                                class="px-4 py-2 bg-gradient-to-r from-green-400 to-emerald-600 text-white text-[10px] font-black rounded-lg shadow-lg hover:scale-105 transition-transform animate-pulse">
+                                                KLAIM SEKARANG
+                                            </button>
+                                        </form>
+                                    @endif
                                 @else
                                     <div
                                         class="text-[10px] font-bold text-orange-600 bg-orange-50 px-2.5 py-1 rounded-md border border-orange-200 shadow-inner">

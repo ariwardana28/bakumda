@@ -15,7 +15,7 @@
                 <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Manajemen data peserta, nomor sertifikat, dan transkrip nilai pelatihan.</p>
             </div>
             <div class="flex items-center gap-3 shrink-0">
-                  <a href="{{ route('user.sertifikat.download.pdf', $pelatihan->id) }}"
+                  <a href="{{ route('user.sertifikat.download.pdf', $pelatihan->id) }}" target="_blank"
                     class="inline-flex items-center justify-center gap-2 px-6 py-3 text-white rounded-xl text-xs font-bold shadow-lg shadow-brand-500/25 transition-all duration-200 hover:scale-[1.02]"
                     style="background: linear-gradient(90deg, #2563eb 0%, #3b82f6 100%); color: #ffffff;">
                     <i class="fa-solid fa-file-arrow-down"></i>

@@ -226,7 +226,7 @@
                         <button @click="openModal = true"
                             data-url="{{ route('user-soal.index', [$pelatihan->id, $materi->id]) }}" type="button"
                             class="remedi-button relative z-10 px-7 py-3.5 bg-[#FFD700] text-slate-950 hover:bg-[#e6c200] font-bold text-xs sm:text-sm rounded-2xl shadow-lg hover:scale-105 active:scale-95 transition-all duration-200 shrink-0 flex items-center gap-2.5 group">
-                            <span>Mulai Kuis Sekarang</span>
+                            <span>Mulai Assessment Sekarang</span>
                             <svg class="w-4 h-4 transition-transform group-hover:translate-x-1" fill="none"
                                 stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
@@ -266,7 +266,7 @@
                         </div>
                         <div>
                             <h3 class="text-base sm:text-lg font-extrabold text-slate-900 dark:text-white tracking-tight">
-                                Aturan & Ketentuan Kuis</h3>
+                                Aturan & Ketentuan Assessment</h3>
                             <p class="text-[11px] text-slate-400">Harap baca dengan teliti sebelum mulai</p>
                         </div>
                     </div>
@@ -326,7 +326,7 @@
                     </button>
                     <a id="start-quiz-link" href="#"
                         class="px-5 py-2.5 bg-[#FFD700] hover:bg-[#e6c200] text-slate-950 font-bold text-xs rounded-xl shadow-md shadow-[#FFD700]/25 transition-all hover:scale-[1.02] active:scale-95 flex items-center gap-2">
-                        <span>Saya Mengerti, Mulai Kuis</span>
+                        <span>Saya Mengerti, Mulai Assessment</span>
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
                                 d="M14 5l7 7m0 0l-7 7m7-7H3" />

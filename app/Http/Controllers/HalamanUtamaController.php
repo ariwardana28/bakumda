@@ -135,10 +135,54 @@ class HalamanUtamaController extends Controller
 
     public function Korwil()
     {
-        $korwils = AnggotaBerlaku::with('anggotaCard.anggota')
-            ->where('jabatan', 'like', 'KORWIL%') // Menambahkan filter untuk jabatan Korwil
+        // Menampilkan halaman daftar provinsi.
+        // Daftar provinsi sudah di-hardcode di view, jadi tidak perlu passing data.
+        return view('user.korwil.index');
+    }
+
+    /**
+     * Menampilkan detail Korwil untuk provinsi tertentu.
+     *
+     * @param string $province
+     * @return \Illuminate\View\View
+     */
+    public function showKorwilByProvince($province)
+    {
+        $korwils = AnggotaBerlaku::with(['anggotaCard', 'anggotaCard.anggota'])
+            ->where('jabatan', 'LIKE', '%KORWIL%' . strtoupper($province) . '%')
             ->latest()
-            ->paginate(10);
-        return view('user.korwil.index',compact('korwils'));
+            ->get();
+
+        return view('user.korwil.show', compact('korwils', 'province'));
+    }
+
+    /**
+     * Menampilkan halaman Surat Penunjukan untuk Korwil tertentu.
+     *
+     * @param  \App\Models\AnggotaCard $anggotaCard
+     * @return \Illuminate\View\View
+     */
+    public function showKorwilSurat(AnggotaCard $anggotaCard)
+    {
+        // Eager load relasi yang dibutuhkan untuk view
+        $anggotaCard->load(['anggota', 'latestBerlaku']);
+
+        $anggota = $anggotaCard->anggota;
+        $latestBerlaku = $anggotaCard->latestBerlaku;
+
+        // Ekstrak nama provinsi dari jabatan
+        $province = 'TIDAK DIKETAHUI';
+        if ($latestBerlaku && !empty($latestBerlaku->jabatan)) {
+            // Mencari teks setelah "KORWIL PROVINSI "
+            $jabatanUpper = strtoupper($latestBerlaku->jabatan);
+            $prefix = 'KORWIL PROVINSI ';
+            if (str_starts_with($jabatanUpper, $prefix)) {
+                $province = substr($latestBerlaku->jabatan, strlen($prefix));
+            }
+        }
+
+        // Mengirim data ke view 'user.korwil.surat'
+        // Pastikan file view ini ada: resources/views/user/korwil/surat.blade.php
+        return view('user.korwil.surat', compact('anggotaCard', 'anggota', 'province'));
     }
 }

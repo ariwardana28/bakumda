@@ -15,6 +15,7 @@ class ReferralTransaction extends Model
         'referral_code_id',
         'referrer_id',
         'referred_id',
+        'pelatihan_id',
         'reward_amount',
         'status',
     ];

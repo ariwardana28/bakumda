@@ -32,6 +32,8 @@ use App\Http\Controllers\RefferalController;
 
 Route::get('/', [HalamanUtamaController::class, 'index'])->name('welcome');
 Route::get('/korwil', [HalamanUtamaController::class, 'korwil'])->name('korwil');
+Route::get('/korwil/{province}', [HalamanUtamaController::class, 'showKorwilByProvince'])->name('user.korwil.show');
+Route::get('/korwil/surat/{anggotaCard}', [HalamanUtamaController::class, 'showKorwilSurat'])->name('user.korwil.surat');
 Route::get('/artiekl/{artikel:slug}', [HalamanUtamaController::class, 'show'])->name('artikel.show.public');
 
 // Route untuk Pengecekan Sertifikat Publik

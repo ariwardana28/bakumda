@@ -102,13 +102,13 @@
                     <tr class="hover:bg-gray-50/50 dark:hover:bg-gray-700/30 transition-colors">
                         <!-- Nama Anggota -->
                         <td class="px-6 py-4 whitespace-nowrap font-medium text-gray-900 dark:text-gray-100">
-                            {{ $anggotaCard->anggota->nama ?? '-' }}
+                            {{ $anggotaCard->anggota->user->name ?? '-' }}
                         </td>
 
                         <!-- Status Badge (Mengikuti status db anggota_status) -->
                         <td class="px-6 py-4 whitespace-nowrap">
                             <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold border {{ $anggotaCard->status_classes->badge }}">
-                                <span class="w-1.5 h-1.5 rounded-full {{ $anggotaCard->status_classes->dot }}"></span>
+                                <span class="w-1.5 h-1.5 rounded-full {{ $anggotaCard->status_classes->dot ?? '' }}"></span>
                                 {{ ucfirst($anggotaCard->display_status) }}
                             </span>
                         </td>
@@ -117,7 +117,7 @@
                         <td class="px-6 py-4 whitespace-nowrap text-right space-x-2">
                             <!-- Tombol Log Status (Modal Trigger) -->
                             <button type="button"
-                                    onclick="openLogModal({{ json_encode($anggotaCard->statuses) }}, '{{ e($anggotaCard->anggota->nama ?? 'Anggota') }}')"
+                                    onclick="openLogModal({{ json_encode($anggotaCard->statuses) }}, '{{ e($anggotaCard->anggota->user->name ?? 'Anggota') }}')"
                                     class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-amber-600 hover:text-amber-700 bg-amber-50 hover:bg-amber-100 dark:bg-amber-600/10 dark:text-amber-400 dark:hover:bg-brand-600/20 rounded-xl transition-colors">
                                 <i class="fa-solid fa-clock-rotate-left"></i>
                                 <span>Status Log</span>

@@ -237,7 +237,7 @@
                             <!-- Bungkus tombol berdampingan -->
                             <div class="flex items-center gap-2 shrink-0">
                                 <!-- Tombol Ikuti DIKLATKUM -->
-                                <a href="#"
+                                <a href="{{ route('user-pelatihan.index') }}"
                                     class="menu-item-auth bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold text-xs px-4 py-2 rounded-full shadow transition cursor-pointer inline-flex items-center justify-center">
                                     IKUTI DIKLATKUM
                                 </a>
@@ -254,8 +254,7 @@
             </div>
             <br>
 
-            <div
-                x-data="{ showAuthModal: false }"
+            <div x-data="{ showAuthModal: false }"
                 class="bg-white text-slate-900 rounded-t-[2.5rem] rounded-b-[2.5rem] -mt-4 pt-10 px-6 sm:px-12 shadow-2xl relative z-20 flex-1 space-y-8 pb-12">
 
                 <!-- Modal Peringatan Akses -->
@@ -264,29 +263,35 @@
                     x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100"
                     x-transition:leave-end="opacity-0"
                     class="fixed inset-0 bg-black bg-opacity-60 z-[99] flex items-center justify-center p-4" x-cloak>
-                    <div @click.away="showAuthModal = false"
-                        x-show="showAuthModal"
+                    <div @click.away="showAuthModal = false" x-show="showAuthModal"
                         x-transition:enter="transition ease-out duration-300"
-                        x-transition:enter-start="opacity-0 scale-90"
-                        x-transition:enter-end="opacity-100 scale-100"
+                        x-transition:enter-start="opacity-0 scale-90" x-transition:enter-end="opacity-100 scale-100"
                         x-transition:leave="transition ease-in duration-200"
-                        x-transition:leave-start="opacity-100 scale-100"
-                        x-transition:leave-end="opacity-0 scale-90"
-                        class="bg-white rounded-2xl shadow-xl w-full max-w-md mx-auto p-6 text-center">
+                        x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-90"
+                        class="bg-white rounded-2xl shadow-xl w-full max-w-md mx-auto p-6 text-center relative">
+
+                        <!-- Tombol X di Kanan Atas -->
+                        <button @click="showAuthModal = false"
+                            class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 transition">
+                            <i class="fa-solid fa-xmark text-lg"></i>
+                        </button>
+
                         <div class="mx-auto w-16 h-16 rounded-full bg-red-100 flex items-center justify-center mb-4">
                             <i class="fa-solid fa-lock text-red-500 text-2xl"></i>
                         </div>
                         <h3 class="text-xl font-bold text-slate-800">Akses Terbatas</h3>
                         <p class="text-slate-500 mt-2 mb-6">
-                            Fitur ini hanya tersedia untuk anggota terverifikasi. Silakan daftar menjadi anggota untuk menikmati semua fitur eksklusif.
+                            Fitur ini hanya tersedia untuk anggota terverifikasi. Syarat menjadi anggota wajib mengikuti
+                            <strong>DIKLATKUM</strong> terlebih dahulu. Silakan ikuti pelatihan atau daftar menjadi
+                            anggota untuk menikmati semua fitur eksklusif.
                         </p>
                         <div class="flex flex-col sm:flex-row gap-3 justify-center">
-                            <button @click="showAuthModal = false"
-                                class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-3 px-5 rounded-xl transition">
-                                Nanti Saja
-                            </button>
+                            <a href="{{ route('user-pelatihan.index') }}"
+                                class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-3 px-5 rounded-xl transition text-center flex items-center justify-center">
+                                Ikuti DIKLATKUM
+                            </a>
                             <a href="{{ route('user-anggota.index') }}"
-                                class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-5 rounded-xl shadow-lg shadow-blue-200 transition">
+                                class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-5 rounded-xl shadow-lg shadow-blue-200 transition text-center flex items-center justify-center">
                                 Daftar Anggota
                             </a>
                         </div>
@@ -294,7 +299,7 @@
                 </div>
 
                 <!-- ========================================== -->
-                <!-- MENU UTAMA (KONDISI MOBILE vs DESKTOP)     -->
+                <!-- MENU UTAMA (KONDISI MOBILE vs DESKTOP)    -->
                 <!-- ========================================== -->
                 <div>
                     @php
@@ -336,7 +341,8 @@
                         </a>
 
                         <!-- Menu 3 (Mobile: Legalku, Desktop: UU & Perda) -->
-                        <a {!! $isMember ? 'href="'.url('/user-surat').'"' : $authAction !!} class="menu-item-auth flex flex-col items-center cursor-pointer group">
+                        <a {!! $isMember ? 'href="' . url('/user-surat') . '"' : $authAction !!}
+                            class="menu-item-auth flex flex-col items-center cursor-pointer group">
                             <div
                                 class="w-16 h-16 md:w-18 md:h-18 rounded-2xl bg-gradient-to-tr from-slate-800 to-blue-900 flex items-center justify-center text-white shadow-md shadow-blue-500/20 group-hover:scale-105 transition">
                                 <i
@@ -349,7 +355,8 @@
                         </a>
 
                         <!-- Menu 4 (Mobile: Inspirator, Desktop: Paralegal) -->
-                        <a {!! $isMember ? 'href="'.route('user-referral.index').'"' : $authAction !!} class="menu-item-auth flex flex-col items-center cursor-pointer group">
+                        <a {!! $isMember ? 'href="' . route('user-referral.index') . '"' : $authAction !!}
+                            class="menu-item-auth flex flex-col items-center cursor-pointer group">
                             <div
                                 class="w-16 h-16 md:w-18 md:h-18 rounded-2xl bg-gradient-to-tr from-blue-600 to-cyan-700 flex items-center justify-center text-white shadow-md shadow-blue-500/20 group-hover:scale-105 transition">
                                 <i class="fa-solid fa-lightbulb max-[1280px]:block min-[1281px]:hidden text-2xl"></i>
@@ -372,7 +379,8 @@
                         </a>
 
                         <!-- Menu 5 (Mobile: Struktur, Desktop: Dokumen) -->
-                        <a {!! $isMember ? 'href="'.route('korwil').'"' : $authAction !!} class="menu-item-auth flex flex-col items-center cursor-pointer group">
+                        <a {!! $isMember ? 'href="' . route('korwil') . '"' : $authAction !!}
+                            class="menu-item-auth flex flex-col items-center cursor-pointer group">
                             <div
                                 class="w-16 h-16 md:w-18 md:h-18 rounded-2xl bg-gradient-to-tr from-amber-600 to-yellow-600 flex items-center justify-center text-white shadow-md shadow-amber-500/20 group-hover:scale-105 transition">
                                 <i class="fa-solid fa-sitemap max-[1280px]:block min-[1281px]:hidden text-2xl"></i>
@@ -384,7 +392,8 @@
                         </a>
 
                         <!-- Menu 6 (Mobile: E-Organisasi, Desktop: Mediator) -->
-                        <a {!! $isMember ? 'href="'.url('/about').'"' : $authAction !!} class="menu-item-auth flex flex-col items-center cursor-pointer group">
+                        <a {!! $isMember ? 'href="' . url('/about') . '"' : $authAction !!}
+                            class="menu-item-auth flex flex-col items-center cursor-pointer group">
                             <div
                                 class="w-16 h-16 md:w-18 md:h-18 rounded-2xl bg-gradient-to-tr from-blue-900 to-slate-900 flex items-center justify-center text-white shadow-md shadow-blue-500/20 group-hover:scale-105 transition">
                                 <i
@@ -397,7 +406,7 @@
                         </a>
 
                         <!-- Menu 7 (Mobile: Merchandise, Desktop: Darurat) -->
-                        <a {!! $isMember ? 'href="'.route('merchandise.index').'"' : $authAction !!}
+                        <a {!! $isMember ? 'href="' . route('merchandise.index') . '"' : $authAction !!}
                             class="menu-item-auth flex flex-col items-center cursor-pointer group">
                             <div
                                 class="w-16 h-16 md:w-18 md:h-18 rounded-2xl bg-gradient-to-tr from-red-600 to-rose-800 flex items-center justify-center text-white shadow-md shadow-red-500/20 group-hover:scale-105 transition">

@@ -75,7 +75,7 @@
                                         class="block text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1">Nama
                                         Lengkap</span>
                                     <span
-                                        class="font-bold text-gray-800 dark:text-gray-100">{{ $anggotaCard->Anggota->nama ?? '-' }}</span>
+                                        class="font-bold text-gray-800 dark:text-gray-100">{{ $anggotaCard->anggota->user->name ?? '-' }}</span>
                                 </div>
 
                                 <!-- No. KTP -->
@@ -85,7 +85,7 @@
                                         class="block text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1">No.
                                         KTP</span>
                                     <span
-                                        class="font-semibold text-gray-800 dark:text-gray-100 tracking-wide">{{ $anggotaCard->Anggota->no_ktp ?? '-' }}</span>
+                                        class="font-semibold text-gray-800 dark:text-gray-100 tracking-wide">{{ $anggotaCard->anggota->no_ktp ?? '-' }}</span>
                                 </div>
 
                                 <!-- Email -->
@@ -94,7 +94,7 @@
                                     <span
                                         class="block text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1">Email</span>
                                     <span
-                                        class="font-medium text-gray-800 dark:text-gray-100 break-all">{{ $anggotaCard->Anggota->email ?? '-' }}</span>
+                                        class="font-medium text-gray-800 dark:text-gray-100 break-all">{{ $anggotaCard->anggota->user->email ?? '-' }}</span>
                                 </div>
 
                                 <!-- No. HP -->
@@ -104,7 +104,7 @@
                                         class="block text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1">No.
                                         HP</span>
                                     <span
-                                        class="font-medium text-gray-800 dark:text-gray-100">{{ $anggotaCard->Anggota->no_hp ?? '-' }}</span>
+                                        class="font-medium text-gray-800 dark:text-gray-100">{{ $anggotaCard->anggota->user->no_hp ?? '-' }}</span>
                                 </div>
 
                                 <!-- Jenis Kelamin -->
@@ -114,7 +114,7 @@
                                         class="block text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1">Jenis
                                         Kelamin</span>
                                     <span
-                                        class="font-medium text-gray-800 dark:text-gray-100 capitalize">{{ $anggotaCard->Anggota->jenis_kelamin ?? '-' }}</span>
+                                        class="font-medium text-gray-800 dark:text-gray-100 capitalize">{{ $anggotaCard->anggota->user->jenis_kelamin ?? '-' }}</span>
                                 </div>
 
                                 <!-- Tempat, Tanggal Lahir -->
@@ -124,8 +124,8 @@
                                         class="block text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1">Tempat,
                                         Tanggal Lahir</span>
                                     <span class="font-medium text-gray-800 dark:text-gray-100">
-                                        {{ $anggotaCard->Anggota->tempat_lahir ?? '-' }},
-                                        {{ isset($anggotaCard->Anggota->tanggal_lahir) ? \Carbon\Carbon::parse($anggotaCard->Anggota->tanggal_lahir)->translatedFormat('d F Y') : '-' }}
+                                        {{ $anggotaCard->anggota->user->tempat_lahir ?? '-' }},
+                                        {{ isset($anggotaCard->anggota->user->tanggal_lahir) ? \Carbon\Carbon::parse($anggotaCard->anggota->user->tanggal_lahir)->translatedFormat('d F Y') : '-' }}
                                     </span>
                                 </div>
 
@@ -135,7 +135,7 @@
                                     <span
                                         class="block text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1">Agama</span>
                                     <span
-                                        class="font-medium text-gray-800 dark:text-gray-100 capitalize">{{ $anggotaCard->Anggota->agama ?? '-' }}</span>
+                                        class="font-medium text-gray-800 dark:text-gray-100 capitalize">{{ $anggotaCard->anggota->user->agama ?? '-' }}</span>
                                 </div>
 
                                 <!-- Status Perkawinan -->
@@ -145,7 +145,7 @@
                                         class="block text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1">Status
                                         Perkawinan</span>
                                     <span
-                                        class="font-medium text-gray-800 dark:text-gray-100 capitalize">{{ $anggotaCard->Anggota->status_perkawinan ?? '-' }}</span>
+                                        class="font-medium text-gray-800 dark:text-gray-100 capitalize">{{ $anggotaCard->anggota->user->status_perkawinan ?? '-' }}</span>
                                 </div>
 
                                 <!-- Pekerjaan -->
@@ -154,7 +154,7 @@
                                     <span
                                         class="block text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1">Pekerjaan</span>
                                     <span
-                                        class="font-medium text-gray-800 dark:text-gray-100 capitalize">{{ $anggotaCard->Anggota->pekerjaan ?? '-' }}</span>
+                                        class="font-medium text-gray-800 dark:text-gray-100 capitalize">{{ $anggotaCard->anggota->user->pekerjaan ?? '-' }}</span>
                                 </div>
 
                                 <!-- Kewarganegaraan -->
@@ -163,7 +163,7 @@
                                     <span
                                         class="block text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1">Kewarganegaraan</span>
                                     <span
-                                        class="font-medium text-gray-800 dark:text-gray-100 uppercase">{{ $anggotaCard->Anggota->kewarganegaraan ?? '-' }}</span>
+                                        class="font-medium text-gray-800 dark:text-gray-100 uppercase">{{ $anggotaCard->anggota->user->kewarganegaraan ?? '-' }}</span>
                                 </div>
 
                                 <!-- Alamat -->
@@ -173,7 +173,7 @@
                                         class="block text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1">Alamat
                                         Lengkap</span>
                                     <span
-                                        class="font-medium text-gray-800 dark:text-gray-100 leading-relaxed">{{ $anggotaCard->Anggota->alamat ?? '-' }}</span>
+                                        class="font-medium text-gray-800 dark:text-gray-100 leading-relaxed">{{ $anggotaCard->anggota->user->alamat ?? '-' }}</span>
                                 </div>
 
                                 <!-- Keterangan -->
@@ -183,7 +183,7 @@
                                         class="block text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1">Keterangan
                                         Anggota</span>
                                     <span
-                                        class="font-medium text-gray-800 dark:text-gray-100 leading-relaxed">{{ $anggotaCard->Anggota->keterangan ?? '-' }}</span>
+                                        class="font-medium text-gray-800 dark:text-gray-100 leading-relaxed">{{ $anggotaCard->anggota->user->keterangan ?? '-' }}</span>
                                 </div>
 
                                 <!-- Foto KTP -->
@@ -192,10 +192,10 @@
                                     <span
                                         class="block text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-2">Foto
                                         KTP</span>
-                                    @if ($anggotaCard->Anggota->foto_ktp ?? false)
-                                        <a href="{{ asset('storage/' . $anggotaCard->Anggota->foto_ktp) }}" target="_blank"
+                                    @if ($anggotaCard->anggota->foto_ktp ?? false)
+                                        <a href="{{ asset('storage/' . $anggotaCard->anggota->foto_ktp) }}" target="_blank"
                                             class="group relative block overflow-hidden rounded-xl border border-gray-200 dark:border-gray-600">
-                                            <img src="{{ asset('storage/' . $anggotaCard->Anggota->foto_ktp) }}"
+                                            <img src="{{ asset('storage/' . $anggotaCard->anggota->foto_ktp) }}"
                                                 alt="Foto KTP"
                                                 class="h-28 w-full object-cover group-hover:scale-105 transition duration-300">
                                             <div
@@ -215,8 +215,7 @@
                                         <span
                                             class="block text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-2">Pakta
                                             Integritas</span>
-
-                                        @if (($anggotaCard->Anggota->pakta_integritas ?? '') === 'approve')
+                                        @if (($anggotaCard->anggota->pakta_integritas ?? '') === 'approve')
                                             <div
                                                 class="flex items-center gap-2 text-emerald-600 dark:text-emerald-400 mt-2">
                                                 <svg class="w-6 h-6" fill="none" stroke="currentColor"
@@ -239,7 +238,7 @@
                                                 </svg>
                                                 Lihat Pakta Integritas
                                             </button>
-                                        @elseif (!empty($anggotaCard->Anggota->pakta_integritas))
+                                        @elseif (!empty($anggotaCard->anggota->pakta_integritas))
                                             <div class="flex items-center gap-2 text-indigo-600 dark:text-indigo-400 mt-2">
                                                 <svg class="w-6 h-6" fill="none" stroke="currentColor"
                                                     viewBox="0 0 24 24">
@@ -249,7 +248,7 @@
                                                 </svg>
                                                 <span class="text-xs font-semibold">Dokumen Tersedia</span>
                                             </div>
-                                            <a href="{{ asset('storage/' . $anggotaCard->Anggota->pakta_integritas) }}"
+                                            <a href="{{ asset('storage/' . $anggotaCard->anggota->pakta_integritas) }}"
                                                 target="_blank"
                                                 class="mt-3 inline-flex items-center justify-center gap-1.5 w-full py-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 dark:bg-indigo-950/40 dark:text-indigo-300 rounded-lg text-xs font-semibold transition duration-200">
                                                 Buka Dokumen
@@ -265,6 +264,8 @@
                                         @endif
                                     </div>
                                 </div>
+
+
 
                             </div>
                         </div>
@@ -283,9 +284,10 @@
 
                         <div
                             class="w-28 h-28 rounded-2xl bg-gray-50 dark:bg-gray-700/50 border-2 border-indigo-100 dark:border-gray-600 flex items-center justify-center overflow-hidden shadow-sm hover:shadow-md transition duration-300 mb-3">
-                            @if ($anggotaCard->Anggota->foto ?? false)
-                                <img src="{{ asset('storage/' . $anggotaCard->Anggota->foto) }}"
-                                    alt="Foto {{ $anggotaCard->Anggota->nama }}" class="w-full h-full object-cover">
+                            @if ($anggotaCard->anggota->foto ?? false)
+                                <img src="{{ asset('storage/' . $anggotaCard->anggota->foto) }}"
+                                    alt="Foto {{ $anggotaCard->anggota->user->name ?? '' }}"
+                                    class="w-full h-full object-cover">
                             @else
                                 <div class="flex flex-col items-center justify-center text-gray-400">
                                     <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -297,10 +299,10 @@
                         </div>
 
                         <h4 class="font-bold text-gray-800 dark:text-gray-100 text-sm">
-                            {{ $anggotaCard->Anggota->nama ?? 'Tanpa Nama' }}
+                            {{ $anggotaCard->anggota->user->name ?? 'Tanpa Nama' }}
                         </h4>
                         <p class="text-xs text-gray-400 mt-0.5">
-                            {{ $anggotaCard->Anggota->pekerjaan ?? 'Anggota' }}
+                            {{ $anggotaCard->anggota->pekerjaan ?? 'Anggota' }}
                         </p>
                     </div>
 
@@ -343,6 +345,7 @@
                     </div>
                 </div>
 
+
             </div>
 
             <!-- MODAL VIEW: ISI PAKTA INTEGRITAS YANG DISETUJUI -->
@@ -379,10 +382,10 @@
                                 <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor"
                                     viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M5 13l4 4L19 7"></path>
+                                        d="M5 13l4 4L19 7" />
                                 </svg>
                                 <span>Dokumen ini telah dibaca dan disetujui secara elektronik oleh
-                                    <strong>{{ $anggotaCard->Anggota->nama ?? 'Anggota' }}</strong> pada saat
+                                    <strong>{{ $anggotaCard->anggota->user->name?? 'Anggota' }}</strong> pada saat
                                     pendaftaran.</span>
                             </div>
 
@@ -518,7 +521,7 @@
                                         class="block text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1">Nama
                                         Lengkap</span>
                                     <span
-                                        class="font-bold text-gray-800 dark:text-gray-100">{{ $anggotaCard->Anggota->nama ?? '-' }}</span>
+                                        class="font-bold text-gray-800 dark:text-gray-100">{{ $anggotaCard->anggota->user->name?? '-' }}</span>
                                 </div>
 
                                 <!-- No. KTP -->
@@ -528,7 +531,7 @@
                                         class="block text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1">No.
                                         KTP</span>
                                     <span
-                                        class="font-semibold text-gray-800 dark:text-gray-100 tracking-wide">{{ $anggotaCard->Anggota->no_ktp ?? '-' }}</span>
+                                        class="font-semibold text-gray-800 dark:text-gray-100 tracking-wide">{{ $anggotaCard->anggota->no_ktp ?? '-' }}</span>
                                 </div>
 
                                 <!-- Email -->
@@ -537,7 +540,7 @@
                                     <span
                                         class="block text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1">Email</span>
                                     <span
-                                        class="font-medium text-gray-800 dark:text-gray-100 break-all">{{ $anggotaCard->Anggota->email ?? '-' }}</span>
+                                        class="font-medium text-gray-800 dark:text-gray-100 break-all">{{ $anggotaCard->anggota->user->email ?? '-' }}</span>
                                 </div>
 
                                 <!-- No. HP -->
@@ -547,7 +550,7 @@
                                         class="block text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1">No.
                                         HP</span>
                                     <span
-                                        class="font-medium text-gray-800 dark:text-gray-100">{{ $anggotaCard->Anggota->no_hp ?? '-' }}</span>
+                                        class="font-medium text-gray-800 dark:text-gray-100">{{ $anggotaCard->anggota->user->no_hp ?? '-' }}</span>
                                 </div>
                             </div>
                         </div>
@@ -708,7 +711,7 @@
 
                         <div>
                             <h2 class="text-base font-bold text-gray-900 dark:text-gray-100">
-                                {{ $anggotaCard->anggota->nama ?? '-' }}
+                                {{ $anggotaCard->anggota->user->nama ?? '-' }}
                             </h2>
                             <p class="text-xs text-gray-500 mt-0.5">
                                 No. ID: <span
@@ -886,8 +889,8 @@
                                         </div>
                                         <div class="absolute top-[342px] inset-x-0 px-4 text-center">
                                             <h2
-                                                class="text-[11px] font-extrabold text-gray-900 uppercase tracking-tight leading-snug">
-                                                {{ $anggotaCard->anggota->nama ?? '' }}
+                                                class="text-[11px] font-extrabold text-gray-900 uppercase tracking-tight leading-snug truncate">
+                                                {{ $anggotaCard->anggota->user->name?? '' }}
                                             </h2>
                                             @if (!empty(optional($latestBerlaku)->jabatan))
                                                 <p
@@ -1063,7 +1066,7 @@
                                 <div class="bg-gray-50 dark:bg-gray-700/30 p-3 rounded-xl">
                                     <span class="block text-gray-400 mb-0.5">Nama Lengkap</span>
                                     <span
-                                        class="font-bold text-gray-900 dark:text-white uppercase">{{ $anggotaCard->anggota->nama ?? '-' }}</span>
+                                        class="font-bold text-gray-900 dark:text-white uppercase">{{ $anggotaCard->anggota->user->name?? '-' }}</span>
                                 </div>
 
                                 <div class="bg-gray-50 dark:bg-gray-700/30 p-3 rounded-xl">
@@ -1101,19 +1104,19 @@
                                 <div class="bg-gray-50 dark:bg-gray-700/30 p-3 rounded-xl">
                                     <span class="block text-gray-400 mb-0.5">Email</span>
                                     <span
-                                        class="font-semibold text-gray-800 dark:text-gray-200">{{ $anggotaCard->anggota->email ?? '-' }}</span>
+                                        class="font-semibold text-gray-800 dark:text-gray-200">{{ $anggotaCard->anggota->user->email ?? '-' }}</span>
                                 </div>
 
                                 <div class="bg-gray-50 dark:bg-gray-700/30 p-3 rounded-xl">
                                     <span class="block text-gray-400 mb-0.5">Nomor HP / WhatsApp</span>
                                     <span
-                                        class="font-semibold text-gray-800 dark:text-gray-200">{{ $anggotaCard->anggota->no_hp ?? '-' }}</span>
+                                        class="font-semibold text-gray-800 dark:text-gray-200">{{ $anggotaCard->anggota->user->no_hp ?? '-' }}</span>
                                 </div>
 
                                 <div class="md:col-span-2 bg-gray-50 dark:bg-gray-700/30 p-3 rounded-xl">
                                     <span class="block text-gray-400 mb-0.5">Alamat Lengkap</span>
                                     <span
-                                        class="font-semibold text-gray-800 dark:text-gray-200">{{ $anggotaCard->anggota->alamat ?? '-' }}</span>
+                                        class="font-semibold text-gray-800 dark:text-gray-200">{{ $anggotaCard->anggota->user->alamat ?? '-' }}</span>
                                 </div>
                             </div>
                         </div>
@@ -1172,8 +1175,8 @@
                             </div>
                             <div class="text-xs text-amber-700 dark:text-amber-400 space-y-2">
                                 <p>Anggota <strong
-                                        class="text-amber-800 dark:text-amber-200">{{ $anggotaCard->anggota->nama }}</strong>
-                                    mengajukan permintaan untuk mengubah data pendaftarannya.</p>
+                                        class="text-amber-800 dark:text-amber-200">{{ $anggotaCard->anggota->user->nama }}</strong>
+                                    mengajukan permintaan untuk mengubah data pendaftarannya.
                                 <blockquote class="border-l-2 border-amber-400/50 pl-3 italic">
                                     "{{ $pendingEditRequest->alasan_pengajuan }}"</blockquote>
                             </div>
@@ -1285,8 +1288,8 @@
                                 </div>
                                 <div class="absolute top-[342px] inset-x-0 px-4 text-center">
                                     <h2
-                                        class="text-[11px] font-extrabold text-gray-900 uppercase tracking-tight leading-snug">
-                                        {{ $anggotaCard->anggota->nama ?? '' }}
+                                        class="text-[11px] font-extrabold text-gray-900 uppercase tracking-tight leading-snug truncate">
+                                        {{ $anggotaCard->anggota->user->name?? '' }}
                                     </h2>
                                     @if (!empty($anggotaCard->jabatan))
                                         <p class="text-[9.5px] font-bold text-gray-800 uppercase tracking-wider mt-0.5">
@@ -1388,7 +1391,7 @@
                                         class="block text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1">Nama
                                         Lengkap</span>
                                     <span
-                                        class="font-bold text-gray-800 dark:text-gray-100">{{ $anggotaCard->Anggota->nama ?? '-' }}</span>
+                                        class="font-bold text-gray-800 dark:text-gray-100">{{ $anggotaCard->anggota->user->name ?? '-' }}</span>
                                 </div>
 
                                 <!-- No. KTP / NIK -->
@@ -1398,7 +1401,7 @@
                                         class="block text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1">No.
                                         KTP / NIK</span>
                                     <span
-                                        class="font-semibold text-gray-800 dark:text-gray-100 tracking-wide">{{ $anggotaCard->Anggota->no_ktp ?? '-' }}</span>
+                                        class="font-semibold text-gray-800 dark:text-gray-100 tracking-wide">{{ $anggotaCard->anggota->no_ktp ?? '-' }}</span>
                                 </div>
 
                                 <!-- Email -->
@@ -1407,7 +1410,7 @@
                                     <span
                                         class="block text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1">Email</span>
                                     <span
-                                        class="font-medium text-gray-800 dark:text-gray-100 break-all">{{ $anggotaCard->Anggota->email ?? '-' }}</span>
+                                        class="font-medium text-gray-800 dark:text-gray-100 break-all">{{ $anggotaCard->anggota->user->email ?? '-' }}</span>
                                 </div>
 
                                 <!-- No. HP -->
@@ -1417,7 +1420,7 @@
                                         class="block text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1">No.
                                         HP / WhatsApp</span>
                                     <span
-                                        class="font-medium text-gray-800 dark:text-gray-100">{{ $anggotaCard->Anggota->no_hp ?? '-' }}</span>
+                                        class="font-medium text-gray-800 dark:text-gray-100">{{ $anggotaCard->anggota->user->no_hp ?? '-' }}</span>
                                 </div>
 
                                 <!-- Alamat Lengkap -->
@@ -1427,7 +1430,7 @@
                                         class="block text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1">Alamat
                                         Lengkap</span>
                                     <span
-                                        class="font-medium text-gray-800 dark:text-gray-100 leading-relaxed">{{ $anggotaCard->Anggota->alamat ?? '-' }}</span>
+                                        class="font-medium text-gray-800 dark:text-gray-100 leading-relaxed">{{ $anggotaCard->anggota->user->alamat ?? '-' }}</span>
                                 </div>
 
                             </div>
@@ -1447,9 +1450,9 @@
 
                         <div
                             class="w-28 h-28 rounded-2xl bg-gray-50 dark:bg-gray-700/50 border-2 border-rose-200 dark:border-rose-900/50 flex items-center justify-center overflow-hidden shadow-sm mb-3 relative">
-                            @if ($anggotaCard->Anggota->foto ?? false)
-                                <img src="{{ asset('storage/' . $anggotaCard->Anggota->foto) }}"
-                                    alt="Foto {{ $anggotaCard->Anggota->nama }}"
+                            @if ($anggotaCard->anggota->foto ?? false)
+                                <img src="{{ asset('storage/' . $anggotaCard->anggota->foto) }}"
+                                    alt="Foto {{ $anggotaCard->anggota->user->name?? '' }}"
                                     class="w-full h-full object-cover grayscale opacity-80">
                             @else
                                 <div class="flex flex-col items-center justify-center text-gray-400">
@@ -1462,10 +1465,10 @@
                         </div>
 
                         <h4 class="font-bold text-gray-800 dark:text-gray-100 text-sm">
-                            {{ $anggotaCard->Anggota->nama ?? 'Tanpa Nama' }}
+                            {{ $anggotaCard->anggota->user->name?? 'Tanpa Nama' }}
                         </h4>
                         <p class="text-xs text-gray-400 mt-0.5">
-                            {{ $anggotaCard->Anggota->pekerjaan ?? 'Anggota' }}
+                            {{ $anggotaCard->anggota->user->pekerjaan ?? 'Anggota' }}
                         </p>
                     </div>
 

@@ -67,8 +67,8 @@ class AnggotaCardController extends Controller
         // Filter berdasarkan pencarian nama
         if ($request->filled('search')) {
             $search = $request->search;
-            $query->whereHas('anggota', function ($q) use ($search) {
-                $q->where('nama', 'like', "%{$search}%");
+            $query->whereHas('anggota.user', function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%");
             });
         }
 
@@ -81,7 +81,7 @@ class AnggotaCardController extends Controller
 
     public function show(AnggotaCard $anggotaCard)
     {
-        $anggotaCard->load(['anggota.pendingEditRequest']);
+        $anggotaCard->load(['anggota.user', 'anggota.pendingEditRequest']);
         $pendingEditRequest = $anggotaCard->anggota->pendingEditRequest;
         return view('admin.anggota_card.show', compact('anggotaCard', 'pendingEditRequest'));
     }

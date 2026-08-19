@@ -142,9 +142,10 @@
                                                         </div>
 
                                                         <div class="absolute top-[71.2%] inset-x-4 text-center">
+                                                            <br>
                                                             <h2
                                                                 class="text-[10.5px] font-extrabold text-gray-900 uppercase tracking-tight leading-snug truncate">
-                                                                {{ optional($anggotaCard->anggota)->nama }}
+                                                                {{ optional($anggotaCard->anggota->user)->name }}
                                                             </h2>
                                                             @if (!empty(optional($anggotaCard->latestBerlaku)->jabatan))
                                                                 <p
@@ -308,7 +309,7 @@
                                                     <span class="block text-gray-500 dark:text-gray-400 mb-0.5">Nama
                                                         Lengkap</span>
                                                     <span
-                                                        class="font-bold text-gray-900 dark:text-white uppercase">{{ $anggotaCard->anggota->nama ?? '-' }}</span>
+                                                        class="font-bold text-gray-900 dark:text-white uppercase">{{ $anggotaCard->anggota->user->name ?? '-' }}</span>
                                                 </div>
 
                                                 <div
@@ -358,7 +359,7 @@
                                                     <span
                                                         class="block text-gray-500 dark:text-gray-400 mb-0.5">Email</span>
                                                     <span
-                                                        class="font-semibold text-gray-800 dark:text-gray-200">{{ $anggotaCard->anggota->email ?? '-' }}</span>
+                                                        class="font-semibold text-gray-800 dark:text-gray-200">{{ $anggotaCard->anggota->user->email ?? '-' }}</span>
                                                 </div>
 
                                                 <div
@@ -366,7 +367,7 @@
                                                     <span class="block text-gray-500 dark:text-gray-400 mb-0.5">Nomor HP /
                                                         WhatsApp</span>
                                                     <span
-                                                        class="font-semibold text-gray-800 dark:text-gray-200">{{ $anggotaCard->anggota->no_hp ?? '-' }}</span>
+                                                        class="font-semibold text-gray-800 dark:text-gray-200">{{ $anggotaCard->anggota->user->no_hp ?? '-' }}</span>
                                                 </div>
 
                                                 <div
@@ -374,7 +375,10 @@
                                                     <span class="block text-gray-500 dark:text-gray-400 mb-0.5">Alamat
                                                         Lengkap</span>
                                                     <span
-                                                        class="font-semibold text-gray-800 dark:text-gray-200">{{ $anggotaCard->anggota->alamat ?? '-' }}</span>
+                                                        class="font-semibold text-gray-800 dark:text-gray-200">{{ $anggotaCard->anggota->user->alamat ?? '-' }}, KELURAHAN
+                                                        {{ $anggotaCard->anggota->user->kelurahan }}, KECAMATAN {{$anggotaCard->anggota->user->kecamatan }},
+                                                        KOTA {{$anggotaCard->anggota->user->kota }}, PROVINSI {{$anggotaCard->anggota->user->provinsi }}
+                                                    </span>
                                                 </div>
                                             </div>
                                         </div>
@@ -727,11 +731,11 @@
                                             <span>Lihat & Batalkan Permintaan</span>
                                         </button>
                                     @elseif ($currentStatus === 'proses')
-                                        <a href="{{ route('user-anggota.edit', $anggota->id) }}"
+                                        {{-- <a href="{{ route('user-anggota.edit', $anggota->id) }}"
                                             class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-lg shadow-emerald-600/20 transition-all hover:scale-[1.02]">
                                             <i class="fa-solid fa-pen-to-square"></i>
                                             <span>Lanjutkan Perbarui Pendaftaran</span>
-                                        </a>
+                                        </a> --}}
                                     @endif
                                 </div>
                             @endif
@@ -961,46 +965,46 @@
                 </div>
                 {{-- TAMPILAN 2: JIKA USER BELUM MENDAFTAR (LANDING PAGE REGISTRASI) --}}
             @else
-                <div class="px-3 md:px-8 py-4 md:py-6 space-y-6 md:space-y-8 max-w-7xl mx-auto">
+                <div class="px-3 sm:px-6 md:px-8 py-6 md:py-10 space-y-10 md:space-y-14 max-w-7xl mx-auto">
 
                     <!-- Hero Section Banner -->
                     <div
-                        class="relative overflow-hidden rounded-2xl md:rounded-3xl bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 p-6 sm:p-10 md:p-12 text-white shadow-xl md:shadow-2xl border border-slate-800/80 group">
+                        class="relative overflow-hidden rounded-3xl md:rounded-[2.5rem] bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-900 p-8 sm:p-12 md:p-16 text-white shadow-2xl border border-slate-800/80 group">
                         <!-- Efek Backdrop Glow & Pattern Dekoratif -->
                         <div
-                            class="absolute -right-20 -top-20 w-64 md:w-96 h-64 md:h-96 bg-red-500/15 rounded-full blur-3xl pointer-events-none transition-all duration-700 group-hover:scale-125">
+                            class="absolute -right-20 -top-20 w-72 md:w-96 h-72 md:h-96 bg-red-500/20 rounded-full blur-3xl pointer-events-none transition-all duration-700 group-hover:scale-125">
                         </div>
                         <div
-                            class="absolute -left-20 -bottom-20 w-60 md:w-80 h-60 md:h-80 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none">
+                            class="absolute -left-20 -bottom-20 w-72 md:w-80 h-72 md:h-80 bg-indigo-500/15 rounded-full blur-3xl pointer-events-none">
                         </div>
 
-                        <div class="relative z-10 max-w-2xl space-y-4 md:space-y-5">
+                        <div class="relative z-10 max-w-2xl space-y-6">
                             <span
-                                class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-red-500/20 border border-red-500/30 text-red-300 text-[10px] md:text-xs font-semibold tracking-wide uppercase shadow-inner backdrop-blur-md">
-                                <i class="fa-solid fa-shield-halved text-red-400"></i> Keanggotaan Resmi BAKUMDA
+                                class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-red-500/10 border border-red-500/30 text-red-400 text-xs font-bold tracking-wider uppercase shadow-inner backdrop-blur-md">
+                                <i class="fa-solid fa-shield-halved"></i> Keanggotaan Resmi BAKUMDA
                             </span>
 
                             <h1
-                                class="text-2xl sm:text-3xl md:text-5xl font-extrabold leading-[1.2] md:leading-[1.15] tracking-tight text-white">
+                                class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black leading-[1.15] tracking-tight text-white">
                                 Bergabunglah Bersama Jaringan Masyarakat <span
-                                    class="text-transparent bg-clip-text bg-gradient-to-r from-red-400 to-indigo-300">Hukum
+                                    class="text-transparent bg-clip-text bg-gradient-to-r from-red-400 via-rose-300 to-indigo-300">Hukum
                                     Indonesia</span>
                             </h1>
 
-                            <p class="text-xs sm:text-sm md:text-base text-slate-300 leading-relaxed font-normal">
+                            <p class="text-sm sm:text-base md:text-lg text-slate-300 leading-relaxed font-normal">
                                 BAKUMDA membuka kesempatan bagi praktisi hukum, akademisi, dan profesional untuk
                                 berkontribusi secara nyata dalam memberikan pendampingan hukum dan pengabdian masyarakat.
                             </p>
 
-                            <div class="pt-2 md:pt-3 flex flex-wrap items-center gap-3">
+                            <div class="pt-2 flex flex-wrap items-center gap-3.5">
                                 <a href="{{ route('user-anggota.create') }}"
-                                    class="inline-flex items-center gap-2 px-5 md:px-7 py-3 md:py-3.5 rounded-xl md:rounded-2xl bg-red-600 hover:bg-red-500 text-white font-bold text-xs shadow-lg shadow-red-600/30 transition-all duration-300 hover:scale-[1.03] active:scale-95">
+                                    class="inline-flex items-center gap-2.5 px-6 md:px-8 py-3.5 md:py-4 rounded-xl md:rounded-2xl bg-red-600 hover:bg-red-500 text-white font-bold text-sm shadow-xl shadow-red-600/30 transition-all duration-300 hover:scale-[1.02] active:scale-95">
                                     <span>Mulai Pendaftaran Sekarang</span>
                                     <i
                                         class="fa-solid fa-arrow-right text-xs transition-transform duration-300 group-hover:translate-x-1"></i>
                                 </a>
                                 <a href="#persyaratan"
-                                    class="inline-flex items-center gap-2 px-5 md:px-6 py-3 md:py-3.5 rounded-xl md:rounded-2xl bg-slate-800/80 hover:bg-slate-800 text-slate-300 hover:text-white font-semibold text-xs border border-slate-700/80 backdrop-blur-sm transition-all duration-200">
+                                    class="inline-flex items-center gap-2 px-6 py-3.5 md:py-4 rounded-xl md:rounded-2xl bg-slate-800/80 hover:bg-slate-800 text-slate-200 hover:text-white font-semibold text-sm border border-slate-700/80 backdrop-blur-sm transition-all duration-200">
                                     <span>Lihat Persyaratan</span>
                                 </a>
                             </div>
@@ -1008,34 +1012,35 @@
 
                         <!-- Ikon Transparan Besar di Sudut Kanan (Desktop Only) -->
                         <div
-                            class="absolute right-6 -bottom-6 opacity-10 hidden lg:block pointer-events-none transition-transform duration-500 group-hover:scale-110">
-                            <i class="fa-solid fa-scale-balanced text-[180px]"></i>
+                            class="absolute right-8 -bottom-10 opacity-10 hidden lg:block pointer-events-none transition-transform duration-500 group-hover:scale-110">
+                            <i class="fa-solid fa-scale-balanced text-[220px]"></i>
                         </div>
                     </div>
 
                     <!-- Keuntungan / Why Join Us Section -->
-                    <div class="space-y-4 md:space-y-6">
-                        <div class="text-center max-w-xl mx-auto space-y-1">
-                            <h2 class="text-lg sm:text-xl md:text-2xl font-extrabold text-slate-900 tracking-tight">
+                    <div class="space-y-6 md:space-y-8">
+                        <div class="text-center max-w-2xl mx-auto space-y-2">
+                            <span class="text-red-600 font-bold text-xs uppercase tracking-widest">Benefit Eksklusif</span>
+                            <h2 class="text-2xl sm:text-3xl md:text-4xl font-black text-slate-900 tracking-tight">
                                 Manfaat & Fasilitas Keanggotaan
                             </h2>
-                            <p class="text-xs sm:text-sm text-slate-500">
+                            <p class="text-sm sm:text-base text-slate-600">
                                 Akses berbagai benefit eksklusif setelah resmi terdaftar sebagai anggota.
                             </p>
                         </div>
 
-                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6">
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
                             <!-- Card 1 -->
                             <div
-                                class="group p-5 md:p-7 rounded-2xl md:rounded-3xl bg-white border border-slate-200/80 shadow-sm hover:shadow-xl hover:border-red-500/30 transition-all duration-300 flex flex-col justify-between hover:-translate-y-1">
-                                <div class="space-y-3 md:space-y-4">
+                                class="group p-6 md:p-8 rounded-3xl bg-white border border-slate-200/80 shadow-sm hover:shadow-2xl hover:border-red-500/30 transition-all duration-300 flex flex-col justify-between hover:-translate-y-1.5">
+                                <div class="space-y-4">
                                     <div
-                                        class="w-12 h-12 md:w-14 md:h-14 rounded-xl md:rounded-2xl bg-red-50 text-red-600 flex items-center justify-center text-lg md:text-xl font-bold transition-transform duration-300 group-hover:scale-110 shadow-sm">
+                                        class="w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-red-50 text-red-600 flex items-center justify-center text-xl md:text-2xl font-bold transition-transform duration-300 group-hover:scale-110 shadow-sm">
                                         <i class="fa-solid fa-id-card"></i>
                                     </div>
-                                    <h3 class="font-extrabold text-sm sm:text-base text-slate-900">Kartu Anggota Resmi
-                                        (NIA)</h3>
-                                    <p class="text-xs text-slate-500 leading-relaxed">
+                                    <h3 class="font-black text-base sm:text-lg text-slate-900">Kartu Anggota Resmi (NIA)
+                                    </h3>
+                                    <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
                                         Mendapatkan Nomor Induk Anggota (NIA) resmi serta Kartu Keanggotaan fisik/digital
                                         yang terverifikasi.
                                     </p>
@@ -1044,15 +1049,14 @@
 
                             <!-- Card 2 -->
                             <div
-                                class="group p-5 md:p-7 rounded-2xl md:rounded-3xl bg-white border border-slate-200/80 shadow-sm hover:shadow-xl hover:border-indigo-500/30 transition-all duration-300 flex flex-col justify-between hover:-translate-y-1">
-                                <div class="space-y-3 md:space-y-4">
+                                class="group p-6 md:p-8 rounded-3xl bg-white border border-slate-200/80 shadow-sm hover:shadow-2xl hover:border-indigo-500/30 transition-all duration-300 flex flex-col justify-between hover:-translate-y-1.5">
+                                <div class="space-y-4">
                                     <div
-                                        class="w-12 h-12 md:w-14 md:h-14 rounded-xl md:rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-lg md:text-xl font-bold transition-transform duration-300 group-hover:scale-110 shadow-sm">
+                                        class="w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-xl md:text-2xl font-bold transition-transform duration-300 group-hover:scale-110 shadow-sm">
                                         <i class="fa-solid fa-network-wired"></i>
                                     </div>
-                                    <h3 class="font-extrabold text-sm sm:text-base text-slate-900">Jaringan Advokasi Luas
-                                    </h3>
-                                    <p class="text-xs text-slate-500 leading-relaxed">
+                                    <h3 class="font-black text-base sm:text-lg text-slate-900">Jaringan Advokasi Luas</h3>
+                                    <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
                                         Koneksi langsung dengan jejaring advokat, konsultan hukum, serta mitra strategis di
                                         berbagai daerah.
                                     </p>
@@ -1061,15 +1065,15 @@
 
                             <!-- Card 3 -->
                             <div
-                                class="group p-5 md:p-7 rounded-2xl md:rounded-3xl bg-white border border-slate-200/80 shadow-sm hover:shadow-xl hover:border-purple-500/30 transition-all duration-300 flex flex-col justify-between hover:-translate-y-1">
-                                <div class="space-y-3 md:space-y-4">
+                                class="group p-6 md:p-8 rounded-3xl bg-white border border-slate-200/80 shadow-sm hover:shadow-2xl hover:border-purple-500/30 transition-all duration-300 flex flex-col justify-between hover:-translate-y-1.5">
+                                <div class="space-y-4">
                                     <div
-                                        class="w-12 h-12 md:w-14 md:h-14 rounded-xl md:rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center text-lg md:text-xl font-bold transition-transform duration-300 group-hover:scale-110 shadow-sm">
+                                        class="w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center text-xl md:text-2xl font-bold transition-transform duration-300 group-hover:scale-110 shadow-sm">
                                         <i class="fa-solid fa-gavel"></i>
                                     </div>
-                                    <h3 class="font-extrabold text-sm sm:text-base text-slate-900">Pendampingan & Pelatihan
+                                    <h3 class="font-black text-base sm:text-lg text-slate-900">Pendampingan & Pelatihan
                                     </h3>
-                                    <p class="text-xs text-slate-500 leading-relaxed">
+                                    <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
                                         Akses mengikuti bimtek, workshop advokasi, serta keterlibatan dalam penanganan kasus
                                         daerah.
                                     </p>
@@ -1080,114 +1084,108 @@
 
                     <!-- Alur Pendaftaran Section -->
                     <div
-                        class="p-5 sm:p-8 md:p-10 rounded-2xl md:rounded-3xl bg-white border border-slate-200/80 shadow-sm space-y-5 md:space-y-6">
-                        <div class="space-y-1">
-                            <h2
-                                class="text-xs sm:text-sm md:text-base font-extrabold text-slate-900 uppercase tracking-wider">
+                        class="p-6 sm:p-10 md:p-12 rounded-3xl bg-slate-900 text-white shadow-xl space-y-8 relative overflow-hidden">
+                        <!-- Efek Background Dekoratif -->
+                        <div
+                            class="absolute -left-20 -top-20 w-60 h-60 bg-red-600/10 rounded-full blur-3xl pointer-events-none">
+                        </div>
+
+                        <div class="space-y-2 relative z-10">
+                            <span class="text-red-400 font-bold text-xs uppercase tracking-widest">Langkah Mudah</span>
+                            <h2 class="text-2xl sm:text-3xl font-black text-white tracking-tight">
                                 Alur Tahapan Pendaftaran
                             </h2>
-                            <p class="text-xs sm:text-sm text-slate-500">
-                                5 langkah mudah untuk menyelesaikan proses registrasi keanggotaan.
+                            <p class="text-sm text-slate-400">
+                                Ikuti langkah-langkah berikut untuk menyelesaikan proses registrasi keanggotaan Anda.
                             </p>
                         </div>
 
-                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5 relative">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 relative z-10">
+                            <!-- Step 01 -->
                             <div
-                                class="p-4 rounded-xl bg-slate-50 border border-slate-100 space-y-2 transition-all hover:bg-slate-100/80">
+                                class="p-5 rounded-2xl bg-slate-800/80 border border-slate-700/80 space-y-3 transition-all hover:bg-slate-800 hover:border-red-500/40">
                                 <span
-                                    class="inline-block px-2 py-0.5 rounded bg-red-500/10 text-[11px] font-black text-red-600 font-mono">01</span>
-                                <h4 class="font-extrabold text-xs sm:text-sm text-slate-900">Isi Formulir Online</h4>
-                                <p class="text-[11px] sm:text-xs text-slate-500 leading-relaxed">Melengkapi identitas diri
-                                    dan informasi domisili secara valid.</p>
+                                    class="inline-block px-2.5 py-1 rounded-lg bg-red-500/20 text-xs font-black text-red-400 font-mono">01</span>
+                                <h4 class="font-bold text-sm text-white">Upload Dokumen</h4>
+                                <p class="text-xs text-slate-400 leading-relaxed">Mengunggah scan KTP dan pas foto formal
+                                    terbaru ukuran 3x4 latar merah.</p>
                             </div>
 
+                            <!-- Step 02 -->
                             <div
-                                class="p-4 rounded-xl bg-slate-50 border border-slate-100 space-y-2 transition-all hover:bg-slate-100/80">
+                                class="p-5 rounded-2xl bg-slate-800/80 border border-slate-700/80 space-y-3 transition-all hover:bg-slate-800 hover:border-red-500/40">
                                 <span
-                                    class="inline-block px-2 py-0.5 rounded bg-red-500/10 text-[11px] font-black text-red-600 font-mono">02</span>
-                                <h4 class="font-extrabold text-xs sm:text-sm text-slate-900">Upload Dokumen</h4>
-                                <p class="text-[11px] sm:text-xs text-slate-500 leading-relaxed">Mengunggah scan KTP dan
-                                    pas foto terbaru ukuran 3x4.</p>
+                                    class="inline-block px-2.5 py-1 rounded-lg bg-red-500/20 text-xs font-black text-red-400 font-mono">02</span>
+                                <h4 class="font-bold text-sm text-white">Ikuti Pelatihan</h4>
+                                <p class="text-xs text-slate-400 leading-relaxed">Wajib mengikuti program pelatihan
+                                    pengenalan yang telah ditentukan.</p>
                             </div>
 
+                            <!-- Step 03 -->
                             <div
-                                class="p-4 rounded-xl bg-slate-50 border border-slate-100 space-y-2 transition-all hover:bg-slate-100/80">
+                                class="p-5 rounded-2xl bg-slate-800/80 border border-slate-700/80 space-y-3 transition-all hover:bg-slate-800 hover:border-red-500/40">
                                 <span
-                                    class="inline-block px-2 py-0.5 rounded bg-red-500/10 text-[11px] font-black text-red-600 font-mono">03</span>
-                                <h4 class="font-extrabold text-xs sm:text-sm text-slate-900">Ikuti Pelatihan</h4>
-                                <p class="text-[11px] sm:text-xs text-slate-500 leading-relaxed">Wajib mengikuti program
-                                    pelatihan yang telah ditentukan.</p>
-                            </div>
-
-                            <div
-                                class="p-4 rounded-xl bg-slate-50 border border-slate-100 space-y-2 transition-all hover:bg-slate-100/80">
-                                <span
-                                    class="inline-block px-2 py-0.5 rounded bg-red-500/10 text-[11px] font-black text-red-600 font-mono">04</span>
-                                <h4 class="font-extrabold text-xs sm:text-sm text-slate-900">Verifikasi Pengurus</h4>
-                                <p class="text-[11px] sm:text-xs text-slate-500 leading-relaxed">Tim pengurus akan
+                                    class="inline-block px-2.5 py-1 rounded-lg bg-red-500/20 text-xs font-black text-red-400 font-mono">03</span>
+                                <h4 class="font-bold text-sm text-white">Verifikasi Pengurus</h4>
+                                <p class="text-xs text-slate-400 leading-relaxed">Tim pengurus pusat/daerah akan
                                     memvalidasi kelengkapan berkas Anda.</p>
                             </div>
 
+                            <!-- Step 04 -->
                             <div
-                                class="p-4 rounded-xl bg-slate-50 border border-slate-100 space-y-2 transition-all hover:bg-slate-100/80">
+                                class="p-5 rounded-2xl bg-slate-800/80 border border-slate-700/80 space-y-3 transition-all hover:bg-slate-800 hover:border-red-500/40">
                                 <span
-                                    class="inline-block px-2 py-0.5 rounded bg-red-500/10 text-[11px] font-black text-red-600 font-mono">05</span>
-                                <h4 class="font-extrabold text-xs sm:text-sm text-slate-900">Penerbitan KTA</h4>
-                                <p class="text-[11px] sm:text-xs text-slate-500 leading-relaxed">Menerima NIA dan Kartu
-                                    Tanda Anggota (KTA) BAKUMDA.</p>
+                                    class="inline-block px-2.5 py-1 rounded-lg bg-red-500/20 text-xs font-black text-red-400 font-mono">04</span>
+                                <h4 class="font-bold text-sm text-white">Penerbitan KTA</h4>
+                                <p class="text-xs text-slate-400 leading-relaxed">Menerima NIA dan Kartu Tanda Anggota
+                                    (KTA) resmi BAKUMDA.</p>
                             </div>
                         </div>
                     </div>
 
                     <!-- Persyaratan & Checklist Section -->
                     <div id="persyaratan"
-                        class="p-5 sm:p-8 md:p-10 rounded-2xl md:rounded-3xl bg-white border border-slate-200/80 shadow-sm space-y-4 md:space-y-5">
-                        <div class="space-y-1">
-                            <h2
-                                class="text-xs sm:text-sm md:text-base font-extrabold text-slate-900 uppercase tracking-wider">
+                        class="p-6 sm:p-10 md:p-12 rounded-3xl bg-white border border-slate-200/80 shadow-sm space-y-6">
+                        <div class="space-y-2">
+                            <span class="text-red-600 font-bold text-xs uppercase tracking-widest">Persiapan Awal</span>
+                            <h2 class="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
                                 Dokumen Persyaratan
                             </h2>
-                            <p class="text-xs sm:text-sm text-slate-500">
+                            <p class="text-sm sm:text-base text-slate-600">
                                 Pastikan Anda telah menyiapkan dokumen digital berikut sebelum melanjutkan ke formulir:
                             </p>
                         </div>
 
-                        <ul class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1 text-xs sm:text-sm text-slate-700">
-                            <li class="flex items-center gap-3 p-3 rounded-xl bg-slate-50 border border-slate-100">
-                                <i class="fa-solid fa-circle-check text-emerald-500 text-base shrink-0"></i>
-                                <span class="font-medium">Kartu Tanda Penduduk (KTP) asli / Scan berwarna</span>
+                        <ul class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-slate-700">
+                            <li
+                                class="flex items-center gap-3.5 p-4 rounded-2xl bg-slate-50 border border-slate-100 hover:border-emerald-500/30 transition-colors">
+                                <i class="fa-solid fa-circle-check text-emerald-500 text-lg shrink-0"></i>
+                                <span class="font-semibold">Kartu Tanda Penduduk (KTP) asli / Scan berwarna</span>
                             </li>
-                            <li class="flex items-center gap-3 p-3 rounded-xl bg-slate-50 border border-slate-100">
-                                <i class="fa-solid fa-circle-check text-emerald-500 text-base shrink-0"></i>
-                                <span class="font-medium">Pas foto formal terbaru latar merah/biru</span>
-                            </li>
-                            <li class="flex items-center gap-3 p-3 rounded-xl bg-slate-50 border border-slate-100">
-                                <i class="fa-solid fa-circle-check text-emerald-500 text-base shrink-0"></i>
-                                <span class="font-medium">Alamat e-mail & Nomor WhatsApp aktif</span>
-                            </li>
-                            <li class="flex items-center gap-3 p-3 rounded-xl bg-slate-50 border border-slate-100">
-                                <i class="fa-solid fa-circle-check text-emerald-500 text-base shrink-0"></i>
-                                <span class="font-medium">Daftar riwayat hidup singkat / CV (Opsional)</span>
+                            <li
+                                class="flex items-center gap-3.5 p-4 rounded-2xl bg-slate-50 border border-slate-100 hover:border-emerald-500/30 transition-colors">
+                                <i class="fa-solid fa-circle-check text-emerald-500 text-lg shrink-0"></i>
+                                <span class="font-semibold">Pas foto formal terbaru latar belakang merah / biru</span>
                             </li>
                         </ul>
                     </div>
 
                     <!-- Bottom Action Card -->
                     <div
-                        class="relative overflow-hidden p-6 sm:p-8 rounded-2xl md:rounded-3xl bg-gradient-to-r from-red-600 via-indigo-600 to-red-700 text-white shadow-xl flex flex-col sm:flex-row items-center justify-between gap-5">
+                        class="relative overflow-hidden p-8 sm:p-10 rounded-3xl bg-gradient-to-r from-red-600 via-rose-600 to-indigo-700 text-white shadow-2xl flex flex-col sm:flex-row items-center justify-between gap-6">
                         <!-- Dekorasi Background Tipis -->
                         <div
-                            class="absolute -right-10 -top-10 w-40 h-40 bg-white/10 rounded-full blur-2xl pointer-events-none">
+                            class="absolute -right-10 -top-10 w-48 h-48 bg-white/10 rounded-full blur-2xl pointer-events-none">
                         </div>
 
-                        <div class="space-y-1 text-center sm:text-left z-10">
-                            <h3 class="text-base sm:text-lg font-extrabold">Sudah Siap Bergabung?</h3>
-                            <p class="text-xs sm:text-sm text-white/80">Proses pengisian formulir hanya membutuhkan waktu
-                                sekitar 3–5 menit.</p>
+                        <div class="space-y-1.5 text-center sm:text-left z-10">
+                            <h3 class="text-xl sm:text-2xl font-black">Sudah Siap Bergabung?</h3>
+                            <p class="text-sm text-white/90">Proses pengisian formulir pendaftaran online hanya membutuhkan
+                                waktu sekitar 3–5 menit.</p>
                         </div>
 
                         <a href="{{ route('user-anggota.create') }}"
-                            class="z-10 shrink-0 inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-white text-red-700 hover:bg-slate-100 font-extrabold text-xs shadow-lg transition-all duration-300 hover:scale-105 active:scale-95">
+                            class="z-10 shrink-0 inline-flex items-center gap-2.5 px-8 py-4 rounded-2xl bg-white text-red-700 hover:bg-slate-100 font-extrabold text-sm shadow-xl transition-all duration-300 hover:scale-105 active:scale-95">
                             <span>Lanjut ke Formulir</span>
                             <i class="fa-solid fa-arrow-right text-xs"></i>
                         </a>

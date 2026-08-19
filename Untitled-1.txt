@@ -9,6 +9,7 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserAnggotaController;
+use App\Http\Controllers\UserReferralController;
 use App\Http\Controllers\Admin\PelatihanController;
 use App\Http\Controllers\Admin\MateriController;
 use App\Http\Controllers\WilayahController;
@@ -79,6 +80,10 @@ Route::middleware('auth')->group(function () {
     Route::resource('user-pelatihan', UserPelatihanController::class)->names('user-pelatihan')->parameters(['user-pelatihan' => 'pelatihan']);
     Route::get('pelatihan-materi/{pelatihanId}', [\App\Http\Controllers\UserMateriController::class, 'index'])->name('user-materi.index');
     Route::get('pelatihan-materi/{pelatihanId}/{materiId}', [\App\Http\Controllers\UserMateriController::class, 'show'])->name('user-materi.show');
+
+    // Rute untuk Program Referral Pengguna
+    Route::get('user-referral', [UserReferralController::class, 'index'])->name('user-referral.index');
+    Route::post('user-referral/claim', [UserReferralController::class, 'claim'])->name('user-referral.claim');
 
     Route::resource('user-anggota', UserAnggotaController::class)->names('user-anggota')->parameters(['user-anggota' => 'anggota']);
 

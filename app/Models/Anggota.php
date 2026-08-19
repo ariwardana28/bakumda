@@ -9,26 +9,10 @@ class Anggota extends Model
     protected $table = 'anggota';
 
     protected $fillable = [
-        'nama',
         'no_ktp',
-        'alamat',
-        'provinsi',
-        'kota',
-        'kecamatan',
-        'kelurahan',
-        'no_hp',
-        'email',
-        'jenis_kelamin',
-        'tempat_lahir',
-        'tanggal_lahir',
-        'agama',
-        'status_perkawinan',
-        'pekerjaan',
-        'kewarganegaraan',
         'foto',
         'foto_ktp',
         'pakta_integritas',
-        'keterangan',
         'user_id',
     ];
 
@@ -40,6 +24,12 @@ class Anggota extends Model
         // Mengambil card terbaru yang dimiliki oleh anggota ini
         return $this->hasOne(AnggotaCard::class, 'anggota_id', 'id')->latest('id');
     }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
 
     /**
      * Get all of the edit requests for the Anggota.
@@ -58,10 +48,10 @@ class Anggota extends Model
         // Mengambil satu permintaan edit terbaru yang statusnya 'approved'.
         // Ini adalah cara yang lebih eksplisit dan seringkali lebih mudah untuk di-debug.
         return $this->hasOne(AnggotaPengajuan::class, 'anggota_card_id', 'id')
-                    ->whereHas('latestStatus', function ($query) {
-                        $query->where('status', 'approved');
-                    })
-                    ->latestOfMany();
+            ->whereHas('latestStatus', function ($query) {
+                $query->where('status', 'approved');
+            })
+            ->latestOfMany();
     }
 
     public function statuses()

@@ -73,7 +73,7 @@
                             <!-- 3. NAMA & JABATAN -->
                             <div class="absolute top-[342px] inset-x-0 px-4 text-center">
                                 <h2 class="text-[11px] font-extrabold text-gray-900 uppercase tracking-tight leading-snug">
-                                    {{ $anggotaCard->anggota->nama ?? '' }}
+                                    {{ $anggotaCard->anggota->user->name ?? '' }}
                                 </h2>
 
                                 @if (!empty($anggotaCard->jabatan))
@@ -117,22 +117,22 @@
                             <div>
                                 <span class="text-gray-400 block">NIK:</span>
                                 <span
-                                    class="font-medium text-gray-800 dark:text-gray-200">{{ $anggotaCard->anggota->nik ?? '-' }}</span>
+                                    class="font-medium text-gray-800 dark:text-gray-200">{{ $anggotaCard->anggota->user->nik ?? '-' }}</span>
                             </div>
                             <div>
                                 <span class="text-gray-400 block">Email:</span>
                                 <span
-                                    class="font-medium text-gray-800 dark:text-gray-200">{{ $anggotaCard->anggota->email ?? '-' }}</span>
+                                    class="font-medium text-gray-800 dark:text-gray-200">{{ $anggotaCard->anggota->user->email ?? '-' }}</span>
                             </div>
                             <div>
                                 <span class="text-gray-400 block">No. HP:</span>
                                 <span
-                                    class="font-medium text-gray-800 dark:text-gray-200">{{ $anggotaCard->anggota->no_hp ?? '-' }}</span>
+                                    class="font-medium text-gray-800 dark:text-gray-200">{{ $anggotaCard->anggota->user->no_hp ?? '-' }}</span>
                             </div>
                             <div>
                                 <span class="text-gray-400 block">Alamat:</span>
                                 <span
-                                    class="font-medium text-gray-800 dark:text-gray-200">{{ $anggotaCard->anggota->alamat ?? '-' }}</span>
+                                    class="font-medium text-gray-800 dark:text-gray-200">{{ $anggotaCard->anggota->user->alamat ?? '-' }}</span>
                             </div>
                         </div>
 

@@ -33,7 +33,8 @@
 
         <!-- Header Tetap (Sticky) -->
         <header
-            class="sticky top-0 left-0 right-0 z-40 px-6 sm:px-12 pt-8 pb-4 bg-[#040a18]/95 backdrop-blur-md border-b border-white/5">
+            class="sticky top-0 left-0 right-0 z-40 px-6 sm:px-12 pt-8 pb-4 bg-slate-900/95 backdrop-blur-md border-b border-white/5">
+            {{-- class="sticky top-0 left-0 right-0 z-40 px-6 sm:px-12 pt-8 pb-4 bg-slate-900/80 backdrop-blur-md border-b border-slate-800/50"> --}}
             <div class="flex items-center justify-between relative z-10">
                 <div class="flex items-center space-x-2.5">
                     <img src="{{ asset('log.png') }}" alt="Logo" class="h-10 sm:h-12 w-auto object-contain">

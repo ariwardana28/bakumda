@@ -63,29 +63,10 @@ class UserAnggotaController extends Controller
     {
         // 1. Validasi Input
         $validated = $request->validate([
-            'nama'              => 'required|string|max:255',
-            'no_ktp'            => 'required|numeric|digits:16|unique:anggota,no_ktp',
-            'jenis_kelamin'     => 'required|in:Laki-laki,Perempuan',
-            'tempat_lahir'      => 'required|string|max:100',
-            'tanggal_lahir'     => 'required|date',
-            'agama'             => 'required|string|max:50',
-            'status_perkawinan' => 'required|string|max:50',
-            'pekerjaan'         => 'required|string|max:100',
-            'kewarganegaraan'   => 'required|in:WNI,WNA',
-            'email'             => 'required|email|max:255',
-            'no_hp'             => 'required|string|max:20',
-            'alamat'            => 'required|string',
-            'provinsi'          => 'nullable|string|max:255',
-            'kota'              => 'nullable|string|max:255',
-            'kecamatan'         => 'nullable|string|max:255',
-            'kelurahan'         => 'nullable|string|max:255',
+            'no_ktp'            => 'required|string|digits:16|unique:anggota,no_ktp',
             'foto'              => 'required|image|mimes:jpeg,png,jpg|max:2048', // maks 2MB
             'foto_ktp'          => 'required|file|mimes:jpeg,png,jpg,pdf|max:2048', // maks 2MB
-
-            // Ubah validasi pakta_integritas menjadi string 'approve' karena dikirim via checkbox modal
             'pakta_integritas'  => 'required|in:approve',
-
-            'keterangan'        => 'nullable|string',
         ], [
             'no_ktp.unique'         => 'NIK / No. KTP ini sudah terdaftar sebagai anggota.',
             'no_ktp.digits'         => 'NIK / No. KTP harus persis 16 digit angka.',
@@ -106,9 +87,6 @@ class UserAnggotaController extends Controller
             if ($request->hasFile('foto_ktp')) {
                 $validated['foto_ktp'] = $request->file('foto_ktp')->store('anggota/ktp', 'public');
             }
-
-            // Catatan: 'pakta_integritas' sekarang berisi string 'approve' dari hidden input,
-            // sehingga tidak perlu di-handle sebagai file upload lagi.
 
             // 3. Tambahkan data pendukung
             $validated['user_id'] = Auth::id();

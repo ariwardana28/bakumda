@@ -229,7 +229,12 @@
 
             {{-- KOLOM KANAN (Sidebar Ringkasan & Tombol Daftar) --}}
             <div class="lg:col-span-1">
-                <div class="sticky top-8 bg-white rounded-3xl p-6 md:p-7 shadow-xl border border-gray-100 space-y-6">
+                {{-- Tambahkan Alpine.js untuk state management modal --}}
+                <div x-data="{
+                    showModal: false,
+                    step: 1
+                }"
+                    class="sticky top-8 bg-white rounded-3xl p-6 md:p-7 shadow-xl border border-gray-100 space-y-6">
 
                     {{-- Harga Pelatihan --}}
                     <div class="flex items-center justify-between pb-6 border-b border-gray-100">
@@ -303,30 +308,51 @@
                             {{-- Status Badge Dinamis --}}
                             @if (($pelatihan->status ?? '') == 'berlangsung')
                                 <span
-                                    class="px-3 py-1 bg-amber-50 text-amber-700 border border-amber-100 rounded-full text-xs font-bold">Coming
-                                    Soon</span>
+                                    class="px-3 py-1 bg-emerald-50 text-emerald-700 border border-emerald-100 rounded-full text-xs font-bold">Dibuka</span>
                             @elseif (($pelatihan->status ?? '') == 'selesai')
                                 <span
                                     class="px-3 py-1 bg-gray-50 text-gray-600 border border-gray-100 rounded-full text-xs font-bold">Pelatihan
                                     Selesai</span>
                             @else
                                 <span
-                                    class="px-3 py-1 bg-emerald-50 text-emerald-700 border border-emerald-100 rounded-full text-xs font-bold">Dibuka</span>
+                                    class="px-3 py-1 bg-amber-50 text-amber-700 border border-amber-100 rounded-full text-xs font-bold">Coming
+                                    Soon</span>
                             @endif
                         </div>
                     </div>
 
                     {{-- Tombol Aksi Pendaftaran Dinamis --}}
                     <div class="pt-2 space-y-3">
-                        @if (($pelatihan->status ?? '') == 'berlangsung')
-                            <button type="button" disabled
-                                class="w-full bg-gradient-to-r from-amber-500 to-orange-500 text-white font-bold py-4 px-4 rounded-2xl cursor-not-allowed shadow-lg shadow-amber-500/20 flex items-center justify-center gap-2 text-center text-sm">
-                                <svg class="w-5 h-5 animate-pulse" fill="none" stroke="currentColor"
-                                    viewBox="0 0 24 24">
+                        @php
+                            $pendaftaran = $pelatihan->userPendaftaran;
+                            $status =
+                                $pendaftaran && $pendaftaran->latestStatus
+                                    ? strtolower($pendaftaran->latestStatus->status)
+                                    : null;
+                        @endphp
+
+                        @if ($status == 'menunggu pembayaran')
+                            <a href="{{ route('user-pelatihan.payment', $pendaftaran->id) }}"
+                                class="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-bold py-4 px-4 rounded-2xl transition-all shadow-xl shadow-amber-500/25 hover:shadow-amber-500/40 hover:-translate-y-0.5 flex items-center justify-center gap-2 text-center text-sm">
+                                <span>Lanjutkan Pembayaran</span>
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        d="M14 5l7 7m0 0l-7 7m7-7H3" />
                                 </svg>
-                                <span>Coming Soon</span>
+                            </a>
+                        @elseif ($pendaftaran)
+                            <a href="{{ route('user-pelatihan.status', $pendaftaran->id) }}"
+                                class="w-full bg-gradient-to-r from-slate-600 to-gray-700 hover:from-slate-700 hover:to-gray-800 text-white font-bold py-4 px-4 rounded-2xl transition-all shadow-lg shadow-gray-500/20 flex items-center justify-center gap-2 text-center text-sm">
+                                <span>Lihat Status Pendaftaran</span>
+                            </a>
+                        @elseif (($pelatihan->status ?? '') == 'berlangsung')
+                            <button @click="showModal = true" type="button"
+                                class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold py-4 px-4 rounded-2xl transition-all shadow-xl shadow-blue-600/25 hover:shadow-blue-600/40 hover:-translate-y-0.5 flex items-center justify-center gap-2 text-center text-sm">
+                                <span>Daftar Pelatihan Sekarang</span>
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                                </svg>
                             </button>
                         @elseif (($pelatihan->status ?? '') == 'selesai')
                             <button type="button" disabled
@@ -338,14 +364,15 @@
                                 <span>Pelatihan Selesai</span>
                             </button>
                         @else
-                            <a href="{{ route('user-pelatihan.daftar', $pelatihan) }}"
-                                class="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold py-4 px-4 rounded-2xl transition-all shadow-xl shadow-blue-600/25 hover:shadow-blue-600/40 hover:-translate-y-0.5 flex items-center justify-center gap-2 text-center text-sm">
-                                <span>Daftar Pelatihan Sekarang</span>
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <button type="button" disabled
+                                class="w-full bg-gradient-to-r from-amber-500 to-orange-500 text-white font-bold py-4 px-4 rounded-2xl cursor-not-allowed shadow-lg shadow-amber-500/20 flex items-center justify-center gap-2 text-center text-sm">
+                                <svg class="w-5 h-5 animate-pulse" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
-                            </a>
+                                <span>Coming Soon</span>
+                            </button>
                         @endif
 
                         <a href="{{ url('/user-pelatihan') }}"
@@ -365,6 +392,115 @@
                             </svg>
                             Hubungi Admin via WhatsApp
                         </a>
+                    </div>
+
+                    {{-- Modal Pendaftaran --}}
+                    <div x-show="showModal" x-transition:enter="ease-out duration-300"
+                        x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+                        x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100"
+                        x-transition:leave-end="opacity-0"
+                        class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm"
+                        style="display: none;">
+
+                        <div @click.away="showModal = false; step = 1"
+                            class="bg-white rounded-3xl shadow-2xl w-full max-w-lg mx-4 transform transition-all"
+                            x-show="showModal" x-transition:enter="ease-out duration-300"
+                            x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                            x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+                            x-transition:leave="ease-in duration-200"
+                            x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
+                            x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95">
+
+                            <form action="{{ route('user-pelatihan.store', $pelatihan) }}" method="POST">
+                                @csrf
+                                {{-- Step 1: Informasi --}}
+                                <div x-show="step === 1" class="p-6 md:p-8">
+                                    <h3 class="text-xl font-bold text-gray-900">Ringkasan Pelatihan</h3>
+                                    <p class="text-sm text-gray-500 mt-1">Anda akan mendaftar untuk program pelatihan
+                                        berikut:</p>
+
+                                    <div class="mt-6 space-y-4 border-t border-b border-gray-100 py-5">
+                                        <div class="flex items-start gap-4">
+                                            <img src="{{ asset('storage/' . $pelatihan->gambar) }}" alt=""
+                                                class="w-20 h-20 object-cover rounded-xl flex-shrink-0">
+                                            <div>
+                                                <h4 class="font-bold text-gray-800 line-clamp-1">{{ $pelatihan->judul }}
+                                                </h4>
+                                                <p class="text-xs text-gray-500 mt-1">Anda akan mempelajari materi berikut:
+                                                </p>
+                                                <ul class="mt-2 space-y-1.5 text-xs text-gray-600">
+                                                    @forelse ($pelatihan->materi as $materi)
+                                                        <li class="flex items-center gap-2">
+                                                            <svg class="w-3.5 h-3.5 text-blue-500 flex-shrink-0"
+                                                                fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                                    stroke-width="2.5"
+                                                                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z">
+                                                                </path>
+                                                            </svg>
+                                                            <span class="line-clamp-1">{{ $materi->judul }}</span>
+                                                        </li>
+                                                    @empty
+                                                        <li class="text-gray-400 italic">
+                                                            Materi belum tersedia.
+                                                        </li>
+                                                    @endforelse
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="flex justify-between items-center text-sm">
+                                            <span class="text-gray-500">Biaya Investasi</span>
+                                            <span
+                                                class="font-bold text-gray-900">{{ $pelatihan->harga == 0 ? 'Gratis' : 'Rp ' . number_format($pelatihan->harga, 0, ',', '.') }}</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="mt-6 flex justify-end gap-3">
+                                        <button type="button" @click="showModal = false; step = 1"
+                                            class="px-6 py-2.5 text-sm font-semibold text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-xl">
+                                            Batal
+                                        </button>
+                                        <button type="button" @click="step = 2"
+                                            class="px-6 py-2.5 text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-xl">
+                                            Lanjutkan
+                                        </button>
+                                    </div>
+                                </div>
+
+                                {{-- Step 2: Kode Referral & Submit --}}
+                                <div x-show="step === 2" class="p-6 md:p-8" style="display: none;">
+                                    <h3 class="text-xl font-bold text-gray-900">Kode Referral (Opsional)</h3>
+                                    <p class="text-sm text-gray-500 mt-1">Jika Anda memiliki kode referral, silakan
+                                        masukkan di bawah ini.</p>
+
+                                    <div class="mt-6">
+                                        <label for="referral_code" class="text-sm font-medium text-gray-700">Kode
+                                            Referral</label>
+                                        <input type="text" name="referral_code" id="referral_code"
+                                            class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-xl shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                                            placeholder="Contoh: REF123XYZ">
+                                    </div>
+
+                                    <div class="mt-8 flex justify-between items-center">
+                                        <button type="button" @click="step = 1"
+                                            class="text-sm font-semibold text-blue-600 hover:text-blue-800">
+                                            &larr; Kembali
+                                        </button>
+                                        <div class="flex gap-3">
+                                            <button type="submit"
+                                                class="px-6 py-2.5 text-sm font-bold text-blue-600 bg-blue-100 hover:bg-blue-200 rounded-xl">
+                                                Lewati & Daftar
+                                            </button>
+                                            <button type="submit"
+                                                class="px-6 py-2.5 text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-xl">
+                                                Daftar Sekarang
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+
+                        </div>
                     </div>
 
                 </div>

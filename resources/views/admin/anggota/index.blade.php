@@ -86,23 +86,23 @@
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="flex items-center gap-3">
                                         <div class="w-10 h-10 rounded-xl bg-brand-50 dark:bg-brand-900/30 text-brand-600 dark:text-brand-400 flex items-center justify-center font-bold text-sm shrink-0 border border-brand-100 dark:border-brand-800/50 shadow-sm">
-                                            {{ strtoupper(substr($anggota->nama, 0, 2)) }}
+                                            {{ strtoupper(substr($anggota->user->name, 0, 2)) }}
                                         </div>
                                         <div>
                                             <p class="font-semibold text-gray-900 dark:text-gray-100 group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors">
-                                                {{ $anggota->nama }}
+                                                {{ $anggota->user->name }}
                                             </p>
-                                            <p class="text-xs text-gray-400 dark:text-gray-500 font-mono">ID: #{{ $anggota->id }}</p>
+                                            <p class="text-xs text-gray-400 dark:text-gray-500 font-mono">ID: #{{ $anggota->user->id }}</p>
                                         </div>
                                     </div>
                                 </td>
 
                                 <!-- Kolom Email -->
                                 <td class="px-6 py-4 whitespace-nowrap text-gray-600 dark:text-gray-300">
-                                    @if ($anggota->email)
+                                    @if ($anggota->user->email)
                                         <div class="flex items-center gap-2">
                                             <i class="fa-regular fa-envelope text-gray-400 text-xs"></i>
-                                            <span>{{ $anggota->email }}</span>
+                                            <span>{{ $anggota->user->email }}</span>
                                         </div>
                                     @else
                                         <span class="text-gray-400 dark:text-gray-600 italic text-xs">- Tidak ada -</span>
@@ -111,10 +111,10 @@
 
                                 <!-- Kolom No HP -->
                                 <td class="px-6 py-4 whitespace-nowrap text-gray-600 dark:text-gray-300">
-                                    @if ($anggota->no_hp)
+                                    @if ($anggota->user->no_hp)
                                         <div class="flex items-center gap-2">
                                             <i class="fa-solid fa-phone text-gray-400 text-xs"></i>
-                                            <span>{{ $anggota->no_hp }}</span>
+                                            <span>{{ $anggota->user->no_hp }}</span>
                                         </div>
                                     @else
                                         <span class="text-gray-400 dark:text-gray-600 italic text-xs">- Tidak ada -</span>
@@ -125,18 +125,18 @@
                                 <td class="px-6 py-4 whitespace-nowrap text-right">
                                     <div class="flex items-center justify-end gap-1.5">
                                         <!-- Tombol Edit -->
-                                        @can('anggota-edit')
+                                        {{-- @can('anggota-edit')
                                             <a href="{{ route('admin.anggota.edit', $anggota) }}"
                                                 class="p-2 rounded-xl text-gray-500 hover:text-brand-600 hover:bg-brand-50 dark:text-gray-400 dark:hover:text-brand-400 dark:hover:bg-brand-950/40 transition-all"
                                                 title="Ubah Data">
                                                 <i class="fa-solid fa-pen-to-square text-sm"></i>
                                             </a>
-                                        @endcan
+                                        @endcan --}}
 
                                         <!-- Tombol Hapus -->
                                         <form action="{{ route('admin.anggota.destroy', $anggota) }}" method="POST"
                                             class="inline-block"
-                                            onsubmit="return confirm('Apakah Anda yakin ingin menghapus {{ $anggota->nama }}?');">
+                                            onsubmit="return confirm('Apakah Anda yakin ingin menghapus {{ $anggota->user->nama }}?');">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit"

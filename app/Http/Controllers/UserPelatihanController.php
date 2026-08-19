@@ -10,6 +10,8 @@ use App\Models\Sertifikat;
 use App\Models\Notification;
 use App\Models\Nilai;
 use App\Models\Materi;
+use App\Models\ReferralTransaction; // Tambahkan ini
+use App\Models\ReferralCode;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -68,29 +70,9 @@ class UserPelatihanController extends Controller
 
     public function store(Request $request, Pelatihan $pelatihan)
     {
-        $validated = $request->validate([
-            'nama'              => 'required|string|max:255',
-            'no_ktp'            => 'required|string|digits:16',
-            'jenis_kelamin'     => 'required|in:Laki-laki,Perempuan',
-            'tempat_lahir'      => 'required|string|max:100',
-            'tanggal_lahir'     => 'required|date',
-            'agama'             => 'required|string|max:50',
-            'status_perkawinan' => 'required|string|max:50',
-            'pekerjaan'         => 'required|string|max:100',
-            'kewarganegaraan'   => 'required|string|max:50',
-            'email'             => 'required|email|max:255',
-            'no_hp'             => 'required|string|max:20',
-            'alamat'            => 'required|string',
-            'provinsi'          => 'required|string',
-            'kota'              => 'required|string',
-            'kecamatan'         => 'required|string',
-            'kelurahan'         => 'required|string',
-            'foto'              => 'required|image|mimes:jpeg,png,jpg|max:2048',
-            'foto_ktp'          => 'required|file|mimes:jpeg,png,jpg,pdf|max:2048',
-            'pakta_integritas'  => 'required|accepted', // Wajib dicentang
-            'keterangan'        => 'nullable|string',
-        ], [
-            'pakta_integritas.accepted' => 'Anda wajib menyetujui Pakta Integritas untuk melanjutkan.',
+        // Tambahkan validasi untuk referral_code (opsional)
+        $request->validate([
+            'referral_code' => 'nullable|string|exists:referral_codes,code',
         ]);
 
         DB::beginTransaction();
@@ -98,28 +80,54 @@ class UserPelatihanController extends Controller
             // Cek kuota
             $jumlahPendaftar = PelatihanAnggota::where('pelatihan_id', $pelatihan->id)->count();
             if ($pelatihan->kuota > 0 && $jumlahPendaftar >= $pelatihan->kuota) {
-                return back()->with('error', 'Mohon maaf, kuota sudah penuh.');
+                return redirect()->route('user-pelatihan.show', $pelatihan->id)->with('error', 'Mohon maaf, kuota untuk pelatihan ini sudah penuh.');
             }
 
-            // Siapkan data tanpa mengecualikan pakta_integritas lagi
-            $dataSimpan = $request->except(['pakta_integritas']);
-            $dataSimpan['pelatihan_id'] = $pelatihan->id;
-            $dataSimpan['users_id'] = Auth::id();
+            // Cek apakah user sudah terdaftar
+            $isAlreadyRegistered = PelatihanAnggota::where('pelatihan_id', $pelatihan->id)
+                ->where('users_id', Auth::id())
+                ->exists();
 
-            // Pastikan nilai pakta_integritas tersimpan sebagai 1 (approve)
-            $dataSimpan['pakta_integritas'] = 1;
+            if ($isAlreadyRegistered) {
+                return redirect()->route('user-pelatihan.show', $pelatihan->id)->with('info', 'Anda sudah terdaftar pada pelatihan ini.');
+            }
 
-            // Handle Files
-            $dataSimpan['foto'] = $request->file('foto')->store('pelatihan/peserta', 'public');
-            $dataSimpan['foto_ktp'] = $request->file('foto_ktp')->store('pelatihan/ktp', 'public');
+            // Buat pendaftaran baru hanya dengan pelatihan_id dan user_id
+            $pendaftar = PelatihanAnggota::create([
+                'pelatihan_id' => $pelatihan->id,
+                'users_id' => Auth::id(),
+            ]);
 
-            $pendaftar = PelatihanAnggota::create($dataSimpan);
+            // Proses kode referral jika ada dan valid
+            if ($request->filled('referral_code')) {
+                // 1. Cari kode referral yang digunakan
+                $referralCode = ReferralCode::where('code', $request->referral_code)->first();
+
+                // Pastikan kode referral ditemukan dan bukan milik user yang sedang mendaftar
+                if ($referralCode && $referralCode->user_id !== Auth::id()) {
+                    // 2. Buat transaksi referral
+                    ReferralTransaction::create([
+                        'referral_code_id' => $referralCode->id,
+                        'referrer_id'      => $referralCode->user_id, // Pemilik kode referral
+                        'referred_id'      => Auth::id(),             // User yang mendaftar menggunakan kode
+                        'pelatihan_id'      => $pelatihan->id,             // User yang mendaftar menggunakan kode
+                        'reward_amount'    => 50000,                       // Reward awal bisa 0, dihitung nanti
+                        'pelatihan_id'     => $pelatihan->id,         // Tambahkan ID pelatihan
+                        'reward_amount'    => 50000,                   // Reward awal bisa 0, dihitung nanti
+                        'status'           => 'pending',               // Status awal pending
+                    ]);
+
+                    // Opsional: Update current_uses pada ReferralCode
+                    $referralCode->increment('current_uses');
+                }
+            }
 
             PelatihanAnggotaStatus::create([
                 'pelatihan_anggota_id' => $pendaftar->id,
                 'status' => 'Menunggu Pembayaran',
             ]);
 
+            // Buat notifikasi untuk user
             Notification::create([
                 'user_id' => Auth::id(),
                 'title'   => 'Pendaftaran Berhasil',
@@ -130,7 +138,7 @@ class UserPelatihanController extends Controller
 
             DB::commit();
             return redirect()->route('user-pelatihan.payment', $pendaftar->id)
-                ->with('success', 'Pendaftaran berhasil!');
+                ->with('success', 'Pendaftaran berhasil! Silakan lanjutkan ke proses pembayaran.');
         } catch (\Exception $e) {
             DB::rollBack();
             return back()->withInput()->with('error', 'Gagal memproses pendaftaran: ' . $e->getMessage());
@@ -142,6 +150,12 @@ class UserPelatihanController extends Controller
      */
     public function show(Pelatihan $pelatihan)
     {
+        // Eager load relasi materi untuk ditampilkan di modal dan halaman detail
+        $pelatihan->load(['materi', 'userPendaftaran' => function ($query) {
+            // Eager load pendaftaran milik user yang login, beserta status terakhirnya
+            $query->where('users_id', Auth::id())->with('latestStatus');
+        }]);
+
         // Mengarahkan ke view detail pelatihan (misal: resources/views/pelatihan/detail.blade.php)
         return view('user.pelatihan.show', compact('pelatihan'));
     }
@@ -225,7 +239,30 @@ class UserPelatihanController extends Controller
             'route'   => route('user-pelatihan.status', $pendaftaran->id, false),
         ]);
 
-        return redirect()->route('user-pelatihan.index')
+        // 5. Update status referral dan kirim notifikasi ke referrer
+        $referralTransaction = ReferralTransaction::where('referred_id', $pendaftaran->users_id)
+            ->where('pelatihan_id', $pendaftaran->pelatihan_id)
+            ->where('status', 'pending')
+            ->first();
+
+        if ($referralTransaction) {
+            // Update status transaksi menjadi 'berhasil'
+            $referralTransaction->status = 'berhasil';
+            $referralTransaction->save();
+
+            // Kirim notifikasi ke pemilik kode referral (referrer)
+            $referredUser = \App\Models\User::find($referralTransaction->referred_id);
+            Notification::create([
+                'user_id' => $referralTransaction->referrer_id,
+                'title'   => 'Referral Berhasil!',
+                'message' => 'Anda berhasil mendapatkan komisi referral dari pendaftaran ' . ($referredUser->name ?? 'seorang anggota baru') . ' di pelatihan "' . $pendaftaran->pelatihan->judul . '".',
+                'type'    => 'success',
+                // Arahkan ke halaman referral user
+                'route'   => route('user-referral.index', [], false),
+            ]);
+        }
+
+        return redirect()->route('user-pelatihan.status', $pendaftaran->id)
             ->with('success', 'Konfirmasi pembayaran berhasil dikirim. Pendaftaran Anda akan segera diverifikasi.');
     }
 

@@ -367,15 +367,14 @@
                                 class="text-xs font-semibold text-slate-700 mt-2 text-center leading-tight">Inspirator</span>
                         </a>
 
-                        <a href="#" class="flex flex-col items-center cursor-pointer group">
+                        <a href="{{ url('/ai-chat') }}" class="flex flex-col items-center cursor-pointer group">
                             <div
                                 class="w-16 h-16 md:w-18 md:h-18 rounded-2xl bg-gradient-to-tr from-blue-600 to-cyan-700 flex items-center justify-center text-white shadow-md shadow-blue-500/20 group-hover:scale-105 transition">
-                                <i class="fa-solid fa-newspaper max-[1280px]:block min-[1281px]:hidden text-2xl"></i>
-                                <i
-                                    class="fa-solid fa-newspaper hidden max-[1280px]:hidden min-[1281px]:block text-xl"></i>
+                                <i class="fa-solid fa-robot max-[1280px]:block min-[1281px]:hidden text-2xl"></i>
+                                <i class="fa-solid fa-robot hidden max-[1280px]:hidden min-[1281px]:block text-xl"></i>
                             </div>
-                            <span
-                                class="text-xs font-semibold text-slate-700 mt-2 text-center leading-tight">Artikel</span>
+                            <span class="text-xs font-semibold text-slate-700 mt-2 text-center leading-tight">Asisten
+                                Legal</span>
                         </a>
 
                         <!-- Menu 5 (Mobile: Struktur, Desktop: Dokumen) -->

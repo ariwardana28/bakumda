@@ -23,12 +23,15 @@ use App\Http\Controllers\ArtikelController;
 use App\Http\Controllers\UserProdukController;
 use App\Http\Controllers\Admin\KorwilController;
 use App\Http\Controllers\RefferalController;
-
+use App\Http\Controllers\GeminiController;
 /*
 |--------------------------------------------------------------------------
 | Public Routes
 |--------------------------------------------------------------------------
 */
+
+Route::get('/ai-chat', [GeminiController::class, 'index']);
+Route::post('/ai/ask', [GeminiController::class, 'ask'])->name('gemini.ask');
 
 Route::get('/', [HalamanUtamaController::class, 'index'])->name('welcome');
 Route::get('/korwil', [HalamanUtamaController::class, 'korwil'])->name('korwil');

@@ -43,7 +43,7 @@ class DashboardController extends Controller
             $card = $anggota->card; // Mengambil relasi card dari model
             if ($card) {
                 $isRegistered = true;
-                $nama_anggota = $anggota->nama;
+                $nama_anggota = $anggota->user->name;
                 $no_ktpa = $card->card_id; // Sesuai dengan kolom di tabel anggota_card
 
                 // Mengambil status terbaru menggunakan accessor dari model Anda

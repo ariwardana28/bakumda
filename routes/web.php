@@ -244,6 +244,10 @@ Route::middleware('auth')->group(function () {
     // Refferal
     Route::resource('inspirator', App\Http\Controllers\ReferralController::class)
         ->names('user-referral');
+    Route::post('/referral/claim', [App\Http\Controllers\UserReferralController::class, 'claim'])->name('user-referral.claim');
+    Route::post('/referral/claim-all', [App\Http\Controllers\UserReferralController::class, 'claimAll'])->name('user-referral.claimAll');
+
+
     /*
     |--------------------------------------------------------------------------
     | Admin Group Routes
@@ -316,6 +320,11 @@ Route::middleware('auth')->group(function () {
 
         // Endpoint untuk auto-fill form korwil
         Route::get('/korwil/get-latest-data/{anggotaCard}', [KorwilController::class, 'getLatestKorwilData'])->name('korwil.get-latest-data');
+
+        // --- Manajemen Referral (Admin) ---
+        Route::get('referral', [\App\Http\Controllers\Admin\ReferralController::class, 'claims'])->name('referral.index');
+        Route::get('referral/claims', [\App\Http\Controllers\Admin\ReferralController::class, 'claims'])->name('referral.claims');
+        Route::post('referral/claims/{claim}/update', [\App\Http\Controllers\Admin\ReferralController::class, 'updateClaim'])->name('referral.claims.update');
     });
 });
 

@@ -84,6 +84,7 @@ Route::middleware('auth')->group(function () {
     // Rute untuk Program Referral Pengguna
     Route::get('user-referral', [UserReferralController::class, 'index'])->name('user-referral.index');
     Route::post('user-referral/claim', [UserReferralController::class, 'claim'])->name('user-referral.claim');
+    Route::post('user-referral/claim-all', [UserReferralController::class, 'claimAll'])->name('user-referral.claimAll');
 
     Route::resource('user-anggota', UserAnggotaController::class)->names('user-anggota')->parameters(['user-anggota' => 'anggota']);
 

@@ -49,7 +49,7 @@
                         {{-- Informasi Identitas Singkat --}}
                         <div class="text-center px-6 pt-3 pb-6 space-y-1 border-b border-slate-100">
                             <h2 class="text-lg sm:text-xl font-black text-slate-900 uppercase tracking-tight">
-                                {{ optional($anggota)->nama ?? 'YASSER ARAFAT' }}
+                                {{ optional($anggota->user)->nama ?? 'YASSER ARAFAT' }}
                             </h2>
                             <p class="text-xs font-semibold text-rose-700 uppercase tracking-wider">
                                 {{ optional($latestBerlaku)->jabatan ?? ($item->jabatan ?? 'Koordinator Wilayah') }}

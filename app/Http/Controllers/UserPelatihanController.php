@@ -117,8 +117,6 @@ class UserPelatihanController extends Controller
                         'status'           => 'pending',               // Status awal pending
                     ]);
 
-                    // Opsional: Update current_uses pada ReferralCode
-                    $referralCode->increment('current_uses');
                 }
             }
 

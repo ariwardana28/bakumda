@@ -913,7 +913,7 @@
                                 <!-- SISI BELAKANG KARTU -->
                                 <div
                                     class="absolute inset-0 w-full h-full rounded-2xl shadow-lg border bg-white backface-hidden rotate-y-180 overflow-hidden transform-style-3d">
-                                    <img src="{{ asset('belakang.png') }}"
+                                    <img src="{{ asset('back2.png') }}"
                                         class="absolute inset-0 w-full h-full object-cover">
                                 </div>
                             </div>

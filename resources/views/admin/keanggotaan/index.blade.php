@@ -172,7 +172,7 @@
                                                 <!-- ============================================== -->
                                                 <div
                                                     class="absolute inset-0 w-full h-full rounded-2xl shadow-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 backface-hidden rotate-y-180 overflow-hidden transform-style-3d">
-                                                    <img src="{{ asset('belakang.png') }}"
+                                                    <img src="{{ asset('back2.png') }}"
                                                         class="absolute inset-0 w-full h-full object-fill">
 
                                                     <div class="relative z-10 w-full h-full p-6">
@@ -497,7 +497,7 @@
                                             <!-- Sisi Belakang (Zoom) -->
                                             <div
                                                 class="absolute inset-0 w-full h-full rounded-2xl shadow-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 backface-hidden rotate-y-180 overflow-hidden transform-style-3d">
-                                                <img src="{{ asset('belakang.png') }}"
+                                                <img src="{{ asset('back2.png') }}"
                                                     class="absolute inset-0 w-full h-full object-fill">
                                                 <div class="relative z-10 w-full h-full p-6">
                                                     <!-- Data Belakang Kartu -->

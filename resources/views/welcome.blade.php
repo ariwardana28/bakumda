@@ -303,7 +303,7 @@
                                     class="fa-solid fa-scale-balanced hidden max-[1280px]:hidden min-[1281px]:block text-xl"></i>
                             </div>
                             <span
-                                class="text-xs font-semibold text-slate-700 mt-2 text-center leading-tight">Legalku</span>
+                                class="text-xs font-semibold text-slate-700 mt-2 text-center leading-tight">E-Dokumen</span>
                         </a>
 
                         <!-- Menu 4 -->
@@ -1052,7 +1052,7 @@
                                         class="fa-solid fa-scale-balanced hidden max-[1280px]:hidden min-[1281px]:block text-xl"></i>
                                 </div>
                                 <span
-                                    class="text-xs font-semibold text-slate-700 mt-2 text-center leading-tight">Legalku</span>
+                                    class="text-xs font-semibold text-slate-700 mt-2 text-center leading-tight">E-Dokumen</span>
                             </a>
 
                             <!-- Menu 4 -->

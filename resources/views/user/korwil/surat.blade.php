@@ -13,7 +13,7 @@
             </a>
             <button onclick="window.print()"
                 class="py-2 px-4 rounded-xl bg-rose-700 hover:bg-rose-800 text-white font-semibold text-xs uppercase tracking-wider transition flex items-center gap-2 shadow-sm">
-                <i class="fa-solid fa-print"></i> <span>Cetak Surat</span>
+                {{-- <i class="fa-solid fa-print"></i> <span>Cetak Surat</span> --}}
             </button>
         </div>
 

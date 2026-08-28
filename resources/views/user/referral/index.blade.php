@@ -71,7 +71,7 @@
                             // Jumlah klaim yang bisa dilakukan adalah hasil pembagian dari transaksi yang belum diklaim dengan target
                             $unclaimedCount = floor($unclaimedTransactionsCount / $target);
                             // Progress bar menunjukkan sisa transaksi yang dibutuhkan untuk klaim berikutnya
-                            $percent = ($unclaimedTransactionsCount % $target) / $target * 100;
+                            $percent = (($unclaimedTransactionsCount % $target) / $target) * 100;
                             $isCompleted = $unclaimedCount > 0;
 
                             // Cek pengajuan klaim pending milik user yang sedang login
@@ -470,75 +470,75 @@
                         <tr
                             class="border-b border-slate-200 text-slate-400 font-semibold uppercase text-[11px] tracking-wider">
                             <th class="py-3 px-4">No</th>
-                            <th class="py-3 px-4">Kode Digunakan</th>
-                            <th class="py-3 px-4">Pengguna Baru (Referred)</th>
-                            <th class="py-3 px-4">Jumlah Reward</th>
+                            <th class="py-3 px-4">Bank & Rekening</th>
+                            <th class="py-3 px-4">Atas Nama</th>
+                            <th class="py-3 px-4">Amount</th>
                             <th class="py-3 px-4">Status</th>
-                            <th class="py-3 px-4">Status Klaim</th>
                             <th class="py-3 px-4">Tanggal</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-100 text-slate-700 font-medium">
-                        @forelse($transactions as $index => $trx)
-                            <tr class="hover:bg-slate-50/80 transition-colors">
-                                <td class="py-3.5 px-4 font-mono text-slate-400">
-                                    {{ $transactions->firstItem() + $index }}
+                        @forelse ($payments as $index => $payment)
+                            <tr class="hover:bg-slate-50 transition">
+                                <!-- Nomor urut otomatis paginasi -->
+                                <th class="py-3 px-4 font-normal">{{ $payments->firstItem() + $index }}</th>
+
+                                <!-- Informasi Bank & Nomor Rekening -->
+                                <td class="py-3 px-4">
+                                    <div class="font-bold text-slate-900">{{ $payment->bank_name }}</div>
+                                    <div class="text-xs text-slate-500">{{ $payment->account_number }}</div>
                                 </td>
-                                <td class="py-3.5 px-4 font-mono font-bold text-slate-800">
-                                    {{ $trx->referralCode->code ?? '-' }}
+
+                                <!-- Atas Nama Rekening -->
+                                <td class="py-3 px-4">
+                                    {{ $payment->account_name }}
                                 </td>
-                                <td class="py-3.5 px-4 font-semibold text-slate-900">
-                                    {{ $trx->referred->name ?? 'Pengguna' }}
+
+                                <!-- Jumlah Amount Pencairan -->
+                                <td class="py-3 px-4 font-bold text-slate-900">
+                                    Rp {{ number_format($payment->amount, 0, ',', '.') }}
                                 </td>
-                                <td class="py-3.5 px-4 font-mono font-bold text-emerald-600">
-                                    + Rp {{ number_format($trx->reward_amount, 0, ',', '.') }}
-                                </td>
-                                <td class="py-3.5 px-4">
-                                    @if (strtolower($trx->status) == 'berhasil' || strtolower($trx->status) == 'success')
+
+                                <!-- Status Pencairan -->
+                                <td class="py-3 px-4">
+                                    @if ($payment->status == 'paid' || $payment->status == 'approved')
                                         <span
-                                            class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-600 border border-emerald-200 uppercase">
-                                            {{ $trx->status }}
-                                        </span>
+                                            class="px-2.5 py-1 text-[10px] font-bold bg-emerald-50 text-emerald-600 rounded-full uppercase">{{ $payment->status }}</span>
+                                    @elseif($payment->status == 'pending')
+                                        <span
+                                            class="px-2.5 py-1 text-[10px] font-bold bg-amber-50 text-amber-600 rounded-full uppercase">Pending</span>
                                     @else
                                         <span
-                                            class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-50 text-amber-600 border border-amber-200 uppercase">
-                                            {{ $trx->status }}
-                                        </span>
+                                            class="px-2.5 py-1 text-[10px] font-bold bg-rose-50 text-rose-600 rounded-full uppercase">{{ $payment->status }}</span>
                                     @endif
                                 </td>
-                                <td class="py-3.5 px-4">
-                                    @if ($trx->is_claimed == 1)
-                                        <span
-                                            class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold bg-green-50 text-green-600 border border-green-200 uppercase">
-                                            Sudah Diklaim
-                                        </span>
-                                    @else
-                                        <span
-                                            class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold bg-blue-50 text-blue-600 border border-blue-200 uppercase">
-                                            Belum Diklaim
-                                        </span>
-                                    @endif
-                                </td>
-                                <td class="py-3.5 px-4 text-slate-400 text-xs">
-                                    {{ $trx->created_at->format('d M Y, H:i') }}
+
+                                <!-- Tanggal Pengajuan -->
+                                <td class="py-3 px-4 text-slate-500">
+                                    {{ $payment->created_at->format('d M Y, H:i') }}
                                 </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="7" class="py-8 text-center text-slate-400 text-xs italic">
-                                    Belum ada transaksi referral yang tercatat.
+                                <td colspan="6" class="py-6 text-center text-slate-400 italic">
+                                    Belum ada riwayat pengajuan klaim/pencairan dana.
                                 </td>
                             </tr>
                         @endforelse
                     </tbody>
                 </table>
+
+                <!-- Link Paginasi -->
+                <div class="mt-4 px-4">
+                    {{ $payments->links() }}
+                </div>
             </div>
 
-            @if ($transactions->hasPages())
+            {{-- @if ($transactions->hasPages())
                 <div class="pt-4">
                     {{ $transactions->links() }}
                 </div>
-            @endif
+            @endif --}}
         </div>
     </div>
 @endsection

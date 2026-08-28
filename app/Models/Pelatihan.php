@@ -18,6 +18,7 @@ class Pelatihan extends Model
         'kuota',
         'gambar',
         'status',
+        'pelatihan_jenis_id'
     ];
 
     protected $casts = [
@@ -39,5 +40,10 @@ class Pelatihan extends Model
     public function materi()
     {
         return $this->hasMany(Materi::class, 'pelatihan_id');
+    }
+
+    public function jenisPelatihan()
+    {
+        return $this->belongsTo(PelatihanJenis::class, 'pelatihan_jenis_id');
     }
 }

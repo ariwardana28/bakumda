@@ -105,6 +105,8 @@ class ReferralController extends Controller
                 'type'    => $claim->status === 'approved' ? 'success' : 'error',
                 'route'   => route('user-referral.index', [], false),
             ]);
+
+            
         });
 
         return back()->with('success', 'Status klaim berhasil diperbarui.');

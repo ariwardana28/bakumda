@@ -27,65 +27,65 @@ class UserReferralController extends Controller
     /**
      * Menampilkan halaman utama program referral untuk pengguna.
      */
-    public function index(Request $request)
-    {
-        $user = Auth::user();
-        $perPage = $request->input('per_page', 5);
-        $claimStatusFilter = $request->input('claim_status', 'all'); // 'all', 'claimed', 'unclaimed'
+    // public function index(Request $request)
+    // {
+    //     $user = Auth::user();
+    //     $perPage = $request->input('per_page', 5);
+    //     $claimStatusFilter = $request->input('claim_status', 'all'); // 'all', 'claimed', 'unclaimed'
 
-        // Ambil semua kode referral milik user
-        $referralCodes = ReferralCode::where('user_id', $user->id)
-            ->withCount(['claims' => function ($query) {
-                $query->whereIn('status', ['requested', 'approved']);
-            }])
-            ->get()
-            ->map(function ($code) {
-                if ($code->target_count > 0) {
-                    // Hitung berapa kali bisa diklaim berdasarkan total penggunaan
-                    $total_claimable = floor($code->current_uses / $code->target_count);
-                    // Hitung sisa klaim yang belum diambil
-                    $code->unclaimed_count = $total_claimable - $code->claims_count;
-                } else {
-                    $code->unclaimed_count = 0;
-                }
-                return $code;
-            });
+    //     // Ambil semua kode referral milik user
+    //     $referralCodes = ReferralCode::where('user_id', $user->id)
+    //         ->withCount(['claims' => function ($query) {
+    //             $query->whereIn('status', ['requested', 'approved']);
+    //         }])
+    //         ->get()
+    //         ->map(function ($code) {
+    //             if ($code->target_count > 0) {
+    //                 // Hitung berapa kali bisa diklaim berdasarkan total penggunaan
+    //                 $total_claimable = floor($code->current_uses / $code->target_count);
+    //                 // Hitung sisa klaim yang belum diambil
+    //                 $code->unclaimed_count = $total_claimable - $code->claims_count;
+    //             } else {
+    //                 $code->unclaimed_count = 0;
+    //             }
+    //             return $code;
+    //         });
 
 
-        // Ambil transaksi di mana user ini adalah pemilik kode (referrer)
-        $transactionsQuery = ReferralTransaction::where('referrer_id', $user->id)
-            ->with(['referred', 'referralCode']);
+    //     // Ambil transaksi di mana user ini adalah pemilik kode (referrer)
+    //     $transactionsQuery = ReferralTransaction::where('referrer_id', $user->id)
+    //         ->with(['referred', 'referralCode']);
 
-        // Terapkan filter status klaim
-        if ($claimStatusFilter === 'claimed') {
-            $transactionsQuery->where('is_claimed', 1);
-        } elseif ($claimStatusFilter === 'unclaimed') {
-            $transactionsQuery->where('is_claimed', 0);
-        }
+    //     // Terapkan filter status klaim
+    //     if ($claimStatusFilter === 'claimed') {
+    //         $transactionsQuery->where('is_claimed', 1);
+    //     } elseif ($claimStatusFilter === 'unclaimed') {
+    //         $transactionsQuery->where('is_claimed', 0);
+    //     }
 
-        $transactions = $transactionsQuery->latest()->paginate($perPage)->withQueryString();
+    //     $transactions = $transactionsQuery->latest()->paginate($perPage)->withQueryString();
 
-        // Hitung jumlah untuk setiap tab status klaim
-        $claimStatusCounts = [
-            'claimed' => ReferralTransaction::where('referrer_id', $user->id)->where('is_claimed', 1)->count(),
-            'unclaimed' => ReferralTransaction::where('referrer_id', $user->id)->where('is_claimed', 0)->count(),
-        ];
-        $claimStatusCounts['all'] = $claimStatusCounts['claimed'] + $claimStatusCounts['unclaimed'];
+    //     // Hitung jumlah untuk setiap tab status klaim
+    //     $claimStatusCounts = [
+    //         'claimed' => ReferralTransaction::where('referrer_id', $user->id)->where('is_claimed', 1)->count(),
+    //         'unclaimed' => ReferralTransaction::where('referrer_id', $user->id)->where('is_claimed', 0)->count(),
+    //     ];
+    //     $claimStatusCounts['all'] = $claimStatusCounts['claimed'] + $claimStatusCounts['unclaimed'];
 
-        // Hitung statistik
-        $totalSuccess = ReferralTransaction::where('referrer_id', $user->id)->where('status', 'berhasil')->count();
-        $totalReward = ReferralTransaction::where('referrer_id', $user->id)->where('status', 'berhasil')->sum('reward_amount');
+    //     // Hitung statistik
+    //     $totalSuccess = ReferralTransaction::where('referrer_id', $user->id)->where('status', 'berhasil')->count();
+    //     $totalReward = ReferralTransaction::where('referrer_id', $user->id)->where('status', 'berhasil')->sum('reward_amount');
 
-        return view('user.referral.index', compact(
-            'referralCodes',
-            'transactions',
-            'totalSuccess',
-            'totalReward',
-            'perPage',
-            'claimStatusFilter',
-            'claimStatusCounts'
-        ));
-    }
+    //     return view('user.referral.index', compact(
+    //         'referralCodes',
+    //         'transactions',
+    //         'totalSuccess',
+    //         'totalReward',
+    //         'perPage',
+    //         'claimStatusFilter',
+    //         'claimStatusCounts'
+    //     ));
+    // }
 
     /**
      * Memproses permintaan klaim reward dari pengguna.
@@ -153,72 +153,75 @@ class UserReferralController extends Controller
     /**
      * Memproses permintaan klaim semua reward yang tersedia.
      */
-    public function claimAll(Request $request)
-    {
-        $request->validate([
-            'referral_code_id' => 'required|exists:referral_codes,id',
-            'claim_qty' => 'required|integer|min:1',
-            'bank_name' => 'required|string|max:255',
-            'account_number' => 'required|string|max:255',
-            'account_name' => 'required|string|max:255',
-        ]);
+  public function claimAll(Request $request)
+{
+    $request->validate([
+        'referral_code_id' => 'required|exists:referral_codes,id',
+        'claim_qty' => 'required|integer|min:1',
+        'bank_name' => 'required|string|max:255',
+        'account_number' => 'required|string|max:255',
+        'account_name' => 'required|string|max:255',
+    ]);
 
-        $referralCode = ReferralCode::where('id', $request->referral_code_id)
-            ->where('user_id', auth()->id())
-            ->firstOrFail();
+    $referralCode = ReferralCode::where('id', $request->referral_code_id)
+        ->where('user_id', auth()->id())
+        ->firstOrFail();
 
-        $target = $referralCode->tier_type == 'tier_10' ? 10 : 5;
-        $rewardPerClaim = $referralCode->tier_type == 'tier_10' ? 200000 : 250000;
+    $target = $referralCode->tier_type == 'tier_10' ? 10 : 5;
+    $rewardPerClaim = $referralCode->tier_type == 'tier_10' ? 200000 : 250000;
 
-        // Ambil transaksi berhasil yang belum diklaim
-        $successfulTransactions = $referralCode->transactions()
-            ->whereIn('status', ['berhasil', 'success'])
-            ->where('is_claimed', 0)
-            ->get();
+    // 1. Ambil transaksi berhasil yang BELUM diklaim (is_claimed = 0)
+    $successfulTransactions = $referralCode->transactions()
+        ->whereIn('status', ['berhasil', 'success'])
+        ->where('is_claimed', 0)
+        ->get();
 
-        $totalEarnedClaim = floor($successfulTransactions->count() / $target);
-        $alreadyClaimed = $referralCode->claimed_count ?? 0;
-        $maxUnclaimed = max(0, $totalEarnedClaim - $alreadyClaimed);
+    // Hitung berapa banyak klaim yang bisa dilakukan dari transaksi yang belum diklaim
+    $maxUnclaimed = floor($successfulTransactions->count() / $target);
 
-        $qtyToClaim = (int) $request->claim_qty;
-        if ($qtyToClaim > $maxUnclaimed || $maxUnclaimed <= 0) {
-            return back()->with('error', 'Jumlah klaim melebihi batas transaksi yang tersedia.');
-        }
-
-        // 1. Simpan ke tabel referral_payments
-        $payment = \App\Models\ReferralPayment::create([
-            'user_id' => auth()->id(),
-            'amount' => $qtyToClaim * $rewardPerClaim,
-            'status' => 'pending',
-            'bank_name' => $request->bank_name,
-            'account_number' => $request->account_number,
-            'account_name' => $request->account_name,
-        ]);
-
-        // 2. Ambil sejumlah transaksi yang akan diklaim ($qtyToClaim * $target)
-        $transactionsToClaim = $successfulTransactions->take($qtyToClaim * $target);
-
-        foreach ($transactionsToClaim as $trx) {
-            // Tandai transaksi sudah diklaim
-            $trx->update(['is_claimed' => 1]);
-
-            // Simpan detail ke tabel referral_payment_details
-            \App\Models\ReferralPaymentDetail::create([
-                'referral_payment_id' => $payment->id,
-                'referral_transaction_id' => $trx->id,
-                'reward_amount' => $rewardPerClaim / $target,
-            ]);
-        }
-
-        // 3. Update status claimed_count di referral_codes
-        $referralCode->claimed_count = $alreadyClaimed + $qtyToClaim;
-
-        if ($referralCode->claimed_count >= $totalEarnedClaim) {
-            $referralCode->status = 'claimed';
-        }
-
-        $referralCode->save();
-
-        return back()->with('success', "Berhasil mengajukan klaim sebanyak {$qtyToClaim}x reward!");
+    $qtyToClaim = (int) $request->claim_qty;
+    if ($qtyToClaim > $maxUnclaimed || $maxUnclaimed <= 0) {
+        return back()->with('error', 'Jumlah klaim melebihi batas transaksi yang tersedia.');
     }
+
+    // 2. Simpan data pencairan ke tabel referral_payments
+    $payment = \App\Models\ReferralPayment::create([
+        'user_id' => auth()->id(),
+        'amount' => $qtyToClaim * $rewardPerClaim,
+        'status' => 'pending',
+        'bank_name' => $request->bank_name,
+        'account_number' => $request->account_number,
+        'account_name' => $request->account_name,
+    ]);
+
+    // 3. Ambil sejumlah transaksi yang akan diklaim ($qtyToClaim * $target)
+    $transactionsToClaim = $successfulTransactions->take($qtyToClaim * $target);
+
+    foreach ($transactionsToClaim as $trx) {
+        // Tandai transaksi sudah diklaim
+        $trx->update(['is_claimed' => 1]);
+
+        // Simpan detail ke tabel referral_payment_details
+        \App\Models\ReferralPaymentDetail::create([
+            'referral_payment_id' => $payment->id,
+            'referral_transaction_id' => $trx->id,
+            'reward_amount' => $rewardPerClaim / $target,
+        ]);
+    }
+
+    // 4. (Opsional) Cek jika ingin mengubah status referral code menjadi 'claimed' 
+    // jika sudah tidak ada lagi transaksi sukses yang belum diklaim
+    $remainingUnclaimedCount = $referralCode->transactions()
+        ->whereIn('status', ['berhasil', 'success'])
+        ->where('is_claimed', 0)
+        ->count();
+
+    if ($remainingUnclaimedCount < $target) {
+        // Jika sisa transaksi kurang dari target minimal, tandai status selesai/claimed jika diperlukan
+        // $referralCode->status = 'claimed';
+        // $referralCode->save();
+    }
+
+    return back()->with('success', "Berhasil mengajukan klaim sebanyak {$qtyToClaim}x reward!");
+}
 }

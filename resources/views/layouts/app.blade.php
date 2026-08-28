@@ -33,52 +33,146 @@
 
         <!-- Header Tetap (Sticky) -->
         <header
-            class="sticky top-0 left-0 right-0 z-40 px-6 sm:px-12 pt-8 pb-4 bg-slate-900/95 backdrop-blur-md border-b border-white/5">
-            {{-- class="sticky top-0 left-0 right-0 z-40 px-6 sm:px-12 pt-8 pb-4 bg-slate-900/80 backdrop-blur-md border-b border-slate-800/50"> --}}
+            class="sticky top-0 left-0 right-0 z-40 px-6 sm:px-12 pt-8 pb-4 backdrop-blur-md transition-colors duration-200 {{ request()->routeIs('user-pelatihan.show') || request()->routeIs('user-pelatihan.index') ? 'bg-white/95 border-b border-slate-200 text-slate-800' : 'bg-slate-900/95 border-b border-white/5 text-white' }}">
+
             <div class="flex items-center justify-between relative z-10">
                 <div class="flex items-center space-x-2.5">
                     <img src="{{ asset('log.png') }}" alt="Logo" class="h-10 sm:h-12 w-auto object-contain">
                 </div>
+
                 <div class="flex items-center space-x-3">
+                    {{-- Kotak Pencarian --}}
                     <div
-                        class="flex items-center bg-[#0a1226]/90 backdrop-blur-md border border-blue-950/60 rounded-full px-3.5 py-1.5 shadow-inner">
-                        <i class="fa-solid fa-magnifying-glass text-xs text-blue-300/60 mr-2"></i>
-                        <span class="text-xs text-blue-200/80 font-medium tracking-wide">Pencarian...</span>
+                        class="flex items-center backdrop-blur-md border rounded-full px-3.5 py-1.5 shadow-inner {{ request()->routeIs('user-pelatihan.show') || request()->routeIs('user-pelatihan.index') ? 'bg-slate-100 border-slate-300 text-slate-700' : 'bg-[#0a1226]/90 border-blue-950/60 text-blue-200/80' }}">
+                        <i
+                            class="fa-solid fa-magnifying-glass text-xs mr-2 {{ request()->routeIs('user-pelatihan.show') || request()->routeIs('user-pelatihan.index') ? 'text-slate-400' : 'text-blue-300/60' }}"></i>
+                        <span class="text-xs font-medium tracking-wide">Pencarian...</span>
                     </div>
-                    <div class="relative">
-                        <button
-                            class="w-9 h-9 rounded-full bg-[#0a1226]/90 border border-blue-950/60 flex items-center justify-center text-blue-200 hover:text-white transition">
+
+                    {{-- Tombol Notifikasi / Lonceng --}}
+                    <div class="relative" x-data="{ notifOpen: false }" @click.away="notifOpen = false">
+                        <button @click="notifOpen = !notifOpen"
+                            class="w-9 h-9 rounded-full border flex items-center justify-center transition {{ request()->routeIs('user-pelatihan.show') || request()->routeIs('user-pelatihan.index') ? 'bg-slate-100 border-slate-300 text-slate-700 hover:bg-slate-200' : 'bg-[#0a1226]/90 border-blue-950/60 text-blue-200 hover:text-white' }}">
                             <i class="fa-regular fa-bell text-sm"></i>
                         </button>
-                        <span
-                            class="absolute -top-0.5 -right-0.5 w-4 h-4 bg-amber-500 text-slate-950 font-extrabold text-[9px] flex items-center justify-center rounded-full shadow">8</span>
+
+                        @php
+                            $notifCollection = $notifications ?? collect();
+                            $unreadCount = $unreadNotificationsCount ?? $notifCollection->whereNull('read_at')->count();
+                        @endphp
+
+                        @if ($unreadCount > 0)
+                            <span
+                                class="absolute -top-0.5 -right-0.5 w-4 h-4 bg-amber-500 text-slate-950 font-extrabold text-[9px] flex items-center justify-center rounded-full shadow">
+                                {{ $unreadCount > 9 ? '9+' : $unreadCount }}
+                            </span>
+                        @endif
+
+                        {{-- Dropdown Notifikasi --}}
+                        <div x-show="notifOpen" x-transition:enter="ease-out duration-150"
+                            x-transition:enter-start="opacity-0 scale-95 -translate-y-1"
+                            x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+                            x-transition:leave="ease-in duration-100" x-transition:leave-start="opacity-100 scale-100"
+                            x-transition:leave-end="opacity-0 scale-95"
+                            class="absolute right-0 mt-3 w-80 sm:w-96 bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden z-50"
+                            style="display: none;">
+
+                            {{-- Header Dropdown --}}
+                            <div class="flex items-center justify-between px-4 py-3 border-b border-slate-100">
+                                <h4 class="text-sm font-bold text-slate-900">Notifikasi</h4>
+                                @if ($unreadCount > 0)
+                                    <form action="{{ route('notifications.readAll') }}" method="POST">
+                                        @csrf
+                                        <button type="submit"
+                                            class="text-[11px] font-semibold text-blue-600 hover:text-blue-700 transition">
+                                            Tandai semua dibaca
+                                        </button>
+                                    </form>
+                                @endif
+                            </div>
+
+                            {{-- List Notifikasi --}}
+                            <div class="max-h-80 overflow-y-auto divide-y divide-slate-100">
+                                @forelse ($notifCollection as $notif)
+                                    <a href="{{ route('notifications.read', $notif->id) }}"
+                                        class="flex items-start gap-3 px-4 py-3 hover:bg-slate-50 transition {{ is_null($notif->read_at) ? 'bg-blue-50/50' : '' }}">
+
+                                        {{-- Icon sesuai tipe notifikasi --}}
+                                        <div
+                                            class="w-8 h-8 rounded-full flex items-center justify-center shrink-0
+                                            {{ $notif->type === 'success'
+                                                ? 'bg-emerald-100 text-emerald-600'
+                                                : ($notif->type === 'error'
+                                                    ? 'bg-red-100 text-red-600'
+                                                    : ($notif->type === 'warning'
+                                                        ? 'bg-amber-100 text-amber-600'
+                                                        : 'bg-blue-100 text-blue-600')) }}">
+                                            <i
+                                                class="fa-solid
+                                                {{ $notif->type === 'success'
+                                                    ? 'fa-check'
+                                                    : ($notif->type === 'error'
+                                                        ? 'fa-triangle-exclamation'
+                                                        : ($notif->type === 'warning'
+                                                            ? 'fa-circle-exclamation'
+                                                            : 'fa-bell')) }} text-xs"></i>
+                                        </div>
+
+                                        <div class="min-w-0 flex-1">
+                                            <p class="text-xs font-bold text-slate-900 truncate">{{ $notif->title }}
+                                            </p>
+                                            <p class="text-[11px] text-slate-500 line-clamp-2 mt-0.5 leading-relaxed">
+                                                {{ $notif->message }}</p>
+                                            <span
+                                                class="text-[10px] text-slate-400 mt-1 block">{{ $notif->created_at->diffForHumans() }}</span>
+                                        </div>
+
+                                        @if (is_null($notif->read_at))
+                                            <span class="w-2 h-2 rounded-full bg-blue-500 mt-1.5 shrink-0"></span>
+                                        @endif
+                                    </a>
+                                @empty
+                                    <div class="px-4 py-10 text-center text-slate-400">
+                                        <i class="fa-regular fa-bell-slash text-2xl mb-2 block"></i>
+                                        <p class="text-xs">Belum ada notifikasi.</p>
+                                    </div>
+                                @endforelse
+                            </div>
+                        </div>
                     </div>
+
                 </div>
             </div>
-        </header>   
-
+        </header>
         <!-- Konten Utama yang Bisa di-scroll -->
-        <main class="flex-1 overflow-y-auto px-6 sm:px-12 pt-6 pb-28">
+        <main class="flex-1 px-6 sm:px-12 pt-6 pb-28">
             @yield('content')
         </main>
 
         <!-- Mobile Bottom Navigation Bar -->
         <div
             class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 px-6 py-2.5 flex items-center justify-around z-50 shadow-[0_-4px_20px_rgba(0,0,0,0.06)]">
+
             <!-- 1. Beranda -->
-            <a href="{{ url('/') }}" class="flex flex-col items-center text-blue-700 py-1">
-                <div class="w-9 h-9 rounded-full bg-blue-50 flex items-center justify-center"> {{-- @TODO: Ganti dengan route('dashboard') --}}
+            <a href="{{ url('/') }}"
+                class="flex flex-col items-center py-1 transition {{ request()->routeIs('home', 'dashboard', 'welcome') ? 'text-blue-700' : 'text-slate-400 hover:text-blue-700' }}">
+                <div
+                    class="w-9 h-9 rounded-full flex items-center justify-center {{ request()->routeIs('home', 'dashboard', 'welcome') ? 'bg-blue-50' : '' }}">
                     <i class="fa-solid fa-house text-base"></i>
                 </div>
-                <span class="text-[10px] font-bold mt-0.5">Beranda</span>
+                <span
+                    class="text-[10px] {{ request()->routeIs('home', 'dashboard', 'welcome') ? 'font-bold' : 'font-medium' }} mt-0.5">Beranda</span>
             </a>
 
             <!-- 2. Artikel -->
-            <a href="" class="flex flex-col items-center text-slate-400 hover:text-blue-700 py-1 transition">
-                <div class="w-9 h-9 rounded-full flex items-center justify-center">
+            <a href="#"
+                class="flex flex-col items-center py-1 transition {{ request()->routeIs('artikel.*') ? 'text-blue-700' : 'text-slate-400 hover:text-blue-700' }}">
+                <div
+                    class="w-9 h-9 rounded-full flex items-center justify-center {{ request()->routeIs('artikel.*') ? 'bg-blue-50' : '' }}">
                     <i class="fa-solid fa-newspaper text-base"></i>
                 </div>
-                <span class="text-[10px] font-medium mt-0.5">Artikel</span>
+                <span
+                    class="text-[10px] {{ request()->routeIs('artikel.*') ? 'font-bold' : 'font-medium' }} mt-0.5">Artikel</span>
             </a>
 
             <!-- 3. QR (Scan) -->
@@ -91,21 +185,26 @@
 
             <!-- 4. Kartu -->
             <a href="{{ route('user-anggota.index') }}"
-                class="flex flex-col items-center text-slate-400 hover:text-blue-700 py-1 transition">
-                <div class="w-9 h-9 rounded-full flex items-center justify-center">
+                class="flex flex-col items-center py-1 transition {{ request()->routeIs('user-anggota.*') ? 'text-blue-700' : 'text-slate-400 hover:text-blue-700' }}">
+                <div
+                    class="w-9 h-9 rounded-full flex items-center justify-center {{ request()->routeIs('user-anggota.*') ? 'bg-blue-50' : '' }}">
                     <i class="fa-solid fa-id-card text-base"></i>
                 </div>
-                <span class="text-[10px] font-medium mt-0.5">Kartu</span>
+                <span
+                    class="text-[10px] {{ request()->routeIs('user-anggota.*') ? 'font-bold' : 'font-medium' }} mt-0.5">Kartu</span>
             </a>
 
-            <!-- 5. Profil --> {{-- @TODO: Ganti dengan route('profile.edit') --}}
+            <!-- 5. Profil -->
             <a href="{{ route('profile.show') }}"
-                class="flex flex-col items-center text-slate-400 hover:text-blue-700 py-1 transition">
-                <div class="w-9 h-9 rounded-full flex items-center justify-center">
+                class="flex flex-col items-center py-1 transition {{ request()->routeIs('profile.*') ? 'text-blue-700' : 'text-slate-400 hover:text-blue-700' }}">
+                <div
+                    class="w-9 h-9 rounded-full flex items-center justify-center {{ request()->routeIs('profile.*') ? 'bg-blue-50' : '' }}">
                     <i class="fa-solid fa-user text-base"></i>
                 </div>
-                <span class="text-[10px] font-medium mt-0.5">Profil</span>
+                <span
+                    class="text-[10px] {{ request()->routeIs('profile.*') ? 'font-bold' : 'font-medium' }} mt-0.5">Profil</span>
             </a>
+
         </div>
     </div>
 
@@ -170,7 +269,8 @@
                 </form>
                 <!-- Tombol Logout -->
                 <div class="px-3 pb-3 pt-3">
-                    <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
+                    <a href="#"
+                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
                         class="flex items-center space-x-3 px-3.5 py-2 rounded-xl text-red-600 hover:bg-red-50 font-medium text-sm transition">
                         <i class="fa-solid fa-right-from-bracket w-5 text-center shrink-0 text-base"></i>
                         <span x-show="sidebarOpen" x-transition.opacity class="truncate">Logout</span>
@@ -220,8 +320,8 @@
                 </div>
             </header>
 
-            <!-- Desktop Content Slot -->
-            <div class="flex-1">
+            <!-- Desktop Content Slot (overflow-y-auto dihapus agar tidak bentrok) -->
+            <div class="flex-1 p-6">
                 @yield('content')
             </div>
         </div>

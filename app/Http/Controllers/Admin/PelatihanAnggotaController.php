@@ -78,8 +78,44 @@ class PelatihanAnggotaController extends Controller
                     ? route('user-materi.index', $pelatihanId, false)
                     : route('user-pelatihan.payment', $pembayaran->pelatihan_anggota_id, false),
             ]);
+
+            // 4. 🌟 TAMBAHAN: Update status referral transaction terkait, sesuai hasil verifikasi pembayaran
+            $referralTransaction = ReferralTransaction::where('referred_id', $pembayaran->user_id)
+                ->where('pelatihan_id', $pelatihanId)
+                ->where('status', 'pending')
+                ->first();
+
+            if ($referralTransaction) {
+                if ($isVerified) {
+                    // Pembayaran disetujui -> referral berhasil
+                    $referralTransaction->update([
+                        'status' => 'berhasil',
+                    ]);
+
+                    Notification::create([
+                        'user_id' => $referralTransaction->referrer_id,
+                        'title'   => 'Referral Berhasil',
+                        'message' => 'Selamat! Kode referral Anda berhasil digunakan untuk pendaftaran pelatihan "' . $judulPelatihan . '" dan pembayaran peserta telah disetujui. Reward sebesar Rp ' . number_format($referralTransaction->reward_amount, 0, ',', '.') . ' akan segera diproses.',
+                        'type'    => 'success',
+                        'route'   => route('user-referral.index', [], false),
+                    ]);
+                } else {
+                    // Pembayaran ditolak -> referral ikut ditolak
+                    $referralTransaction->update([
+                        'status' => 'ditolak',
+                    ]);
+
+                    Notification::create([
+                        'user_id' => $referralTransaction->referrer_id,
+                        'title'   => 'Referral Ditolak',
+                        'message' => 'Kode referral Anda yang digunakan untuk pendaftaran pelatihan "' . $judulPelatihan . '" tidak jadi berhasil karena pembayaran peserta ditolak oleh admin.',
+                        'type'    => 'error',
+                        'route'   => route('user-referral.index', [], false),
+                    ]);
+                }
+            }
         });
 
-        return back()->with('success', 'Status verifikasi pembayaran berhasil diperbarui.');
+        return back()->with('success', 'Status pembayaran berhasil diperbarui.');
     }
 }

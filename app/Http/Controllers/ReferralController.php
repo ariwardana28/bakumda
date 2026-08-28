@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\ReferralCode;
 use App\Models\ReferralTransaction;
+use App\Models\ReferralPayment;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class ReferralController extends Controller
 {
@@ -37,21 +39,28 @@ class ReferralController extends Controller
         // Ambil kedua kode referral milik user
         $referralCodes = ReferralCode::where('user_id', $user->id)->get();
 
-        // Ambil riwayat transaksi
-        $transactions = ReferralTransaction::with(['referred', 'referralCode'])
-            ->where('referrer_id', $user->id)
+        // 1. Ambil riwayat pencairan dana (Referral Payments) alih-alih transaksi
+        $payments = ReferralPayment::where('user_id', $user->id)
             ->latest()
-            ->paginate($perPage)
-            ->withQueryString();
+            ->paginate($perPage);
 
+        // dd($payments);
+
+        // 2. Hitung total pencairan yang sukses/dibayar (opsional, sesuaikan statusnya)
+        $totalSuccessPayment = ReferralPayment::where('user_id', $user->id)
+            ->where('status', 'paid') // atau 'approved'
+            ->count();
+
+        // 3. Hitung total nominal keseluruhan amount yang dicairkan
+        $totalReward = ReferralPayment::where('user_id', $user->id)
+            ->whereIn('status', ['pending', 'approved', 'paid'])
+            ->sum('amount');
+
+        // Hitung total referral yang sukses (berstatus 'berhasil')
         $totalSuccess = ReferralTransaction::where('referrer_id', $user->id)
             ->where('status', 'berhasil')
             ->count();
 
-        $totalReward = ReferralTransaction::where('referrer_id', $user->id)
-            ->where('status', 'berhasil')
-            ->sum('reward_amount');
-
-        return view('user.referral.index', compact('referralCodes', 'transactions', 'totalSuccess', 'totalReward', 'perPage'));
+        return view('user.referral.index', compact('referralCodes', 'payments', 'totalSuccessPayment', 'totalReward', 'perPage', 'totalSuccess'));
     }
 }

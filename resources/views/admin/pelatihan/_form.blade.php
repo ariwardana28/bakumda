@@ -16,7 +16,7 @@
             </div>
             <div>
                 <h3 class="text-lg font-bold text-gray-800">Informasi Utama Pelatihan</h3>
-                <p class="text-xs text-gray-400">Judul, deskripsi, dan jadwal pelaksanaan</p>
+                <p class="text-xs text-gray-400">Judul, jenis, deskripsi, dan jadwal pelaksanaan</p>
             </div>
         </div>
 
@@ -30,6 +30,26 @@
                 id="judul" name="judul" type="text" placeholder="Masukkan judul pelatihan..."
                 value="{{ old('judul', $pelatihan->judul ?? '') }}" required>
             @error('judul')
+                <p class="text-red-500 text-xs mt-1.5">{{ $message }}</p>
+            @enderror
+        </div>
+
+        {{-- Jenis Pelatihan --}}
+        <div>
+            <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-2" for="pelatihan_jenis_id">
+                Jenis Pelatihan <span class="text-red-500">*</span>
+            </label>
+            <select
+                class="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition duration-200 outline-none cursor-pointer @error('pelatihan_jenis_id') border-red-500 bg-red-50/50 @enderror"
+                id="pelatihan_jenis_id" name="pelatihan_jenis_id" required>
+                <option value="" disabled selected>Pilih Jenis Pelatihan</option>
+                @foreach ($jenisPelatihans as $jenis)
+                    <option value="{{ $jenis->id }}" {{ old('pelatihan_jenis_id', $pelatihan->pelatihan_jenis_id ?? '') == $jenis->id ? 'selected' : '' }}>
+                        {{ $jenis->nama }}
+                    </option>
+                @endforeach
+            </select>
+            @error('pelatihan_jenis_id')
                 <p class="text-red-500 text-xs mt-1.5">{{ $message }}</p>
             @enderror
         </div>

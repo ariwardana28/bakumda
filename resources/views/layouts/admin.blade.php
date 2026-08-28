@@ -144,44 +144,58 @@
                     <span x-show="sidebarOpen" class="whitespace-nowrap text-xs tracking-wide">Dashboard</span>
                 </a>
 
-                @can('anggota-view')
-                    <!-- Data Anggota -->
-                    @php $isAnggotaActive = request()->routeIs('admin.anggota.*'); @endphp
-                    <a href="{{ route('admin.anggota.index') }}"
-                        class="flex items-center gap-3.5 px-3.5 py-3 rounded-xl transition-all duration-200 group relative {{ $isAnggotaActive ? 'font-semibold text-brand-600 bg-brand-50/80 dark:bg-brand-500/15 dark:text-brand-400 shadow-sm' : 'font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100/60 dark:text-slate-400 dark:hover:text-slate-100 dark:hover:bg-slate-800/40' }}">
-                        <div class="absolute left-0 w-1 h-5 bg-brand-600 dark:bg-brand-400 rounded-r-full"
-                            x-show="sidebarOpen && {{ $isAnggotaActive ? 'true' : 'false' }}"></div>
-                        <i class="fa-solid fa-users text-sm w-5 text-center transition-transform group-hover:scale-110"></i>
-                        <span x-show="sidebarOpen" class="whitespace-nowrap text-xs tracking-wide">Data Anggota</span>
-                    </a>
-                @endcan
+                <!-- Dropdown Manajemen Anggota -->
+                @canany(['anggota-view', 'kartu-anggota-view', 'korwil-view'])
+                    @php
+                        $isAnggotaGroupActive =
+                            request()->routeIs('admin.anggota.*') ||
+                            request()->routeIs('admin.anggota-card.*') ||
+                            request()->routeIs('admin.korwil.*');
+                    @endphp
+                    <div x-data="{ anggotaManagementOpen: {{ $isAnggotaGroupActive ? 'true' : 'false' }} }">
+                        <button @click="anggotaManagementOpen = !anggotaManagementOpen"
+                            class="w-full flex items-center justify-between gap-3.5 px-3.5 py-3 rounded-xl transition-all duration-200 group {{ $isAnggotaGroupActive ? 'font-semibold text-brand-600 bg-brand-50/50 dark:bg-brand-500/10 dark:text-brand-400' : 'font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100/60 dark:text-slate-400 dark:hover:text-slate-100 dark:hover:bg-slate-800/40' }}">
+                            <div class="flex items-center gap-3.5">
+                                <i
+                                    class="fa-solid fa-users text-sm w-5 text-center transition-transform group-hover:scale-110"></i>
+                                <span x-show="sidebarOpen" class="whitespace-nowrap text-xs tracking-wide">Manajemen
+                                    Anggota</span>
+                            </div>
+                            <i x-show="sidebarOpen"
+                                class="fa-solid fa-chevron-down text-[10px] text-slate-400 transition-transform duration-200"
+                                :class="{ 'rotate-180': anggotaManagementOpen }"></i>
+                        </button>
 
-                @can('kartu-anggota-view')
-                    <!-- Kartu Anggota -->
-                    @php $isKartuActive = request()->routeIs('admin.anggota-card.*'); @endphp
-                    <a href="{{ route('admin.anggota-card.index') }}"
-                        class="flex items-center gap-3.5 px-3.5 py-3 rounded-xl transition-all duration-200 group relative {{ $isKartuActive ? 'font-semibold text-brand-600 bg-brand-50/80 dark:bg-brand-500/15 dark:text-brand-400 shadow-sm' : 'font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100/60 dark:text-slate-400 dark:hover:text-slate-100 dark:hover:bg-slate-800/40' }}">
-                        <div class="absolute left-0 w-1 h-5 bg-brand-600 dark:bg-brand-400 rounded-r-full"
-                            x-show="sidebarOpen && {{ $isKartuActive ? 'true' : 'false' }}"></div>
-                        <i
-                            class="fa-solid fa-address-card text-sm w-5 text-center transition-transform group-hover:scale-110"></i>
-                        <span x-show="sidebarOpen" class="whitespace-nowrap text-xs tracking-wide">Kartu Anggota</span>
-                    </a>
-                @endcan
+                        <div x-show="anggotaManagementOpen" x-collapse class="pt-1.5 pl-4 space-y-1">
+                            @can('anggota-view')
+                                @php $isAnggotaActive = request()->routeIs('admin.anggota.*'); @endphp
+                                <a href="{{ route('admin.anggota.index') }}"
+                                    class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs transition-colors {{ $isAnggotaActive ? 'font-bold text-brand-600 bg-brand-50/80 dark:bg-brand-500/20 dark:text-brand-400' : 'font-medium text-slate-500 hover:text-slate-900 hover:bg-slate-100/60 dark:text-slate-400 dark:hover:text-slate-200 dark:hover:bg-slate-800/40' }}">
+                                    <i class="fa-solid fa-users w-4 text-center"></i>
+                                    <span x-show="sidebarOpen" class="whitespace-nowrap">Data Anggota</span>
+                                </a>
+                            @endcan
 
-                @can('pelatihan-view')
-                    <!-- Pelatihan -->
-                    @php $isPelatihanActive = request()->routeIs('admin.pelatihan.*'); @endphp
-                    <a href="{{ route('admin.pelatihan.index') }}"
-                        class="flex items-center gap-3.5 px-3.5 py-3 rounded-xl transition-all duration-200 group relative {{ $isPelatihanActive ? 'font-semibold text-brand-600 bg-brand-50/80 dark:bg-brand-500/15 dark:text-brand-400 shadow-sm' : 'font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100/60 dark:text-slate-400 dark:hover:text-slate-100 dark:hover:bg-slate-800/40' }}">
-                        <div class="absolute left-0 w-1 h-5 bg-brand-600 dark:bg-brand-400 rounded-r-full"
-                            x-show="sidebarOpen && {{ $isPelatihanActive ? 'true' : 'false' }}"></div>
-                        <i
-                            class="fa-solid fa-chalkboard-user text-sm w-5 text-center transition-transform group-hover:scale-110"></i>
-                        <span x-show="sidebarOpen" class="whitespace-nowrap text-xs tracking-wide">Manajemen
-                            Pelatihan</span>
-                    </a>
-                @endcan
+                            @can('kartu-anggota-view')
+                                @php $isKartuActive = request()->routeIs('admin.anggota-card.*'); @endphp
+                                <a href="{{ route('admin.anggota-card.index') }}"
+                                    class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs transition-colors {{ $isKartuActive ? 'font-bold text-brand-600 bg-brand-50/80 dark:bg-brand-500/20 dark:text-brand-400' : 'font-medium text-slate-500 hover:text-slate-900 hover:bg-slate-100/60 dark:text-slate-400 dark:hover:text-slate-200 dark:hover:bg-slate-800/40' }}">
+                                    <i class="fa-solid fa-address-card w-4 text-center"></i>
+                                    <span x-show="sidebarOpen" class="whitespace-nowrap">Kartu Anggota</span>
+                                </a>
+                            @endcan
+
+                            @can('korwil-view')
+                                @php $isKorwilActive = request()->routeIs('admin.korwil.*'); @endphp
+                                <a href="{{ route('admin.korwil.index') }}"
+                                    class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs transition-colors {{ $isKorwilActive ? 'font-bold text-brand-600 bg-brand-50/80 dark:bg-brand-500/20 dark:text-brand-400' : 'font-medium text-slate-500 hover:text-slate-900 hover:bg-slate-100/60 dark:text-slate-400 dark:hover:text-slate-200 dark:hover:bg-slate-800/40' }}">
+                                    <i class="fa-solid fa-map-location-dot w-4 text-center"></i>
+                                    <span x-show="sidebarOpen" class="whitespace-nowrap">Koordinator Wilayah</span>
+                                </a>
+                            @endcan
+                        </div>
+                    </div>
+                @endcanany
 
                 @can('pelatihan-anggota-view')
                     <!-- Verifikasi Pembayaran -->
@@ -194,6 +208,61 @@
                             class="fa-solid fa-money-check-dollar text-sm w-5 text-center transition-transform group-hover:scale-110"></i>
                         <span x-show="sidebarOpen" class="whitespace-nowrap text-xs tracking-wide">Verifikasi
                             Pembayaran</span>
+                    </a>
+                @endcan
+
+                <!-- Dropdown Manajemen Pelatihan -->
+                @canany(['pelatihan-view', 'pelatihan-pembayaran-view'])
+                    @php
+                        $isPelatihanGroupActive =
+                            request()->routeIs('admin.pelatihan.*') || request()->routeIs('pelatihan-anggota.*');
+                    @endphp
+                    <div x-data="{ pelatihanManagementOpen: {{ $isPelatihanGroupActive ? 'true' : 'false' }} }">
+                        <button @click="pelatihanManagementOpen = !pelatihanManagementOpen"
+                            class="w-full flex items-center justify-between gap-3.5 px-3.5 py-3 rounded-xl transition-all duration-200 group {{ $isPelatihanGroupActive ? 'font-semibold text-brand-600 bg-brand-50/50 dark:bg-brand-500/10 dark:text-brand-400' : 'font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100/60 dark:text-slate-400 dark:hover:text-slate-100 dark:hover:bg-slate-800/40' }}">
+                            <div class="flex items-center gap-3.5">
+                                <i
+                                    class="fa-solid fa-chalkboard-user text-sm w-5 text-center transition-transform group-hover:scale-110"></i>
+                                <span x-show="sidebarOpen" class="whitespace-nowrap text-xs tracking-wide">Manajemen
+                                    Pelatihan</span>
+                            </div>
+                            <i x-show="sidebarOpen"
+                                class="fa-solid fa-chevron-down text-[10px] text-slate-400 transition-transform duration-200"
+                                :class="{ 'rotate-180': pelatihanManagementOpen }"></i>
+                        </button>
+
+                        <div x-show="pelatihanManagementOpen" x-collapse class="pt-1.5 pl-4 space-y-1">
+                            @can('pelatihan-view')
+                                @php $isPelatihanActive = request()->routeIs('admin.pelatihan.*'); @endphp
+                                <a href="{{ route('admin.pelatihan.index') }}"
+                                    class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs transition-colors {{ $isPelatihanActive ? 'font-bold text-brand-600 bg-brand-50/80 dark:bg-brand-500/20 dark:text-brand-400' : 'font-medium text-slate-500 hover:text-slate-900 hover:bg-slate-100/60 dark:text-slate-400 dark:hover:text-slate-200 dark:hover:bg-slate-800/40' }}">
+                                    <i class="fa-solid fa-chalkboard-user w-4 text-center"></i>
+                                    <span x-show="sidebarOpen" class="whitespace-nowrap">Pelatihan</span>
+                                </a>
+                            @endcan
+
+                            @can('pelatihan-pembayaran-view')
+                                @php $isPelatihanPaymentActive = request()->routeIs('pelatihan-anggota.*'); @endphp
+                                <a href="{{ route('admin.pelatihan-anggota.index') }}"
+                                    class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs transition-colors {{ $isPelatihanPaymentActive ? 'font-bold text-brand-600 bg-brand-50/80 dark:bg-brand-500/20 dark:text-brand-400' : 'font-medium text-slate-500 hover:text-slate-900 hover:bg-slate-100/60 dark:text-slate-400 dark:hover:text-slate-200 dark:hover:bg-slate-800/40' }}">
+                                    <i class="fa-solid fa-file-invoice-dollar w-4 text-center"></i>
+                                    <span x-show="sidebarOpen" class="whitespace-nowrap">Pelatihan Payment</span>
+                                </a>
+                            @endcan
+                        </div>
+                    </div>
+                @endcanany
+
+                @can('referral-view')
+                    <!-- Referral (Claims) -->
+                    @php $isReferralActive = request()->routeIs('admin.referral.*'); @endphp
+                    <a href="{{ route('admin.referral.index') }}"
+                        class="flex items-center gap-3.5 px-3.5 py-3 rounded-xl transition-all duration-200 group relative {{ $isReferralActive ? 'font-semibold text-brand-600 bg-brand-50/80 dark:bg-brand-500/15 dark:text-brand-400 shadow-sm' : 'font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100/60 dark:text-slate-400 dark:hover:text-slate-100 dark:hover:bg-slate-800/40' }}">
+                        <div class="absolute left-0 w-1 h-5 bg-brand-600 dark:bg-brand-400 rounded-r-full"
+                            x-show="sidebarOpen && {{ $isReferralActive ? 'true' : 'false' }}"></div>
+                        <i
+                            class="fa-solid fa-handshake text-sm w-5 text-center transition-transform group-hover:scale-110"></i>
+                        <span x-show="sidebarOpen" class="whitespace-nowrap text-xs tracking-wide">Klaim Referral</span>
                     </a>
                 @endcan
 
@@ -220,59 +289,6 @@
                         <i
                             class="fa-solid fa-envelope-open-text text-sm w-5 text-center transition-transform group-hover:scale-110"></i>
                         <span x-show="sidebarOpen" class="whitespace-nowrap text-xs tracking-wide">Manajemen Surat</span>
-                    </a>
-                @endcan
-
-                @can('pelatihan-pembayaran-view')
-                    <!-- Pelatihan Payment -->
-                    @php $isPelatihanPaymentActive = request()->routeIs('pelatihan-anggota.*'); @endphp
-                    <a href="{{ route('admin.pelatihan-anggota.index') }}"
-                        class="flex items-center gap-3.5 px-3.5 py-3 rounded-xl transition-all duration-200 group relative {{ $isPelatihanPaymentActive ? 'font-semibold text-brand-600 bg-brand-50/80 dark:bg-brand-500/15 dark:text-brand-400 shadow-sm' : 'font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100/60 dark:text-slate-400 dark:hover:text-slate-100 dark:hover:bg-slate-800/40' }}">
-                        <div class="absolute left-0 w-1 h-5 bg-brand-600 dark:bg-brand-400 rounded-r-full"
-                            x-show="sidebarOpen && {{ $isPelatihanPaymentActive ? 'true' : 'false' }}"></div>
-                        <i
-                            class="fa-solid fa-file-invoice-dollar text-sm w-5 text-center transition-transform group-hover:scale-110"></i>
-                        <span x-show="sidebarOpen" class="whitespace-nowrap text-xs tracking-wide">Pelatihan Payment</span>
-                    </a>
-                @endcan
-
-                @can('user-pelatihan-view')
-                    <!-- Pelatihan Saya (User) -->
-                    @php $isUserPelatihanActive = request()->routeIs('user-pelatihan.*'); @endphp
-                    <a href="{{ route('user-pelatihan.index') }}"
-                        class="flex items-center gap-3.5 px-3.5 py-3 rounded-xl transition-all duration-200 group relative {{ $isUserPelatihanActive ? 'font-semibold text-brand-600 bg-brand-50/80 dark:bg-brand-500/15 dark:text-brand-400 shadow-sm' : 'font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100/60 dark:text-slate-400 dark:hover:text-slate-100 dark:hover:bg-slate-800/40' }}">
-                        <div class="absolute left-0 w-1 h-5 bg-brand-600 dark:bg-brand-400 rounded-r-full"
-                            x-show="sidebarOpen && {{ $isUserPelatihanActive ? 'true' : 'false' }}"></div>
-                        <i
-                            class="fa-solid fa-book-open-reader text-sm w-5 text-center transition-transform group-hover:scale-110"></i>
-                        <span x-show="sidebarOpen" class="whitespace-nowrap text-xs tracking-wide">Pelatihan</span>
-                    </a>
-                @endcan
-
-                @can('keanggotaan-view')
-                    <!-- Keanggotaan Saya (User) -->
-                    @php $isUserAnggotaActive = request()->routeIs('user-anggota.*'); @endphp
-                    <a href="{{ route('user-anggota.index') }}"
-                        class="flex items-center gap-3.5 px-3.5 py-3 rounded-xl transition-all duration-200 group relative {{ $isUserAnggotaActive ? 'font-semibold text-brand-600 bg-brand-50/80 dark:bg-brand-500/15 dark:text-brand-400 shadow-sm' : 'font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100/60 dark:text-slate-400 dark:hover:text-slate-100 dark:hover:bg-slate-800/40' }}">
-                        <div class="absolute left-0 w-1 h-5 bg-brand-600 dark:bg-brand-400 rounded-r-full"
-                            x-show="sidebarOpen && {{ $isUserAnggotaActive ? 'true' : 'false' }}"></div>
-                        <i
-                            class="fa-solid fa-id-badge text-sm w-5 text-center transition-transform group-hover:scale-110"></i>
-                        <span x-show="sidebarOpen" class="whitespace-nowrap text-xs tracking-wide">Kartu
-                            Keanggotaan</span>
-                    </a>
-                @endcan
-
-                <!-- Sertifikasi -->
-                @can('sertifikat-view')
-                    @php $isSertifikasiActive = request()->is('pelatihan-sertifikat*'); @endphp
-                    <a href="{{ route('sertifikat.index') }}"
-                        class="flex items-center gap-3.5 px-3.5 py-3 rounded-xl transition-all duration-200 group relative {{ $isSertifikasiActive ? 'font-semibold text-brand-600 bg-brand-50/80 dark:bg-brand-500/15 dark:text-brand-400 shadow-sm' : 'font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100/60 dark:text-slate-400 dark:hover:text-slate-100 dark:hover:bg-slate-800/40' }}">
-                        <div class="absolute left-0 w-1 h-5 bg-brand-600 dark:bg-brand-400 rounded-r-full"
-                            x-show="sidebarOpen && {{ $isSertifikasiActive ? 'true' : 'false' }}"></div>
-                        <i
-                            class="fa-solid fa-award text-sm w-5 text-center transition-transform group-hover:scale-110"></i>
-                        <span x-show="sidebarOpen" class="whitespace-nowrap text-xs tracking-wide">Sertifikasi</span>
                     </a>
                 @endcan
 

@@ -24,6 +24,12 @@ use App\Http\Controllers\UserProdukController;
 use App\Http\Controllers\Admin\KorwilController;
 use App\Http\Controllers\RefferalController;
 use App\Http\Controllers\GeminiController;
+use App\Http\Controllers\UserKerjasamaController;
+
+
+use App\Http\Controllers\Admin\KerjasamaController;
+
+
 /*
 |--------------------------------------------------------------------------
 | Public Routes
@@ -37,7 +43,6 @@ Route::get('/', [HalamanUtamaController::class, 'index'])->name('welcome');
 Route::get('/korwil', [HalamanUtamaController::class, 'korwil'])->name('korwil');
 Route::get('/korwil/{province}', [HalamanUtamaController::class, 'showKorwilByProvince'])->name('user.korwil.show');
 Route::get('/korwil/surat/{anggotaCard}', [HalamanUtamaController::class, 'showKorwilSurat'])->name('user.korwil.surat');
-Route::get('/artiekl/{artikel:slug}', [HalamanUtamaController::class, 'show'])->name('artikel.show.public');
 
 // Route untuk Pengecekan Sertifikat Publik
 Route::get('/cek-sertifikat', [HalamanUtamaController::class, 'showCekSertifikatForm'])->name('sertifikat.cek.form');
@@ -47,8 +52,7 @@ Route::post('/cek-sertifikat', [HalamanUtamaController::class, 'CekSertifikat'])
 Route::get('/cek-kartu-anggota', [HalamanUtamaController::class, 'showCekKartuAnggotaForm'])->name('kartu-anggota.cek.form');
 Route::post('/cek-kartu-anggota', [HalamanUtamaController::class, 'CekKartuAnggota'])->name('kartu-anggota.cek.submit');
 
-// Route untuk menampilkan detail artikel publik
-Route::get('/artikel/{artikel:slug}', [HalamanUtamaController::class, 'show'])->name('artikel.show.public');
+
 
 Route::get('/admin/surat', function () {
     return view('admin.surat.index');
@@ -321,11 +325,17 @@ Route::middleware('auth')->group(function () {
         // Endpoint untuk auto-fill form korwil
         Route::get('/korwil/get-latest-data/{anggotaCard}', [KorwilController::class, 'getLatestKorwilData'])->name('korwil.get-latest-data');
 
+        Route::resource('kerjasama', KerjasamaController::class);
+
         // --- Manajemen Referral (Admin) ---
         Route::get('referral', [\App\Http\Controllers\Admin\ReferralController::class, 'claims'])->name('referral.index');
         Route::get('referral/claims', [\App\Http\Controllers\Admin\ReferralController::class, 'claims'])->name('referral.claims');
         Route::post('referral/claims/{claim}/update', [\App\Http\Controllers\Admin\ReferralController::class, 'updateClaim'])->name('referral.claims.update');
     });
 });
+// Route untuk menampilkan detail artikel publik
+Route::get('/artikel/{artikel:slug}', [HalamanUtamaController::class, 'show'])->name('artikel.show.public');
+
+Route::resource('user-kerjasamas', UserKerjasamaController::class);
 
 require __DIR__ . '/auth.php';

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Pelatihan;
+use App\Models\PelatihanJenis;
 use App\Models\PelatihanPembayaran;
 use App\Models\PelatihanAnggota;
 use App\Models\PelatihanAnggotaStatus;
@@ -41,26 +42,44 @@ class UserPelatihanController extends Controller
      */
     public function index(Request $request)
     {
-        // Ambil kata kunci pencarian jika ada
         $search = $request->input('search');
-
-        // Ambil ID user yang sedang login
+        $jenisId = $request->input('pelatihan_jenis_id');
         $userId = Auth::id();
 
-        // Query data pelatihan dengan filter pencarian dan diurutkan dari terbaru
+        // 1. Ambil data jenis pelatihan beserta relasi pelatihannya
+        $jenisPelatihans = PelatihanJenis::with(['pelatihans' => function ($query) use ($userId, $search) {
+            $query->with(['userPendaftaran' => function ($q) use ($userId) {
+                $q->where('users_id', $userId)->with('latestStatus');
+            }]);
+
+            if ($search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('judul', 'like', "%{$search}%")
+                        ->orWhere('deskripsi', 'like', "%{$search}%");
+                });
+            }
+
+            $query->latest();
+        }])
+            ->when($jenisId, function ($query) use ($jenisId) {
+                $query->where('id', $jenisId);
+            })
+            ->get();
+
+        // 2. Query cadangan (jika $pelatihans dibutuhkan di view)
         $pelatihans = Pelatihan::with(['userPendaftaran' => function ($query) use ($userId) {
-            // Eager load pendaftaran milik user yang login, beserta status terakhirnya
             $query->where('users_id', $userId)->with('latestStatus');
         }])->when($search, function ($query, $search) {
-            // Mencari di kolom judul DAN deskripsi
             return $query->where('judul', 'like', "%{$search}%")
                 ->orWhere('deskripsi', 'like', "%{$search}%");
         })
+            ->when($jenisId, function ($query, $jenisId) {
+                return $query->where('pelatihan_jenis_id', $jenisId);
+            })
             ->latest()
             ->get();
 
-        // Mengarahkan ke view daftar pelatihan (misal: resources/views/pelatihan/index.blade.php)
-        return view('user.pelatihan.index', compact('pelatihans'));
+        return view('user.pelatihan.index', compact('pelatihans', 'jenisPelatihans'));
     }
 
     public function create(Pelatihan $pelatihan)
@@ -70,9 +89,20 @@ class UserPelatihanController extends Controller
 
     public function store(Request $request, Pelatihan $pelatihan)
     {
-        // Tambahkan validasi untuk referral_code (opsional)
+        // Validasi referral_code (opsional), sekaligus tolak jika kode adalah milik user yang sedang login
         $request->validate([
-            'referral_code' => 'nullable|string|exists:referral_codes,code',
+            'referral_code' => [
+                'nullable',
+                'string',
+                'exists:referral_codes,code',
+                function ($attribute, $value, $fail) {
+                    $referralCode = \App\Models\ReferralCode::where('code', $value)->first();
+
+                    if ($referralCode && $referralCode->user_id === Auth::id()) {
+                        $fail('Anda memasukkan kode referral akun Anda sendiri. Hal ini tidak diperbolehkan.');
+                    }
+                },
+            ],
         ]);
 
         DB::beginTransaction();
@@ -100,23 +130,20 @@ class UserPelatihanController extends Controller
 
             // Proses kode referral jika ada dan valid
             if ($request->filled('referral_code')) {
-                // 1. Cari kode referral yang digunakan
+                // Cari kode referral yang digunakan
                 $referralCode = ReferralCode::where('code', $request->referral_code)->first();
 
-                // Pastikan kode referral ditemukan dan bukan milik user yang sedang mendaftar
+                // Validasi kepemilikan sudah dijamin lolos oleh rule di atas,
+                // pengecekan ini tetap dipertahankan sebagai lapisan keamanan tambahan (defense in depth)
                 if ($referralCode && $referralCode->user_id !== Auth::id()) {
-                    // 2. Buat transaksi referral
                     ReferralTransaction::create([
                         'referral_code_id' => $referralCode->id,
                         'referrer_id'      => $referralCode->user_id, // Pemilik kode referral
                         'referred_id'      => Auth::id(),             // User yang mendaftar menggunakan kode
-                        'pelatihan_id'      => $pelatihan->id,             // User yang mendaftar menggunakan kode
-                        'reward_amount'    => 50000,                       // Reward awal bisa 0, dihitung nanti
-                        'pelatihan_id'     => $pelatihan->id,         // Tambahkan ID pelatihan
-                        'reward_amount'    => 50000,                   // Reward awal bisa 0, dihitung nanti
-                        'status'           => 'pending',               // Status awal pending
+                        'pelatihan_id'     => $pelatihan->id,
+                        'reward_amount'    => 50000,                  // Reward awal, dihitung/diperbarui nanti
+                        'status'           => 'pending',              // Status awal pending
                     ]);
-
                 }
             }
 
@@ -143,19 +170,22 @@ class UserPelatihanController extends Controller
         }
     }
 
+
     /**
      * Menampilkan halaman detail pelatihan berdasarkan ID atau slug.
      */
     public function show(Pelatihan $pelatihan)
     {
-        // Eager load relasi materi untuk ditampilkan di modal dan halaman detail
+        // Eager load relasi materi dan pendaftaran user yang login
         $pelatihan->load(['materi', 'userPendaftaran' => function ($query) {
-            // Eager load pendaftaran milik user yang login, beserta status terakhirnya
             $query->where('users_id', Auth::id())->with('latestStatus');
         }]);
 
-        // Mengarahkan ke view detail pelatihan (misal: resources/views/pelatihan/detail.blade.php)
-        return view('user.pelatihan.show', compact('pelatihan'));
+        // AMBIL DATA INI: Ambil pelatihan lain (selain pelatihan yang sedang dibuka), misal 4 buah
+        $pelatihanLainnya = Pelatihan::where('id', '!=', $pelatihan->id)->take(4)->get();
+
+        // Kirim $pelatihanLainnya ke view menggunakan compact
+        return view('user.pelatihan.show', compact('pelatihan', 'pelatihanLainnya'));
     }
 
 
@@ -237,29 +267,7 @@ class UserPelatihanController extends Controller
             'route'   => route('user-pelatihan.status', $pendaftaran->id, false),
         ]);
 
-        // 5. Update status referral dan kirim notifikasi ke referrer
-        $referralTransaction = ReferralTransaction::where('referred_id', $pendaftaran->users_id)
-            ->where('pelatihan_id', $pendaftaran->pelatihan_id)
-            ->where('status', 'pending')
-            ->first();
-
-        if ($referralTransaction) {
-            // Update status transaksi menjadi 'berhasil'
-            $referralTransaction->status = 'berhasil';
-            $referralTransaction->save();
-
-            // Kirim notifikasi ke pemilik kode referral (referrer)
-            $referredUser = \App\Models\User::find($referralTransaction->referred_id);
-            Notification::create([
-                'user_id' => $referralTransaction->referrer_id,
-                'title'   => 'Referral Berhasil!',
-                'message' => 'Anda berhasil mendapatkan komisi referral dari pendaftaran ' . ($referredUser->name ?? 'seorang anggota baru') . ' di pelatihan "' . $pendaftaran->pelatihan->judul . '".',
-                'type'    => 'success',
-                // Arahkan ke halaman referral user
-                'route'   => route('user-referral.index', [], false),
-            ]);
-        }
-
+        
         return redirect()->route('user-pelatihan.status', $pendaftaran->id)
             ->with('success', 'Konfirmasi pembayaran berhasil dikirim. Pendaftaran Anda akan segera diverifikasi.');
     }
@@ -285,7 +293,7 @@ class UserPelatihanController extends Controller
 
         // Cek jika status sudah disetujui / aktif / pembayaran diverifikasi
         // Sesuaikan string 'Aktif' atau status sukses Anda di database
-        if (in_array($statusTerakhir, ['Aktif', 'Disetujui', 'Selesai','Pembayaran Disetujui'])) {
+        if (in_array($statusTerakhir, ['Aktif', 'Disetujui', 'Selesai', 'Pembayaran Disetujui'])) {
             return redirect()->route('user-materi.index', $pendaftaran->pelatihan_id);
         }
 

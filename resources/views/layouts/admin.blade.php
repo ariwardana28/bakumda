@@ -277,6 +277,24 @@
                             class="fa-solid fa-store text-sm w-5 text-center transition-transform group-hover:scale-110"></i>
                         <span x-show="sidebarOpen" class="whitespace-nowrap text-xs tracking-wide">Manajemen Produk</span>
                     </a>
+
+                    @php $isKeranjangActive = request()->routeIs('admin.keranjang.*'); @endphp
+                    <a href="{{ route('admin.keranjang.index') }}"
+                        class="flex items-center gap-3.5 px-3.5 py-3 rounded-xl transition-all duration-200 group relative {{ $isKeranjangActive ? 'font-semibold text-brand-600 bg-brand-50/80 dark:bg-brand-500/15 dark:text-brand-400 shadow-sm' : 'font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100/60 dark:text-slate-400 dark:hover:text-slate-100 dark:hover:bg-slate-800/40' }}">
+                        <div class="absolute left-0 w-1 h-5 bg-brand-600 dark:bg-brand-400 rounded-r-full"
+                            x-show="sidebarOpen && {{ $isKeranjangActive ? 'true' : 'false' }}"></div>
+                        <i class="fa-solid fa-cart-shopping text-sm w-5 text-center transition-transform group-hover:scale-110"></i>
+                        <span x-show="sidebarOpen" class="whitespace-nowrap text-xs tracking-wide">Keranjang Pesanan</span>
+                    </a>
+
+                    @php $isPesananActive = request()->routeIs('admin.pesanan.*'); @endphp
+                    <a href="{{ route('admin.pesanan.index') }}"
+                        class="flex items-center gap-3.5 px-3.5 py-3 rounded-xl transition-all duration-200 group relative {{ $isPesananActive ? 'font-semibold text-brand-600 bg-brand-50/80 dark:bg-brand-500/15 dark:text-brand-400 shadow-sm' : 'font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100/60 dark:text-slate-400 dark:hover:text-slate-100 dark:hover:bg-slate-800/40' }}">
+                        <div class="absolute left-0 w-1 h-5 bg-brand-600 dark:bg-brand-400 rounded-r-full"
+                            x-show="sidebarOpen && {{ $isPesananActive ? 'true' : 'false' }}"></div>
+                        <i class="fa-solid fa-receipt text-sm w-5 text-center transition-transform group-hover:scale-110"></i>
+                        <span x-show="sidebarOpen" class="whitespace-nowrap text-xs tracking-wide">Pesanan Merchandise</span>
+                    </a>
                 @endcan
 
                 @can('surat-view')

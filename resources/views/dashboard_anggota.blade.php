@@ -44,14 +44,103 @@
                         <i class="fa-solid fa-magnifying-glass text-xs text-blue-200 mr-2"></i>
                         <span class="text-xs text-blue-100 font-medium tracking-wide">Pencarian...</span>
                     </div>
-                    <div class="relative">
-                        <button
-                            class="w-9 h-9 rounded-full bg-white/10 border border-white/10 flex items-center justify-center text-blue-100 hover:bg-white/20 transition">
+                    <a href=""
+                        class="w-9 h-9 rounded-full border flex items-center justify-center transition {{ request()->routeIs('user-pelatihan.show') || request()->routeIs('user-pelatihan.index') ? 'bg-slate-100 border-slate-300 text-slate-700 hover:bg-slate-200' : 'bg-[#0a1226]/90 border-blue-950/60 text-blue-200 hover:text-white' }}"
+                        title="Keranjang">
+                        <i class="fa-solid fa-cart-shopping text-sm"></i>
+                    </a>
+                    {{-- Tombol Notifikasi / Lonceng --}}
+                    <div class="relative" x-data="{ notifOpen: false }" @click.away="notifOpen = false">
+                        <button @click="notifOpen = !notifOpen"
+                            class="w-9 h-9 rounded-full border flex items-center justify-center transition {{ request()->routeIs('user-pelatihan.show') || request()->routeIs('user-pelatihan.index') ? 'bg-slate-100 border-slate-300 text-slate-700 hover:bg-slate-200' : 'bg-[#0a1226]/90 border-blue-950/60 text-blue-200 hover:text-white' }}">
                             <i class="fa-regular fa-bell text-sm"></i>
                         </button>
-                        <span
-                            class="absolute -top-0.5 -right-0.5 w-4 h-4 bg-blue-500 text-white font-extrabold text-[9px] flex items-center justify-center rounded-full shadow">8</span>
+
+                        @php
+                            $notifCollection = $notifications ?? collect();
+                            $unreadCount = $unreadNotificationsCount ?? $notifCollection->whereNull('read_at')->count();
+                        @endphp
+
+                        @if ($unreadCount > 0)
+                            <span
+                                class="absolute -top-0.5 -right-0.5 w-4 h-4 bg-amber-500 text-slate-950 font-extrabold text-[9px] flex items-center justify-center rounded-full shadow">
+                                {{ $unreadCount > 9 ? '9+' : $unreadCount }}
+                            </span>
+                        @endif
+
+                        {{-- Dropdown Notifikasi --}}
+                        <div x-show="notifOpen" x-transition:enter="ease-out duration-150"
+                            x-transition:enter-start="opacity-0 scale-95 -translate-y-1"
+                            x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+                            x-transition:leave="ease-in duration-100" x-transition:leave-start="opacity-100 scale-100"
+                            x-transition:leave-end="opacity-0 scale-95"
+                            class="absolute right-0 mt-3 w-80 sm:w-96 bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden z-50"
+                            style="display: none;">
+
+                            {{-- Header Dropdown --}}
+                            <div class="flex items-center justify-between px-4 py-3 border-b border-slate-100">
+                                <h4 class="text-sm font-bold text-slate-900">Notifikasi</h4>
+                                @if ($unreadCount > 0)
+                                    <form action="{{ route('notifications.readAll') }}" method="POST">
+                                        @csrf
+                                        <button type="submit"
+                                            class="text-[11px] font-semibold text-blue-600 hover:text-blue-700 transition">
+                                            Tandai semua dibaca
+                                        </button>
+                                    </form>
+                                @endif
+                            </div>
+
+                            {{-- List Notifikasi --}}
+                            <div class="max-h-80 overflow-y-auto divide-y divide-slate-100">
+                                @forelse ($notifCollection as $notif)
+                                    <a href="{{ route('notifications.read', $notif->id) }}"
+                                        class="flex items-start gap-3 px-4 py-3 hover:bg-slate-50 transition {{ is_null($notif->read_at) ? 'bg-blue-50/50' : '' }}">
+
+                                        {{-- Icon sesuai tipe notifikasi --}}
+                                        <div
+                                            class="w-8 h-8 rounded-full flex items-center justify-center shrink-0
+                                            {{ $notif->type === 'success'
+                                                ? 'bg-emerald-100 text-emerald-600'
+                                                : ($notif->type === 'error'
+                                                    ? 'bg-red-100 text-red-600'
+                                                    : ($notif->type === 'warning'
+                                                        ? 'bg-amber-100 text-amber-600'
+                                                        : 'bg-blue-100 text-blue-600')) }}">
+                                            <i
+                                                class="fa-solid
+                                                {{ $notif->type === 'success'
+                                                    ? 'fa-check'
+                                                    : ($notif->type === 'error'
+                                                        ? 'fa-triangle-exclamation'
+                                                        : ($notif->type === 'warning'
+                                                            ? 'fa-circle-exclamation'
+                                                            : 'fa-bell')) }} text-xs"></i>
+                                        </div>
+
+                                        <div class="min-w-0 flex-1">
+                                            <p class="text-xs font-bold text-slate-900 truncate">{{ $notif->title }}
+                                            </p>
+                                            <p class="text-[11px] text-slate-500 line-clamp-2 mt-0.5 leading-relaxed">
+                                                {{ $notif->message }}</p>
+                                            <span
+                                                class="text-[10px] text-slate-400 mt-1 block">{{ $notif->created_at->diffForHumans() }}</span>
+                                        </div>
+
+                                        @if (is_null($notif->read_at))
+                                            <span class="w-2 h-2 rounded-full bg-blue-500 mt-1.5 shrink-0"></span>
+                                        @endif
+                                    </a>
+                                @empty
+                                    <div class="px-4 py-10 text-center text-slate-400">
+                                        <i class="fa-regular fa-bell-slash text-2xl mb-2 block"></i>
+                                        <p class="text-xs">Belum ada notifikasi.</p>
+                                    </div>
+                                @endforelse
+                            </div>
+                        </div>
                     </div>
+
                 </div>
             </div>
         </header>

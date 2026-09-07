@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\PelatihanPembayaran;
 use App\Models\PelatihanAnggotaStatus;
+use App\Models\ReferralTransaction;
 use App\Models\Notification;
 use Illuminate\Support\Facades\DB;
 

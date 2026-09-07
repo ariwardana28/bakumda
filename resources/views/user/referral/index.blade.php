@@ -409,17 +409,119 @@
         <!-- Statistik Ringkas -->
         <div class="space-y-4">
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-                <div class="p-5 md:p-6 rounded-2xl bg-white border border-slate-200/80 shadow-sm flex items-center gap-4">
+                {{-- 🌟 TAMBAHAN: Alpine Store global untuk modal daftar referral sukses --}}
+                <script>
+                    document.addEventListener('alpine:init', () => {
+                        Alpine.store('referralSuksesModal', {
+                            show: false,
+                            open() {
+                                this.show = true;
+                            },
+                            close() {
+                                this.show = false;
+                            },
+                        });
+                    });
+                </script>
+                @inject('referralModel', 'App\Models\ReferralTransaction')
+
+                @php
+                    $referralSuksesList = $referralModel
+                        ::with(['referred', 'pelatihan'])
+                        ->where('referrer_id', auth()->id())
+                        ->where('status', 'berhasil')
+                        ->latest()
+                        ->get();
+
+                    $totalSuccess = $referralSuksesList->count();
+                @endphp
+                {{-- Kartu Total Referral Sukses (sekarang bisa diklik) --}}
+                <div x-data="{}" @click="$store.referralSuksesModal.open()"
+                    class="p-5 md:p-6 rounded-2xl bg-white border border-slate-200/80 shadow-sm flex items-center gap-4 cursor-pointer hover:border-red-200 hover:shadow-md transition group">
                     <div
-                        class="w-12 h-12 rounded-xl bg-red-50 text-red-600 flex items-center justify-center text-lg font-bold shrink-0">
+                        class="w-12 h-12 rounded-xl bg-red-50 text-red-600 flex items-center justify-center text-lg font-bold shrink-0 group-hover:scale-105 transition">
                         <i class="fa-solid fa-users"></i>
                     </div>
-                    <div>
+                    <div class="flex-1">
                         <p class="text-xs font-medium text-slate-500">Total Referral Sukses</p>
                         <h3 class="text-xl font-extrabold text-slate-900 mt-0.5">{{ $totalSuccess }} Orang</h3>
                     </div>
+                    <i
+                        class="fa-solid fa-chevron-right text-slate-300 group-hover:text-red-400 group-hover:translate-x-0.5 transition text-xs"></i>
                 </div>
 
+                {{-- 🌟 TAMBAHAN: Modal Daftar Referral Sukses --}}
+                <!-- Perbaikan: Naikkan z-index modal agar berada di atas bottom navigation menu -->
+                <div x-data="{}" x-show="$store.referralSuksesModal.show"
+                    x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0"
+                    x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200"
+                    x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
+                    class="fixed inset-0 z-[99999] flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm p-4"
+                    style="display: none;">
+
+                    <div @click.away="$store.referralSuksesModal.close()"
+                        class="bg-white rounded-3xl shadow-2xl w-full max-w-xl mx-auto transform transition-all max-h-[85vh] flex flex-col"
+                        x-show="$store.referralSuksesModal.show" x-transition:enter="ease-out duration-300"
+                        x-transition:enter-start="opacity-0 translate-y-4 sm:scale-95"
+                        x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+                        x-transition:leave="ease-in duration-200"
+                        x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
+                        x-transition:leave-end="opacity-0 translate-y-4 sm:scale-95">
+
+                        {{-- Header Modal --}}
+                        <div class="flex items-center justify-between p-6 border-b border-slate-100 shrink-0">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-xl bg-red-50 text-red-600 flex items-center justify-center">
+                                    <i class="fa-solid fa-users text-sm"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-base font-bold text-gray-900">Daftar Referral Sukses</h3>
+                                    <p class="text-xs text-gray-500 mt-0.5">Total {{ $totalSuccess }} orang berhasil
+                                        mendaftar menggunakan kode referral Anda</p>
+                                </div>
+                            </div>
+                            <button @click="$store.referralSuksesModal.close()"
+                                class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center transition shrink-0">
+                                <i class="fa-solid fa-xmark text-xs"></i>
+                            </button>
+                        </div>
+
+                        {{-- Isi Daftar (scrollable) --}}
+                        <div class="overflow-y-auto flex-1 divide-y divide-slate-100">
+                            @forelse ($referralSuksesList ?? [] as $referral)
+                                <div class="flex items-center gap-3 px-6 py-4">
+                                    <div
+                                        class="w-10 h-10 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold text-xs shrink-0">
+                                        {{ strtoupper(substr(optional($referral->referred)->name ?? 'U', 0, 2)) }}
+                                    </div>
+                                    <div class="min-w-0 flex-1">
+                                        <p class="text-sm font-bold text-slate-900 truncate">
+                                            {{ optional($referral->referred)->name ?? 'Pengguna' }}
+                                        </p>
+                                        <p class="text-xs text-slate-500 truncate mt-0.5">
+                                            {{ optional($referral->pelatihan)->judul ?? 'Pelatihan' }}
+                                        </p>
+                                        <p class="text-[10px] text-slate-400 mt-1">
+                                            {{ $referral->updated_at->translatedFormat('d M Y, H:i') }}
+                                        </p>
+                                    </div>
+                                    <div class="text-right shrink-0">
+                                        <span
+                                            class="inline-flex items-center gap-1 bg-emerald-50 text-emerald-600 text-[10px] font-bold px-2.5 py-1 rounded-full">
+                                            <i class="fa-solid fa-check text-[9px]"></i> Berhasil
+                                        </span>
+                                    </div>
+                                </div>
+                            @empty
+                                <div class="px-6 py-14 text-center text-slate-400">
+                                    <i class="fa-regular fa-folder-open text-2xl mb-2 block"></i>
+                                    <p class="text-xs">Belum ada referral yang berhasil.</p>
+                                </div>
+                            @endforelse
+                        </div>
+                    </div>
+                </div>
+             
                 <div class="p-5 md:p-6 rounded-2xl bg-white border border-slate-200/80 shadow-sm flex items-center gap-4">
                     <div
                         class="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-lg font-bold shrink-0">

@@ -44,4 +44,9 @@ class ReferralTransaction extends Model
     {
         return $this->hasMany(ReferralPaymentDetail::class);
     }
+
+    public function pelatihan()
+    {
+        return $this->belongsTo(Pelatihan::class, 'pelatihan_id');
+    }
 }

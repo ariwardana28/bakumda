@@ -136,7 +136,11 @@
                     <!-- Bagian Aksi & Tombol Beli -->
                     <div class="pt-4 border-t border-slate-100 dark:border-slate-800 space-y-4">
 
-                        <div class="flex flex-col sm:flex-row items-stretch gap-3">
+                        <form action="{{ route('keranjang.store', $produk) }}" method="POST">
+                            @csrf
+                            <input type="hidden" name="produk_ukuran_id" x-bind:value="selectedUkuran?.id || ''">
+                            <input type="hidden" name="jumlah" x-bind:value="jumlah">
+                            <div class="flex flex-col sm:flex-row items-stretch gap-3">
                             <!-- Pengatur Jumlah -->
                             <div
                                 class="flex items-center justify-between border border-slate-200 dark:border-slate-700 rounded-2xl bg-slate-50 dark:bg-slate-800/50 p-1.5">
@@ -153,14 +157,20 @@
                             </div>
 
                             <!-- Tombol Pesan Utama -->
-                            <button type="button"
+                            <button type="submit"
+                                class="flex-1 inline-flex items-center justify-center gap-2 px-5 py-4 rounded-2xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold uppercase tracking-wider transition-all duration-200">
+                                <i class="fa-solid fa-cart-plus text-sm"></i>
+                                <span>Masukkan Keranjang</span>
+                            </button>
+                            <button type="submit" :formaction="`/checkout/produk/{{ $produk->id }}`"
                                 :disabled="({{ $produk->kategori === 'Baju' }} && !selectedUkuran) || '{{ $produk->status }}'
                                 !== 'Tersedia'"
                                 class="flex-1 inline-flex items-center justify-center gap-2 px-6 py-4 rounded-2xl bg-orange-600 hover:bg-orange-700 text-white text-xs font-bold uppercase tracking-wider shadow-lg shadow-orange-600/25 transition-all duration-200 hover:scale-[1.01] active:scale-[0.99] disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:shadow-none">
-                                <i class="fa-solid fa-cart-shopping text-sm"></i>
+                                <i class="fa-solid fa-bolt text-sm"></i>
                                 <span>Pesan Sekarang</span>
                             </button>
-                        </div>
+                            </div>
+                        </form>
 
                         <!-- Pesan Peringatan Validasi -->
                         <div class="space-y-1">

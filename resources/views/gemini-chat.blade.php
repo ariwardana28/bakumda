@@ -3,40 +3,56 @@
 @section('title', 'Tanya BAKUMDA AI')
 
 @section('content')
+    <!-- Wrapper utama halaman dengan tinggi penuh yang responsif terhadap layout app -->
+    <div class="flex flex-col h-[calc(100vh-5rem)] max-h-[calc(100vh-5rem)] bg-white text-slate-800 overflow-hidden relative pb-16">
 
-    <!-- Wrapper utama halaman dengan latar belakang putih bersih -->
-    <div class="flex flex-col h-[calc(100vh-9rem)] bg-white text-slate-800 overflow-hidden relative">
-
-        <!-- Area Konten Utama / Chat Container (Tempat riwayat chat muncul) -->
-        <div id="chat-container" class="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6 max-w-3xl w-full mx-auto scroll-smooth transition-all duration-300">
+        <!-- Area Konten Utama / Chat Container (Tempat riwayat chat muncul dengan scroll terbatas) -->
+        <div id="chat-container" class="flex-1 min-h-0 overflow-y-auto p-4 sm:p-6 space-y-6 max-w-3xl w-full mx-auto scroll-smooth transition-all duration-300">
             
-            <!-- Keadaan Awal (Centered Welcome yang akan disembunyikan saat chat dimulai) -->
-            <div id="welcome-section" class="h-full flex flex-col items-center justify-center text-center transition-all duration-300">
+            <!-- Keadaan Awal (Centered Welcome yang membungkus sambutan dan input di bawahnya) -->
+            <div id="welcome-section" class="h-full flex flex-col items-center justify-center text-center transition-all duration-300 space-y-8 my-auto">
                 <h1 class="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">
-                    Halo {{Auth::user()->name}}, hal apa yang menjadi pokok permasalahan Anda?
+                    Halo {{ Auth::user()->name }}, hal apa yang menjadi pokok permasalahan Anda?
                 </h1>
+                
+                <!-- Kotak Input Khusus Saat Keadaan Awal -->
+                <div class="w-full max-w-xl">
+                    <form id="geminiFormInitial" class="relative bg-slate-50 border border-slate-200 rounded-3xl p-3 shadow-xl shadow-slate-200/50 focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500 transition-all">
+                        @csrf
+                        <div class="flex items-center px-3 py-1">
+                            <button type="button" class="text-slate-400 hover:text-slate-700 mr-3 transition">
+                                <i class="fa-solid fa-plus text-sm"></i>
+                            </button>
+                            <input type="text" id="prompt-initial" name="prompt"
+                                placeholder="Minta BAKUMDA AI..."
+                                class="w-full bg-transparent border-none text-sm focus:outline-none text-slate-900 placeholder-slate-400"
+                                required>
+                            <button type="submit" id="btnSubmitInitial"
+                                class="bg-blue-600 hover:bg-blue-700 active:scale-95 text-white w-9 h-9 rounded-full flex items-center justify-center transition shadow-md shrink-0 ml-2">
+                                <i class="fa-solid fa-arrow-up text-xs"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
 
         </div>
 
-        <!-- Kotak Input Utama (Diposisikan tetap di bawah secara permanen) -->
-        <div class="bg-white px-4 py-3 border-t border-slate-100 shrink-0">
+        <!-- Kotak Input Permanen (Diposisikan di atas menu bawah setelah chat dimulai) -->
+        <div id="persistent-input-container" class="bg-white px-4 py-3 border-t border-slate-100 shrink-0 hidden absolute bottom-16 left-0 right-0 z-20">
             <div class="max-w-3xl mx-auto">
                 <form id="geminiForm" class="relative bg-slate-50 border border-slate-200 rounded-3xl p-3 shadow-xl shadow-slate-200/50 focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500 transition-all">
                     @csrf
                     <div class="flex items-center px-3 py-1">
-                        <!-- Tombol Plus -->
                         <button type="button" class="text-slate-400 hover:text-slate-700 mr-3 transition">
                             <i class="fa-solid fa-plus text-sm"></i>
                         </button>
                         
-                        <!-- Input Field -->
                         <input type="text" id="prompt" name="prompt"
                             placeholder="Minta BAKUMDA AI..."
                             class="w-full bg-transparent border-none text-sm focus:outline-none text-slate-900 placeholder-slate-400"
                             required>
                         
-                        <!-- Tombol Kirim / Aksi -->
                         <button type="submit" id="btnSubmit"
                             class="bg-blue-600 hover:bg-blue-700 active:scale-95 text-white w-9 h-9 rounded-full flex items-center justify-center transition shadow-md shrink-0 ml-2">
                             <i class="fa-solid fa-arrow-up text-xs"></i>
@@ -49,19 +65,17 @@
     </div>
 
     <script>
-        document.getElementById('geminiForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const btn = document.getElementById('btnSubmit');
-            const inputField = document.getElementById('prompt');
-            const chatContainer = document.getElementById('chat-container');
-            const welcomeSection = document.getElementById('welcome-section');
-
-            const userText = inputField.value.trim();
+        async function handleFormSubmit(userText) {
             if (!userText) return;
 
-            // Jika ini pesan pertama, hilangkan teks sambutan di tengah
+            const chatContainer = document.getElementById('chat-container');
+            const welcomeSection = document.getElementById('welcome-section');
+            const persistentInput = document.getElementById('persistent-input-container');
+
+            // Jika ini pesan pertama, hilangkan teks sambutan & input awal, lalu tampilkan input tetap di atas menu
             if (welcomeSection) {
                 welcomeSection.remove();
+                persistentInput.classList.remove('hidden');
             }
 
             // 1. Tampilkan pesan User ke chat container
@@ -78,12 +92,21 @@
             chatContainer.insertAdjacentHTML('beforeend', userBubble);
 
             // Kosongkan input & scroll ke bawah
-            inputField.value = '';
+            document.getElementById('prompt-initial').value = '';
+            document.getElementById('prompt').value = '';
             chatContainer.scrollTop = chatContainer.scrollHeight;
 
             // 2. Ubah tombol menjadi status loading
-            btn.disabled = true;
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-xs"></i>';
+            const btnInitial = document.getElementById('btnSubmitInitial');
+            const btnPersistent = document.getElementById('btnSubmit');
+            if(btnInitial) {
+                btnInitial.disabled = true;
+                btnInitial.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-xs"></i>';
+            }
+            if(btnPersistent) {
+                btnPersistent.disabled = true;
+                btnPersistent.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-xs"></i>';
+            }
 
             // Buat elemen placeholder untuk jawaban AI (loading state)
             const aiLoadingId = 'ai-loading-' + Date.now();
@@ -101,17 +124,24 @@
             chatContainer.insertAdjacentHTML('beforeend', aiLoadingBubble);
             chatContainer.scrollTop = chatContainer.scrollHeight;
 
-            const formData = new FormData(e.target);
-            formData.set('prompt', userText);
+            const formData = new FormData();
+            formData.append('prompt', userText);
+            formData.append('_token', '{{ csrf_token() }}');
 
             try {
                 const response = await fetch("{{ route('gemini.ask') }}", {
                     method: 'POST',
                     body: formData,
                     headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Accept': 'application/json'
                     }
                 });
+
+                const contentType = response.headers.get("content-type");
+                if (!contentType || !contentType.includes("application/json")) {
+                    throw new Error("Server mengembalikan respons non-JSON (Kemungkinan Error 500 Server). Periksa Controller backend Anda.");
+                }
 
                 const data = await response.json();
 
@@ -135,16 +165,33 @@
                 }
             } catch (err) {
                 document.getElementById(aiLoadingId)?.remove();
-                alert('Kesalahan jaringan atau server bermasalah.');
+                alert('Gagal menghubungi server: ' + err.message);
+                console.error(err);
             } finally {
-                // Kembalikan tombol ke kondisi semula
-                btn.disabled = false;
-                btn.innerHTML = '<i class="fa-solid fa-arrow-up text-xs"></i>';
+                if(btnInitial) {
+                    btnInitial.disabled = false;
+                    btnInitial.innerHTML = '<i class="fa-solid fa-arrow-up text-xs"></i>';
+                }
+                if(btnPersistent) {
+                    btnPersistent.disabled = false;
+                    btnPersistent.innerHTML = '<i class="fa-solid fa-arrow-up text-xs"></i>';
+                }
                 chatContainer.scrollTop = chatContainer.scrollHeight;
             }
+        }
+
+        document.getElementById('geminiFormInitial').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const userText = document.getElementById('prompt-initial').value.trim();
+            await handleFormSubmit(userText);
         });
 
-        // Helper function untuk keamanan teks HTML dasar
+        document.getElementById('geminiForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const userText = document.getElementById('prompt').value.trim();
+            await handleFormSubmit(userText);
+        });
+
         function escapeHtml(text) {
             const map = {
                 '&': '&amp;',

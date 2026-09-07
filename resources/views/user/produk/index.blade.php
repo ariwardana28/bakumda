@@ -182,16 +182,33 @@
                     </div>
                 </div>
 
-                <div class="pt-2 flex items-center gap-3">
+                <form x-ref="orderForm" method="POST" x-bind:action="`/keranjang/produk/${selectedItem?.id}`">
+                    @csrf
+                    <input type="hidden" name="produk_ukuran_id" x-bind:value="selectedUkuran?.id || ''">
+                    <input type="hidden" name="jumlah" x-bind:value="jumlah">
+                    <input type="hidden" name="catatan" x-bind:value="catatan">
+
+                    <div class="pt-2 flex items-center gap-3">
                     <button @click="closeModal()"
                         class="w-1/2 py-3 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold text-xs uppercase tracking-wider transition-colors">
                         Batal
                     </button>
-                    <button @click="submitPemesanan()"
-                        class="w-1/2 py-3 rounded-xl bg-orange-600 hover:bg-orange-700 text-white font-bold text-xs uppercase tracking-wider transition-colors shadow-md shadow-orange-600/25">
-                        Kirim Pesanan
+                    <button type="submit"
+                        class="w-1/2 py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs uppercase tracking-wider transition-colors">
+                        Masukkan Keranjang
                     </button>
-                </div>
+                    </div>
+                </form>
+
+                <form method="POST" x-bind:action="`/checkout/produk/${selectedItem?.id}`">
+                    @csrf
+                    <input type="hidden" name="produk_ukuran_id" x-bind:value="selectedUkuran?.id || ''">
+                    <input type="hidden" name="jumlah" x-bind:value="jumlah">
+                    <button type="submit"
+                        class="w-full py-3 rounded-xl bg-orange-600 hover:bg-orange-700 text-white font-bold text-xs uppercase tracking-wider transition-colors shadow-md shadow-orange-600/25">
+                        <i class="fa-solid fa-bolt mr-1"></i> Pesan Sekarang
+                    </button>
+                </form>
 
             </div>
         </div>
@@ -226,11 +243,6 @@
                     this.selectedUkuran = ukuran;
                 },
 
-                submitPemesanan() {
-                    alert(
-                        `Pesanan untuk: ${this.selectedItem.nama_produk}\nJumlah: ${this.jumlah}\nCatatan: ${this.catatan || '-'}\n\nPesanan berhasil diproses!`);
-                    this.closeModal();
-                }
             }));
         });
     </script>

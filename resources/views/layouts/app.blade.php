@@ -25,6 +25,9 @@
 </head>
 
 <body class="bg-white font-sans text-slate-800 antialiased min-h-screen flex flex-col">
+    @php
+        $cartItems = auth()->user()?->keranjang?->items()->with('produk')->get() ?? collect();
+    @endphp
 
     <!-- ================================================= -->
     <!-- VIEW 1: TAMPILAN ANDROID / MOBILE                 -->
@@ -47,6 +50,19 @@
                         <i
                             class="fa-solid fa-magnifying-glass text-xs mr-2 {{ request()->routeIs('user-pelatihan.show') || request()->routeIs('user-pelatihan.index') ? 'text-slate-400' : 'text-blue-300/60' }}"></i>
                         <span class="text-xs font-medium tracking-wide">Pencarian...</span>
+                    </div>
+
+                    {{-- Tombol Keranjang (Diletakkan di samping Notifikasi) --}}
+                    <div class="relative" x-data="{ cartOpen: false }" @click.away="cartOpen = false">
+                        <button type="button" @click="cartOpen = !cartOpen"
+                            class="w-9 h-9 rounded-full border flex items-center justify-center transition {{ request()->routeIs('user-pelatihan.show') || request()->routeIs('user-pelatihan.index') ? 'bg-slate-100 border-slate-300 text-slate-700 hover:bg-slate-200' : 'bg-[#0a1226]/90 border-blue-950/60 text-blue-200 hover:text-white' }}"
+                            title="Keranjang">
+                            <i class="fa-solid fa-cart-shopping text-sm"></i>
+                            @if ($cartItems->sum('jumlah') > 0)
+                                <span class="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-orange-500 px-1 text-[9px] font-black text-white shadow">{{ $cartItems->sum('jumlah') > 99 ? '99+' : $cartItems->sum('jumlah') }}</span>
+                            @endif
+                        </button>
+                        @include('layouts.partials.cart-dropdown')
                     </div>
 
                     {{-- Tombol Notifikasi / Lonceng --}}
@@ -149,7 +165,7 @@
             @yield('content')
         </main>
 
-        <!-- Mobile Bottom Navigation Bar -->
+        <!-- Mobile Bottom Navigation Bar (Tanpa keranjang di menu bawah, karena sudah dipindah ke atas) -->
         <div
             class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 px-6 py-2.5 flex items-center justify-around z-50 shadow-[0_-4px_20px_rgba(0,0,0,0.06)]">
 
@@ -237,7 +253,7 @@
                         <i class="fa-solid fa-house w-5 text-center shrink-0 text-base"></i>
                         <span x-show="sidebarOpen" x-transition.opacity class="truncate">Beranda</span>
                     </a>
-                    <a href=""
+                    <a href="#"
                         class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-medium text-sm transition">
                         <i class="fa-solid fa-newspaper  w-5 text-center shrink-0 text-base"></i>
                         <span x-show="sidebarOpen" x-transition.opacity class="truncate">Artikel</span>
@@ -303,12 +319,26 @@
                     </button>
 
                 </div>
-                <div class="items-center space-x-4 hidden sm:flex">
+                <div class="items-center space-x-3 hidden sm:flex">
                     <div class="relative w-72">
                         <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-xs text-slate-400"></i>
                         <input type="text" placeholder="Cari pasal, layanan, atau konsultasi..."
                             class="w-full bg-slate-100 border border-slate-200 text-xs text-slate-800 rounded-full pl-10 pr-4 py-2.5 focus:outline-none focus:border-blue-500 transition">
                     </div>
+
+                    <!-- Tombol Keranjang (Diletakkan di samping Notifikasi pada Topbar Desktop) -->
+                    <div class="relative" x-data="{ cartOpen: false }" @click.away="cartOpen = false">
+                        <button type="button" @click="cartOpen = !cartOpen"
+                            class="w-10 h-10 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-600 hover:text-slate-900 transition"
+                            title="Keranjang">
+                            <i class="fa-solid fa-cart-shopping text-sm"></i>
+                            @if ($cartItems->sum('jumlah') > 0)
+                                <span class="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-orange-500 px-1 text-[9px] font-black text-white shadow">{{ $cartItems->sum('jumlah') > 99 ? '99+' : $cartItems->sum('jumlah') }}</span>
+                            @endif
+                        </button>
+                        @include('layouts.partials.cart-dropdown')
+                    </div>
+
                     <div class="relative">
                         <button
                             class="w-10 h-10 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-600 hover:text-slate-900 transition">
@@ -320,7 +350,7 @@
                 </div>
             </header>
 
-            <!-- Desktop Content Slot (overflow-y-auto dihapus agar tidak bentrok) -->
+            <!-- Desktop Content Slot -->
             <div class="flex-1 p-6">
                 @yield('content')
             </div>

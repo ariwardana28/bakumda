@@ -1,0 +1,15 @@
+@extends('layouts.admin')
+
+@section('title', 'Kelola Pesanan')
+
+@section('content')
+    <div class="container mx-auto px-4 py-8">
+        <a href="{{ route('admin.pesanan.index') }}" class="text-sm font-semibold text-blue-600">&larr; Kembali ke Pesanan</a>
+        <div class="mt-5 grid grid-cols-1 gap-6 lg:grid-cols-3">
+            <div class="space-y-5 lg:col-span-2"><div class="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm"><div class="flex items-center justify-between"><div><p class="text-xs text-gray-400">Pesanan #{{ $pesanan->id }}</p><h1 class="mt-1 text-2xl font-black text-gray-800">{{ $pesanan->user->name }}</h1><p class="text-sm text-gray-500">{{ $pesanan->user->email }}</p></div><span class="rounded-full bg-blue-50 px-3 py-1 text-xs font-bold text-blue-700">{{ $pesanan->status }}</span></div><div class="mt-5 divide-y divide-gray-100">@foreach ($pesanan->items as $item)<div class="flex items-center gap-4 py-4"><div class="h-16 w-16 overflow-hidden rounded-xl bg-gray-100">@if ($item->produk->gambars->first())<img src="{{ asset('storage/' . $item->produk->gambars->first()->gambar) }}" class="h-full w-full object-cover" alt="">@endif</div><div class="flex-1"><p class="font-bold text-gray-800">{{ $item->nama_produk }}</p><p class="text-xs text-gray-500">{{ $item->ukuran ? 'Ukuran ' . $item->ukuran . ' · ' : '' }}{{ $item->jumlah }} pcs</p></div><strong>Rp {{ number_format($item->harga * $item->jumlah, 0, ',', '.') }}</strong></div>@endforeach</div><div class="flex justify-end border-t border-gray-100 pt-4 text-xl font-black text-gray-800">Total: Rp {{ number_format($pesanan->total, 0, ',', '.') }}</div></div>
+                @if ($pesanan->bukti_pembayaran)<div class="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm"><h2 class="font-bold text-gray-800">Bukti Pembayaran</h2><a href="{{ asset('storage/' . $pesanan->bukti_pembayaran) }}" target="_blank" class="mt-3 inline-flex rounded-xl bg-blue-50 px-4 py-2 text-xs font-bold text-blue-700">Lihat Bukti Pembayaran</a></div>@endif
+            </div>
+            <div class="h-fit rounded-2xl border border-gray-100 bg-white p-6 shadow-sm"><h2 class="font-bold text-gray-800">Update Status</h2><p class="mt-1 text-xs leading-relaxed text-gray-500">Stok baru berkurang saat status diubah dari Menunggu Verifikasi ke Diproses.</p><form action="{{ route('admin.pesanan.status.update', $pesanan) }}" method="POST" class="mt-5 space-y-4">@csrf @method('PATCH')<select name="status" class="w-full rounded-xl border border-gray-200 px-3 py-3 text-sm">@foreach (['Menunggu Pembayaran', 'Menunggu Verifikasi', 'Diproses', 'Dikemas', 'Dikirim', 'Selesai', 'Batal'] as $status)<option value="{{ $status }}" @selected($pesanan->status === $status)>{{ $status }}</option>@endforeach</select><textarea name="catatan" rows="3" placeholder="Catatan admin" class="w-full rounded-xl border border-gray-200 px-3 py-3 text-sm">{{ $pesanan->catatan }}</textarea><button class="w-full rounded-xl bg-blue-600 px-4 py-3 text-sm font-bold text-white hover:bg-blue-700">Simpan Status</button></form></div>
+        </div>
+    </div>
+@endsection

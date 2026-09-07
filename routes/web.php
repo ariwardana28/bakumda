@@ -191,6 +191,19 @@ Route::middleware('auth')->group(function () {
     Route::get('/merchandise', [UserProdukController::class, 'index'])->name('merchandise.index');
     Route::get('/merchandise/{slug}', [UserProdukController::class, 'show'])->name('merchandise.show');
 
+    // --- Keranjang Merchandise ---
+    Route::get('/keranjang', [\App\Http\Controllers\KeranjangController::class, 'index'])->name('keranjang.index');
+    Route::post('/keranjang/produk/{produk}', [\App\Http\Controllers\KeranjangController::class, 'store'])->name('keranjang.store');
+    Route::patch('/keranjang/item/{item}', [\App\Http\Controllers\KeranjangController::class, 'update'])->name('keranjang.update');
+    Route::delete('/keranjang/item/{item}', [\App\Http\Controllers\KeranjangController::class, 'destroy'])->name('keranjang.destroy');
+    Route::delete('/keranjang', [\App\Http\Controllers\KeranjangController::class, 'clear'])->name('keranjang.clear');
+    Route::post('/checkout', [\App\Http\Controllers\PesananController::class, 'checkout'])->name('pesanan.checkout');
+    Route::post('/checkout/produk/{produk}', [\App\Http\Controllers\PesananController::class, 'directCheckout'])->name('pesanan.direct-checkout');
+    Route::get('/pesanan', [\App\Http\Controllers\PesananController::class, 'index'])->name('pesanan.index');
+    Route::post('/pesanan/{pesanan}/batal', [\App\Http\Controllers\PesananController::class, 'cancel'])->name('pesanan.cancel');
+    Route::get('/pesanan/{pesanan}/pembayaran', [\App\Http\Controllers\PesananController::class, 'payment'])->name('pesanan.payment');
+    Route::post('/pesanan/{pesanan}/pembayaran', [\App\Http\Controllers\PesananController::class, 'uploadPayment'])->name('pesanan.payment.store');
+
     // --- User Anggota & Pembayaran ---
     Route::post('user-anggota/{anggota}/request-edit', [UserAnggotaController::class, 'requestEdit'])
         ->name('user-anggota.request-edit');
@@ -320,6 +333,16 @@ Route::middleware('auth')->group(function () {
 
         // --- Manajemen Produk ---
         Route::resource('produk', \App\Http\Controllers\Admin\ProdukController::class);
+
+        // --- Monitoring Keranjang Merchandise ---
+        Route::get('keranjang', [\App\Http\Controllers\Admin\KeranjangController::class, 'index'])->name('keranjang.index');
+        Route::get('keranjang/{keranjang}', [\App\Http\Controllers\Admin\KeranjangController::class, 'show'])->name('keranjang.show');
+        Route::delete('keranjang-item/{item}', [\App\Http\Controllers\Admin\KeranjangController::class, 'destroyItem'])->name('keranjang.item.destroy');
+
+        // --- Pesanan Merchandise ---
+        Route::get('pesanan', [\App\Http\Controllers\Admin\PesananController::class, 'index'])->name('pesanan.index');
+        Route::get('pesanan/{pesanan}', [\App\Http\Controllers\Admin\PesananController::class, 'show'])->name('pesanan.show');
+        Route::patch('pesanan/{pesanan}/status', [\App\Http\Controllers\Admin\PesananController::class, 'updateStatus'])->name('pesanan.status.update');
         Route::resource('korwil', KorwilController::class);
 
         // Endpoint untuk auto-fill form korwil

@@ -75,7 +75,7 @@ class ProdukController extends Controller
             $produk = Produk::create([
                 'nama_produk' => $validated['nama_produk'],
                 'slug'        => $validated['slug'],
-                'deskripsi'   => $validated['deskripsi'],
+                'deskripsi'   => $validated['deskripsi'] ?? '',
                 'status'      => $validated['status'],
                 'kategori'    => $validated['kategori'],
             ]);
@@ -95,7 +95,13 @@ class ProdukController extends Controller
             // 5. Simpan Ukuran-ukuran Produk (hanya jika kategori Baju)
             if ($request->kategori === 'Baju' && $request->has('ukurans')) {
                 // Pastikan data yang dikirim adalah array
-                $dataUkuran = $request->input('ukurans');
+                $dataUkuran = collect($request->input('ukurans'))
+                    ->map(function (array $ukuran) {
+                        $ukuran['keterangan'] = $ukuran['keterangan'] ?? '';
+
+                        return $ukuran;
+                    })
+                    ->all();
 
                 // Simpan melalui relasi (Eloquent akan otomatis mengisi produk_id)
                 $produk->ukurans()->createMany($dataUkuran);

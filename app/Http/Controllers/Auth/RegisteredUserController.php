@@ -61,7 +61,7 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
-        // Arahkan ke dashboard anggota setelah login
-        return redirect(route('dashboard', absolute: false));
+        // User harus memverifikasi email sebelum dapat memakai aplikasi.
+        return redirect()->route('verification.notice');
     }
 }

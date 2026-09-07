@@ -177,7 +177,7 @@ Route::prefix('api/wilayah')->group(function () {
 |--------------------------------------------------------------------------
 */
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'verified'])->group(function () {
 
     // --- Profile Management ---
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
@@ -271,7 +271,9 @@ Route::middleware('auth')->group(function () {
     |--------------------------------------------------------------------------
     */
 
-    Route::prefix('admin')->name('admin.')->group(function () {
+    Route::prefix('admin')->name('admin.')
+        ->middleware('role:Super Admin|Staff')
+        ->group(function () {
 
         // --- Anggota Card Custom & Resource Actions ---
         Route::get('anggota-card/{id}/download', [AnggotaCardController::class, 'download'])
@@ -354,7 +356,7 @@ Route::middleware('auth')->group(function () {
         Route::get('referral', [\App\Http\Controllers\Admin\ReferralController::class, 'claims'])->name('referral.index');
         Route::get('referral/claims', [\App\Http\Controllers\Admin\ReferralController::class, 'claims'])->name('referral.claims');
         Route::post('referral/claims/{claim}/update', [\App\Http\Controllers\Admin\ReferralController::class, 'updateClaim'])->name('referral.claims.update');
-    });
+        });
 });
 // Route untuk menampilkan detail artikel publik
 Route::get('/artikel/{artikel:slug}', [HalamanUtamaController::class, 'show'])->name('artikel.show.public');

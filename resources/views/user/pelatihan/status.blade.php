@@ -49,6 +49,12 @@
 
     <div class="container mx-auto px-4 sm:px-6 py-8 sm:py-12 max-w-2xl relative space-y-6">
 
+        @if (session('error'))
+            <div class="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700" role="alert">
+                {{ session('error') }}
+            </div>
+        @endif
+
         {{-- Latar Belakang Dekoratif Glow Abstrak --}}
         <div class="absolute top-10 left-1/4 w-72 h-72 sm:w-96 sm:h-96 bg-orange-500/10 dark:bg-orange-500/5 rounded-full blur-3xl pointer-events-none -z-10"></div>
         <div class="absolute top-40 right-10 w-64 h-64 sm:w-80 sm:h-80 bg-orange-600/10 dark:bg-orange-600/5 rounded-full blur-3xl pointer-events-none -z-10"></div>

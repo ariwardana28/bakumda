@@ -44,6 +44,8 @@ class ArtikelController extends Controller
         ]);
  
         $validated['users_id'] = Auth::id();
+        $validated['views'] = 0;
+        $validated['likes'] = 0;
         $validated['slug'] = Str::slug($validated['judul']);
  
         // Pastikan slug unik
@@ -59,7 +61,7 @@ class ArtikelController extends Controller
         // dd($validated);
         Artikel::create($validated);
  
-        return redirect()->route('user.artikel.index')->with('success', 'Artikel berhasil dibuat.');
+        return redirect()->route('artikel.index')->with('success', 'Artikel berhasil dibuat.');
     }
  
     /**
@@ -130,7 +132,7 @@ class ArtikelController extends Controller
  
         $artikel->update($validated);
  
-        return redirect()->route('user.artikel.index')->with('success', 'Artikel berhasil diperbarui.');
+        return redirect()->route('artikel.index')->with('success', 'Artikel berhasil diperbarui.');
     }
  
     /**
@@ -150,6 +152,6 @@ class ArtikelController extends Controller
  
         $artikel->delete();
  
-        return redirect()->route('user.artikel.index')->with('success', 'Artikel berhasil dihapus.');
+        return redirect()->route('artikel.index')->with('success', 'Artikel berhasil dihapus.');
     }
 }

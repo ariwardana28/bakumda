@@ -39,6 +39,10 @@ use App\Http\Controllers\Admin\KerjasamaController;
 Route::get('/ai-chat', [GeminiController::class, 'index']);
 Route::post('/ai/ask', [GeminiController::class, 'ask'])->name('gemini.ask');
 
+
+Route::post('/webhooks/xendit/invoice', [UserPelatihanController::class, 'xenditWebhook'])
+    ->name('webhooks.xendit.invoice');
+
 Route::get('/', [HalamanUtamaController::class, 'index'])->name('welcome');
 Route::get('/korwil', [HalamanUtamaController::class, 'korwil'])->name('korwil');
 Route::get('/korwil/{province}', [HalamanUtamaController::class, 'showKorwilByProvince'])->name('user.korwil.show');
@@ -177,6 +181,13 @@ Route::prefix('api/wilayah')->group(function () {
 |--------------------------------------------------------------------------
 */
 
+Route::get('user-pelatihan/katalog', [UserPelatihanController::class, 'katalog'])->name('user-pelatihan.katalog');
+
+Route::resource('user-pelatihan', UserPelatihanController::class)
+    ->names('user-pelatihan')
+    ->parameters(['user-pelatihan' => 'pelatihan']);
+
+
 Route::middleware(['auth', 'verified'])->group(function () {
 
     // --- Profile Management ---
@@ -232,9 +243,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('user-pelatihan/status/{pelatihanAnggota}', [UserPelatihanController::class, 'status'])->name('user-pelatihan.status');
 
-    Route::resource('user-pelatihan', UserPelatihanController::class)
-        ->names('user-pelatihan')
-        ->parameters(['user-pelatihan' => 'pelatihan']);
+
 
     Route::get('/pelatihan/{pelatihan}/sertifikat', [UserPelatihanController::class, 'cetakSertifikat'])->name('user.sertifikat');
     Route::get('/pelatihan/{pelatihan}/sertifikat/download', [UserPelatihanController::class, 'downloadSertifikat'])->name('user.sertifikat.download');
@@ -256,7 +265,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     | User Artikel Routes
     |--------------------------------------------------------------------------
     */
-    Route::resource('artikel', ArtikelController::class)->names('user.artikel')->parameter('artikel', 'artikel:slug');
+    Route::resource('artikel', ArtikelController::class)->names('artikel')->parameter('artikel', 'artikel:slug');
+    Route::get('/semua-artikel', [HalamanUtamaController::class, 'artikel'])->name('artikel.index.public');
+
 
     // Refferal
     Route::resource('inspirator', App\Http\Controllers\ReferralController::class)
@@ -271,91 +282,92 @@ Route::middleware(['auth', 'verified'])->group(function () {
     |--------------------------------------------------------------------------
     */
 
+    Route::get('admin/anggota-card/{id}/download', [AnggotaCardController::class, 'download'])
+        ->middleware('permission:kartu-anggota-download')
+        ->name('admin.anggota-card.download');
+
     Route::prefix('admin')->name('admin.')
         ->middleware('role:Super Admin|Staff')
         ->group(function () {
 
-        // --- Anggota Card Custom & Resource Actions ---
-        Route::get('anggota-card/{id}/download', [AnggotaCardController::class, 'download'])
-            ->name('anggota-card.download');
+            // --- Anggota Card Custom & Resource Actions ---
+            Route::get('anggota-card/{anggotaCard}/qr-code/download', [AnggotaCardController::class, 'downloadQR'])
+                ->name('anggota-card.qr.download');
 
-        Route::get('anggota-card/{anggotaCard}/qr-code/download', [AnggotaCardController::class, 'downloadQR'])
-            ->name('anggota-card.qr.download');
+            Route::post('anggota-card/{anggotaCard}/status', [AnggotaCardController::class, 'status'])
+                ->name('anggota-card.status');
 
-        Route::post('anggota-card/{anggotaCard}/status', [AnggotaCardController::class, 'status'])
-            ->name('anggota-card.status');
+            Route::post('anggota-card/{anggotaCard}/simpan-kartu', [AnggotaCardController::class, 'simpanKartu'])
+                ->name('anggota-card.simpan-kartu');
 
-        Route::post('anggota-card/{anggotaCard}/simpan-kartu', [AnggotaCardController::class, 'simpanKartu'])
-            ->name('anggota-card.simpan-kartu');
+            Route::post('anggota-card/{anggotaCard}/process-edit-request', [AnggotaCardController::class, 'processEditRequest'])
+                ->name('anggota-card.process-edit-request');
 
-        Route::post('anggota-card/{anggotaCard}/process-edit-request', [AnggotaCardController::class, 'processEditRequest'])
-            ->name('anggota-card.process-edit-request');
+            Route::resource('anggota', AnggotaController::class)->parameters(['anggota' => 'anggota']);
+            Route::resource('anggota-card', AnggotaCardController::class);
 
-        Route::resource('anggota', AnggotaController::class)->parameters(['anggota' => 'anggota']);
-        Route::resource('anggota-card', AnggotaCardController::class);
+            // --- Permissions & Roles Management ---
+            Route::get('/permissions/task/{task_name}/edit', [PermissionController::class, 'editTask'])->name('permissions.editTask');
+            Route::put('/permissions/task/{task_name}', [PermissionController::class, 'updateTask'])->name('permissions.updateTask');
+            Route::delete('/permissions/task/{task_name}', [PermissionController::class, 'destroyTask'])->name('permissions.destroyTask');
 
-        // --- Permissions & Roles Management ---
-        Route::get('/permissions/task/{task_name}/edit', [PermissionController::class, 'editTask'])->name('permissions.editTask');
-        Route::put('/permissions/task/{task_name}', [PermissionController::class, 'updateTask'])->name('permissions.updateTask');
-        Route::delete('/permissions/task/{task_name}', [PermissionController::class, 'destroyTask'])->name('permissions.destroyTask');
+            Route::resource('role', RoleController::class);
+            Route::resource('permissions', PermissionController::class);
 
-        Route::resource('role', RoleController::class);
-        Route::resource('permissions', PermissionController::class);
+            // --- User Management ---
+            Route::get('/users', [UserController::class, 'index'])->name('users.index');
+            Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
+            Route::post('/users', [UserController::class, 'store'])->name('users.store');
+            Route::get('/users/{user}', [UserController::class, 'show'])->name('users.show');
+            Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
+            Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
 
-        // --- User Management ---
-        Route::get('/users', [UserController::class, 'index'])->name('users.index');
-        Route::get('/users/create', [UserController::class, 'create'])->name('users.create');
-        Route::post('/users', [UserController::class, 'store'])->name('users.store');
-        Route::get('/users/{user}', [UserController::class, 'show'])->name('users.show');
-        Route::get('/users/{user}/edit', [UserController::class, 'edit'])->name('users.edit');
-        Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
+            // --- Pelatihan & Materi Management (Admin) ---
+            Route::resource('pelatihan', PelatihanController::class);
+            Route::resource('pelatihan.materi', MateriController::class);
+            Route::get('materi', [MateriController::class, 'index'])->name('materi.index');
 
-        // --- Pelatihan & Materi Management (Admin) ---
-        Route::resource('pelatihan', PelatihanController::class);
-        Route::resource('pelatihan.materi', MateriController::class);
-        Route::get('materi', [MateriController::class, 'index'])->name('materi.index');
+            // --- Soal Management (Admin) ---
+            Route::resource('materi/{materi}/soal', SoalController::class)
+                ->except(['show'])
+                ->names('materi.soal');
 
-        // --- Soal Management (Admin) ---
-        Route::resource('materi/{materi}/soal', SoalController::class)
-            ->except(['show'])
-            ->names('materi.soal');
+            // --- Pelatihan Anggota & Verifikasi Pembayaran ---
+            Route::get('/pelatihan-anggota/pembayaran', [PelatihanAnggotaController::class, 'index'])
+                ->name('pelatihan-anggota.index');
 
-        // --- Pelatihan Anggota & Verifikasi Pembayaran ---
-        Route::get('/pelatihan-anggota/pembayaran', [PelatihanAnggotaController::class, 'index'])
-            ->name('pelatihan-anggota.index');
+            Route::get('/pelatihan-anggota/pembayaran/{id}', [PelatihanAnggotaController::class, 'show'])
+                ->name('pelatihan-anggota.show');
 
-        Route::get('/pelatihan-anggota/pembayaran/{id}', [PelatihanAnggotaController::class, 'show'])
-            ->name('pelatihan-anggota.show');
+            Route::post('/pelatihan/verifikasi-pembayaran/{id}', [PelatihanAnggotaController::class, 'updateVerifikasi'])
+                ->name('pelatihan.verifikasi.update');
 
-        Route::post('/pelatihan/verifikasi-pembayaran/{id}', [PelatihanAnggotaController::class, 'updateVerifikasi'])
-            ->name('pelatihan.verifikasi.update');
+            // --- Manajemen Surat ---
+            Route::resource('surat-jenis', SuratJenisController::class);
 
-        // --- Manajemen Surat ---
-        Route::resource('surat-jenis', SuratJenisController::class);
+            // --- Manajemen Produk ---
+            Route::resource('produk', \App\Http\Controllers\Admin\ProdukController::class);
 
-        // --- Manajemen Produk ---
-        Route::resource('produk', \App\Http\Controllers\Admin\ProdukController::class);
+            // --- Monitoring Keranjang Merchandise ---
+            Route::get('keranjang', [\App\Http\Controllers\Admin\KeranjangController::class, 'index'])->name('keranjang.index');
+            Route::get('keranjang/{keranjang}', [\App\Http\Controllers\Admin\KeranjangController::class, 'show'])->name('keranjang.show');
+            Route::delete('keranjang-item/{item}', [\App\Http\Controllers\Admin\KeranjangController::class, 'destroyItem'])->name('keranjang.item.destroy');
 
-        // --- Monitoring Keranjang Merchandise ---
-        Route::get('keranjang', [\App\Http\Controllers\Admin\KeranjangController::class, 'index'])->name('keranjang.index');
-        Route::get('keranjang/{keranjang}', [\App\Http\Controllers\Admin\KeranjangController::class, 'show'])->name('keranjang.show');
-        Route::delete('keranjang-item/{item}', [\App\Http\Controllers\Admin\KeranjangController::class, 'destroyItem'])->name('keranjang.item.destroy');
+            // --- Pesanan Merchandise ---
+            Route::get('pesanan', [\App\Http\Controllers\Admin\PesananController::class, 'index'])->name('pesanan.index');
+            Route::get('pesanan/{pesanan}', [\App\Http\Controllers\Admin\PesananController::class, 'show'])->name('pesanan.show');
+            Route::patch('pesanan/{pesanan}/status', [\App\Http\Controllers\Admin\PesananController::class, 'updateStatus'])->name('pesanan.status.update');
+            Route::resource('korwil', KorwilController::class);
 
-        // --- Pesanan Merchandise ---
-        Route::get('pesanan', [\App\Http\Controllers\Admin\PesananController::class, 'index'])->name('pesanan.index');
-        Route::get('pesanan/{pesanan}', [\App\Http\Controllers\Admin\PesananController::class, 'show'])->name('pesanan.show');
-        Route::patch('pesanan/{pesanan}/status', [\App\Http\Controllers\Admin\PesananController::class, 'updateStatus'])->name('pesanan.status.update');
-        Route::resource('korwil', KorwilController::class);
+            // Endpoint untuk auto-fill form korwil
+            Route::get('/korwil/get-latest-data/{anggotaCard}', [KorwilController::class, 'getLatestKorwilData'])->name('korwil.get-latest-data');
 
-        // Endpoint untuk auto-fill form korwil
-        Route::get('/korwil/get-latest-data/{anggotaCard}', [KorwilController::class, 'getLatestKorwilData'])->name('korwil.get-latest-data');
+            Route::resource('kerjasama', KerjasamaController::class);
 
-        Route::resource('kerjasama', KerjasamaController::class);
-
-        // --- Manajemen Referral (Admin) ---
-        Route::get('referral', [\App\Http\Controllers\Admin\ReferralController::class, 'claims'])->name('referral.index');
-        Route::get('referral/claims', [\App\Http\Controllers\Admin\ReferralController::class, 'claims'])->name('referral.claims');
-        Route::post('referral/claims/{claim}/update', [\App\Http\Controllers\Admin\ReferralController::class, 'updateClaim'])->name('referral.claims.update');
+            // --- Manajemen Referral (Admin) ---
+            Route::get('referral', [\App\Http\Controllers\Admin\ReferralController::class, 'claims'])->name('referral.index');
+            Route::get('referral/claims', [\App\Http\Controllers\Admin\ReferralController::class, 'claims'])->name('referral.claims');
+            Route::post('referral/claims/{claim}/update', [\App\Http\Controllers\Admin\ReferralController::class, 'updateClaim'])->name('referral.claims.update');
         });
 });
 // Route untuk menampilkan detail artikel publik

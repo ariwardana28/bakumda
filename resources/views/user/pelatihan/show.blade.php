@@ -364,16 +364,31 @@
                                     </div>
                                 @else
                                     @if ($pelatihan->kuota > 0)
-                                        {{-- 🌟 DIUBAH: sekarang memicu Alpine.store global, bukan variabel lokal --}}
-                                        <button @click="$store.daftarModal.open()"
-                                            class="w-full flex items-center justify-center gap-2 py-3.5 px-4 bg-sky-500 hover:bg-sky-600 active:bg-sky-700 text-white font-bold rounded-xl shadow-lg shadow-sky-500/30 transition text-sm">
-                                            <span>Daftar Sekarang</span>
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor"
-                                                viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                                            </svg>
-                                        </button>
+                                        @auth
+                                            {{-- Jika User SUDAH Login -> Buka Modal Pendaftaran --}}
+                                            <button @click="$store.daftarModal.open()"
+                                                class="w-full flex items-center justify-center gap-2 py-3.5 px-4 bg-sky-500 hover:bg-sky-600 active:bg-sky-700 text-white font-bold rounded-xl shadow-lg shadow-sky-500/30 transition text-sm">
+                                                <span>Daftar Sekarang</span>
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor"
+                                                    viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                        d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                                                </svg>
+                                            </button>
+                                        @endauth
+
+                                        @guest
+                                            {{-- Jika User BELUM Login -> Direct / Redirect ke Halaman Login --}}
+                                            <a href="{{ route('login') }}"
+                                                class="w-full flex items-center justify-center gap-2 py-3.5 px-4 bg-sky-500 hover:bg-sky-600 active:bg-sky-700 text-white font-bold rounded-xl shadow-lg shadow-sky-500/30 transition text-sm">
+                                                <span>Daftar Sekarang</span>
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor"
+                                                    viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                        d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                                                </svg>
+                                            </a>
+                                        @endguest
                                     @else
                                         <button disabled
                                             class="w-full py-3.5 px-4 bg-slate-200 text-slate-500 font-bold rounded-xl cursor-not-allowed text-sm">
@@ -627,162 +642,162 @@
     <br>
 
     <!-- Section Baru: Short Course Process & Pricing CTA (Cozy & Modern Version) -->
-   <section class="relative isolate left-1/2 -translate-x-1/2 w-screen font-sans antialiased overflow-hidden">
+    <section class="relative isolate left-1/2 -translate-x-1/2 w-screen font-sans antialiased overflow-hidden">
 
-    <!-- Bagian 1: Timeline / Proses Singkat Kursus -->
-    <div
-        class="bg-gradient-to-b from-slate-50 via-blue-50/20 to-white py-20 px-4 sm:px-6 lg:px-8 text-center relative">
-
-        <!-- Ornamen Background Blur Lembut (Aesthetic Glow) -->
+        <!-- Bagian 1: Timeline / Proses Singkat Kursus -->
         <div
-            class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-blue-400/10 rounded-full blur-3xl pointer-events-none">
-        </div>
+            class="bg-gradient-to-b from-slate-50 via-blue-50/20 to-white py-20 px-4 sm:px-6 lg:px-8 text-center relative">
 
-        <div class="relative z-10 max-w-5xl mx-auto">
-            <!-- Badge -->
+            <!-- Ornamen Background Blur Lembut (Aesthetic Glow) -->
             <div
-                class="inline-flex items-center space-x-2 mb-4 px-4 py-1.5 rounded-full bg-blue-50 border border-blue-100 text-blue-600 font-bold text-[11px] tracking-wider uppercase shadow-sm">
-                <span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
-                <span>Short Course, Fast Results</span>
+                class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-blue-400/10 rounded-full blur-3xl pointer-events-none">
             </div>
 
-            <!-- Judul Utama -->
-            <h2 class="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 tracking-tight mb-16">
-                From start to certificate <br class="hidden sm:inline"><span
-                    class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">in about 3
-                    hours</span>
-            </h2>
-
-            <!-- Grid / Timeline Items dengan Style Card Modern -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 relative text-left">
-
-                <!-- Step 1: Start -->
+            <div class="relative z-10 max-w-5xl mx-auto">
+                <!-- Badge -->
                 <div
-                    class="group p-6 rounded-3xl bg-white border border-slate-100 shadow-xl shadow-slate-100/80 hover:shadow-2xl hover:shadow-blue-500/10 hover:border-blue-100 transition-all duration-300 flex flex-col justify-between relative">
-                    <div>
-                        <div
-                            class="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center shadow-inner mb-5 group-hover:bg-blue-600 group-hover:text-white transition-all duration-300">
-                            <i class="fa-solid fa-cart-shopping text-base"></i>
-                        </div>
-                        <span class="text-[11px] font-extrabold text-blue-600 uppercase tracking-widest block mb-1">01
-                            / Start</span>
-                        <h4 class="text-base font-bold text-slate-900 mb-2 leading-snug">Enroll & start instantly</h4>
-                        <p class="text-xs text-slate-500 leading-relaxed font-normal">Checkout takes a minute — chapter
-                            one opens right away.</p>
-                    </div>
+                    class="inline-flex items-center space-x-2 mb-4 px-4 py-1.5 rounded-full bg-blue-50 border border-blue-100 text-blue-600 font-bold text-[11px] tracking-wider uppercase shadow-sm">
+                    <span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
+                    <span>Short Course, Fast Results</span>
                 </div>
 
-                <!-- Step 2: 3 Hours -->
-                <div
-                    class="group p-6 rounded-3xl bg-white border border-slate-100 shadow-xl shadow-slate-100/80 hover:shadow-2xl hover:shadow-blue-500/10 hover:border-blue-100 transition-all duration-300 flex flex-col justify-between relative">
-                    <div>
-                        <div
-                            class="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center shadow-inner mb-5 group-hover:bg-blue-600 group-hover:text-white transition-all duration-300">
-                            <i class="fa-solid fa-book-open text-base"></i>
-                        </div>
-                        <span class="text-[11px] font-extrabold text-blue-600 uppercase tracking-widest block mb-1">02
-                            / Learn</span>
-                        <h4 class="text-base font-bold text-slate-900 mb-2 leading-snug">Read or listen to content</h4>
-                        <p class="text-xs text-slate-500 leading-relaxed font-normal">Compact topics and real case
-                            studies, at your own pace.</p>
-                    </div>
-                </div>
+                <!-- Judul Utama -->
+                <h2 class="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 tracking-tight mb-16">
+                    From start to certificate <br class="hidden sm:inline"><span
+                        class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">in about 3
+                        hours</span>
+                </h2>
 
-                <!-- Step 3: The Quiz -->
-                <div
-                    class="group p-6 rounded-3xl bg-white border border-slate-100 shadow-xl shadow-slate-100/80 hover:shadow-2xl hover:shadow-blue-500/10 hover:border-blue-100 transition-all duration-300 flex flex-col justify-between relative">
-                    <div>
-                        <div
-                            class="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center shadow-inner mb-5 group-hover:bg-blue-600 group-hover:text-white transition-all duration-300">
-                            <i class="fa-solid fa-file-lines text-base"></i>
-                        </div>
-                        <span class="text-[11px] font-extrabold text-blue-600 uppercase tracking-widest block mb-1">03
-                            / Practice</span>
-                        <h4 class="text-base font-bold text-slate-900 mb-2 leading-snug">Take the course quiz</h4>
-                        <p class="text-xs text-slate-500 leading-relaxed font-normal">Multiple choice, free retakes,
-                            and completely zero time limit.</p>
-                    </div>
-                </div>
+                <!-- Grid / Timeline Items dengan Style Card Modern -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 relative text-left">
 
-                <!-- Step 4: Finish -->
-                <div
-                    class="group p-6 rounded-3xl bg-white border border-slate-100 shadow-xl shadow-slate-100/80 hover:shadow-2xl hover:shadow-blue-500/10 hover:border-blue-100 transition-all duration-300 flex flex-col justify-between relative">
-                    <div>
-                        <div
-                            class="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center shadow-inner mb-5 group-hover:bg-blue-600 group-hover:text-white transition-all duration-300">
-                            <i class="fa-solid fa-award text-base"></i>
+                    <!-- Step 1: Start -->
+                    <div
+                        class="group p-6 rounded-3xl bg-white border border-slate-100 shadow-xl shadow-slate-100/80 hover:shadow-2xl hover:shadow-blue-500/10 hover:border-blue-100 transition-all duration-300 flex flex-col justify-between relative">
+                        <div>
+                            <div
+                                class="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center shadow-inner mb-5 group-hover:bg-blue-600 group-hover:text-white transition-all duration-300">
+                                <i class="fa-solid fa-cart-shopping text-base"></i>
+                            </div>
+                            <span class="text-[11px] font-extrabold text-blue-600 uppercase tracking-widest block mb-1">01
+                                / Start</span>
+                            <h4 class="text-base font-bold text-slate-900 mb-2 leading-snug">Enroll & start instantly</h4>
+                            <p class="text-xs text-slate-500 leading-relaxed font-normal">Checkout takes a minute — chapter
+                                one opens right away.</p>
                         </div>
-                        <span class="text-[11px] font-extrabold text-blue-600 uppercase tracking-widest block mb-1">04
-                            / Success</span>
-                        <h4 class="text-base font-bold text-slate-900 mb-2 leading-snug">Certificate in hand</h4>
-                        <p class="text-xs text-slate-500 leading-relaxed font-normal">Issued instantly — ready to add
-                            right to your CV and LinkedIn.</p>
                     </div>
-                </div>
 
+                    <!-- Step 2: 3 Hours -->
+                    <div
+                        class="group p-6 rounded-3xl bg-white border border-slate-100 shadow-xl shadow-slate-100/80 hover:shadow-2xl hover:shadow-blue-500/10 hover:border-blue-100 transition-all duration-300 flex flex-col justify-between relative">
+                        <div>
+                            <div
+                                class="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center shadow-inner mb-5 group-hover:bg-blue-600 group-hover:text-white transition-all duration-300">
+                                <i class="fa-solid fa-book-open text-base"></i>
+                            </div>
+                            <span class="text-[11px] font-extrabold text-blue-600 uppercase tracking-widest block mb-1">02
+                                / Learn</span>
+                            <h4 class="text-base font-bold text-slate-900 mb-2 leading-snug">Read or listen to content</h4>
+                            <p class="text-xs text-slate-500 leading-relaxed font-normal">Compact topics and real case
+                                studies, at your own pace.</p>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: The Quiz -->
+                    <div
+                        class="group p-6 rounded-3xl bg-white border border-slate-100 shadow-xl shadow-slate-100/80 hover:shadow-2xl hover:shadow-blue-500/10 hover:border-blue-100 transition-all duration-300 flex flex-col justify-between relative">
+                        <div>
+                            <div
+                                class="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center shadow-inner mb-5 group-hover:bg-blue-600 group-hover:text-white transition-all duration-300">
+                                <i class="fa-solid fa-file-lines text-base"></i>
+                            </div>
+                            <span class="text-[11px] font-extrabold text-blue-600 uppercase tracking-widest block mb-1">03
+                                / Practice</span>
+                            <h4 class="text-base font-bold text-slate-900 mb-2 leading-snug">Take the course quiz</h4>
+                            <p class="text-xs text-slate-500 leading-relaxed font-normal">Multiple choice, free retakes,
+                                and completely zero time limit.</p>
+                        </div>
+                    </div>
+
+                    <!-- Step 4: Finish -->
+                    <div
+                        class="group p-6 rounded-3xl bg-white border border-slate-100 shadow-xl shadow-slate-100/80 hover:shadow-2xl hover:shadow-blue-500/10 hover:border-blue-100 transition-all duration-300 flex flex-col justify-between relative">
+                        <div>
+                            <div
+                                class="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center shadow-inner mb-5 group-hover:bg-blue-600 group-hover:text-white transition-all duration-300">
+                                <i class="fa-solid fa-award text-base"></i>
+                            </div>
+                            <span class="text-[11px] font-extrabold text-blue-600 uppercase tracking-widest block mb-1">04
+                                / Success</span>
+                            <h4 class="text-base font-bold text-slate-900 mb-2 leading-snug">Certificate in hand</h4>
+                            <p class="text-xs text-slate-500 leading-relaxed font-normal">Issued instantly — ready to add
+                                right to your CV and LinkedIn.</p>
+                        </div>
+                    </div>
+
+                </div>
             </div>
         </div>
-    </div>
 
-    <!-- Bagian 2: Pricing & CTA dengan Background Gambar Asli (Card Dibuat Lebih Kecil & Kompak) -->
-    <div
-        class="relative w-full py-24 px-4 sm:px-6 lg:px-8 bg-slate-900 overflow-hidden flex items-center justify-center">
-
-        <!-- Background Image Asli -->
-        <div class="absolute inset-0 bg-cover bg-center opacity-85 scale-105 transform"
-            style="background-image: url('https://images.unsplash.com/photo-1519501025264-65ba15a82390?q=80&w=1920&auto=format&fit=crop');">
-        </div>
-
-        <!-- Overlay Putih Transparan Tipis -->
-        <div class="absolute inset-0 bg-white/40 backdrop-blur-[1px]"></div>
-
-        <div class="absolute -top-40 -right-40 w-96 h-96 bg-blue-400/20 rounded-full blur-[120px] pointer-events-none">
-        </div>
+        <!-- Bagian 2: Pricing & CTA dengan Background Gambar Asli (Card Dibuat Lebih Kecil & Kompak) -->
         <div
-            class="absolute -bottom-40 -left-40 w-96 h-96 bg-sky-400/10 rounded-full blur-[120px] pointer-events-none">
+            class="relative w-full py-24 px-4 sm:px-6 lg:px-8 bg-slate-900 overflow-hidden flex items-center justify-center">
+
+            <!-- Background Image Asli -->
+            <div class="absolute inset-0 bg-cover bg-center opacity-85 scale-105 transform"
+                style="background-image: url('https://images.unsplash.com/photo-1519501025264-65ba15a82390?q=80&w=1920&auto=format&fit=crop');">
+            </div>
+
+            <!-- Overlay Putih Transparan Tipis -->
+            <div class="absolute inset-0 bg-white/40 backdrop-blur-[1px]"></div>
+
+            <div class="absolute -top-40 -right-40 w-96 h-96 bg-blue-400/20 rounded-full blur-[120px] pointer-events-none">
+            </div>
+            <div
+                class="absolute -bottom-40 -left-40 w-96 h-96 bg-sky-400/10 rounded-full blur-[120px] pointer-events-none">
+            </div>
+
+            <!-- Card Container (Diubah max-w-xl jadi max-w-md & p-8/sm:p-12 jadi p-6/sm:p-8 agar lebih kecil) -->
+            <div
+                class="relative z-10 max-w-md w-full mx-auto p-6 sm:p-8 rounded-3xl bg-white/90 backdrop-blur-2xl border border-white shadow-[0_20px_50px_-15px_rgba(0,0,0,0.15)] text-center text-slate-900">
+
+                <!-- Badge kecil di dalam card -->
+                <div
+                    class="inline-flex items-center space-x-1.5 mb-4 px-3 py-1 rounded-full bg-blue-50 border border-blue-100 text-blue-600 font-bold text-[10px] tracking-widest uppercase">
+                    <i class="fa-solid fa-graduation-cap text-blue-600 text-xs"></i>
+                    <span>Strategy and Operations</span>
+                </div>
+
+                <!-- Judul CTA -->
+                <h3 class="text-2xl sm:text-3xl font-black tracking-tight mb-3 leading-tight text-slate-900">
+                    Start now and get certified today
+                </h3>
+
+                <p class="text-xs text-slate-600 mb-6 max-w-xs mx-auto font-medium">
+                    Tingkatkan keahlian profesional Anda dengan materi komprehensif yang dirancang khusus untuk hasil cepat.
+                </p>
+
+                <!-- Harga & Diskon -->
+                <div
+                    class="inline-flex items-center justify-center space-x-3 mb-6 px-5 py-2.5 rounded-2xl bg-slate-50 border border-slate-200/80 shadow-inner">
+                    <span class="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">
+                        {{ $pelatihan->harga > 0 ? 'Rp ' . number_format($pelatihan->harga, 0, ',', '.') : 'Gratis' }}</span>
+                </div>
+
+                <!-- Tombol Aksi -->
+                <div>
+                    {{-- 🌟 DIUBAH: pakai $store.daftarModal.open() + @click.prevent supaya href="#" tidak scroll ke atas --}}
+                    <a href="#" @click.prevent="$store.daftarModal.open()"
+                        class="w-full inline-flex items-center justify-center px-8 py-3.5 rounded-xl bg-gradient-to-r from-blue-600 via-blue-500 to-indigo-600 text-white font-bold text-xs sm:text-sm shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 group">
+                        <span>Daftar Sekarang</span>
+                        <i class="fa-solid fa-arrow-right ml-2 text-xs transition-transform group-hover:translate-x-1"></i>
+                    </a>
+                </div>
+
+            </div>
         </div>
 
-        <!-- Card Container (Diubah max-w-xl jadi max-w-md & p-8/sm:p-12 jadi p-6/sm:p-8 agar lebih kecil) -->
-        <div
-            class="relative z-10 max-w-md w-full mx-auto p-6 sm:p-8 rounded-3xl bg-white/90 backdrop-blur-2xl border border-white shadow-[0_20px_50px_-15px_rgba(0,0,0,0.15)] text-center text-slate-900">
-
-            <!-- Badge kecil di dalam card -->
-            <div
-                class="inline-flex items-center space-x-1.5 mb-4 px-3 py-1 rounded-full bg-blue-50 border border-blue-100 text-blue-600 font-bold text-[10px] tracking-widest uppercase">
-                <i class="fa-solid fa-graduation-cap text-blue-600 text-xs"></i>
-                <span>Strategy and Operations</span>
-            </div>
-
-            <!-- Judul CTA -->
-            <h3 class="text-2xl sm:text-3xl font-black tracking-tight mb-3 leading-tight text-slate-900">
-                Start now and get certified today
-            </h3>
-
-            <p class="text-xs text-slate-600 mb-6 max-w-xs mx-auto font-medium">
-                Tingkatkan keahlian profesional Anda dengan materi komprehensif yang dirancang khusus untuk hasil cepat.
-            </p>
-
-            <!-- Harga & Diskon -->
-            <div
-                class="inline-flex items-center justify-center space-x-3 mb-6 px-5 py-2.5 rounded-2xl bg-slate-50 border border-slate-200/80 shadow-inner">
-                <span class="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">
-                    {{ $pelatihan->harga > 0 ? 'Rp ' . number_format($pelatihan->harga, 0, ',', '.') : 'Gratis' }}</span>
-            </div>
-
-            <!-- Tombol Aksi -->
-            <div>
-                {{-- 🌟 DIUBAH: pakai $store.daftarModal.open() + @click.prevent supaya href="#" tidak scroll ke atas --}}
-                <a href="#" @click.prevent="$store.daftarModal.open()"
-                    class="w-full inline-flex items-center justify-center px-8 py-3.5 rounded-xl bg-gradient-to-r from-blue-600 via-blue-500 to-indigo-600 text-white font-bold text-xs sm:text-sm shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 group">
-                    <span>Daftar Sekarang</span>
-                    <i class="fa-solid fa-arrow-right ml-2 text-xs transition-transform group-hover:translate-x-1"></i>
-                </a>
-            </div>
-
-        </div>
-    </div>
-
-</section>
+    </section>
     <section
         class="w-full font-sans antialiased py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-slate-50 to-white text-center">
         <div class="max-w-7xl mx-auto">
@@ -898,8 +913,7 @@
             class="bg-white rounded-3xl shadow-2xl w-full max-w-lg mx-4 transform transition-all"
             x-show="$store.daftarModal.show" x-transition:enter="ease-out duration-300"
             x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-            x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
-            x-transition:leave="ease-in duration-200"
+            x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100" x-transition:leave="ease-in duration-200"
             x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
             x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95">
 
@@ -923,10 +937,9 @@
                                 <ul class="mt-2 space-y-1.5 text-xs text-gray-600">
                                     @forelse ($pelatihan->materi as $materi)
                                         <li class="flex items-center gap-2">
-                                            <svg class="w-3.5 h-3.5 text-blue-500 flex-shrink-0"
-                                                fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round"
-                                                    stroke-width="2.5"
+                                            <svg class="w-3.5 h-3.5 text-blue-500 flex-shrink-0" fill="none"
+                                                stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5"
                                                     d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z">
                                                 </path>
                                             </svg>
@@ -973,8 +986,10 @@
                             class="mt-1 block w-full px-4 py-3 border {{ $errors->has('referral_code') ? 'border-red-400 focus:ring-red-500 focus:border-red-500' : 'border-gray-300 focus:ring-blue-500 focus:border-blue-500' }} rounded-xl shadow-sm sm:text-sm"
                             placeholder="Contoh: REF123XYZ">
                         @error('referral_code')
-                            <div class="mt-2 flex items-start gap-2 bg-red-50 border border-red-200 text-red-700 text-xs rounded-xl p-3">
-                                <svg class="w-4 h-4 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <div
+                                class="mt-2 flex items-start gap-2 bg-red-50 border border-red-200 text-red-700 text-xs rounded-xl p-3">
+                                <svg class="w-4 h-4 shrink-0 mt-0.5" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                                 </svg>

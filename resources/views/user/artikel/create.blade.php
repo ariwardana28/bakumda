@@ -26,7 +26,7 @@
         @endif
 
         <!-- Form Tambah Artikel -->
-        <form action="{{ route('user.artikel.store') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
+            <form action="{{ route('artikel.store') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
             @csrf
 
             <!-- CARD 1: Judul & Isi Artikel -->
@@ -161,7 +161,7 @@
 
             <!-- Tombol Aksi -->
             <div class="flex items-center justify-end gap-3 pt-2">
-                <a href="{{ route('user.artikel.index') }}"
+                <a href="{{ route('artikel.index') }}"
                     class="px-5 py-2.5 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 text-xs font-bold uppercase tracking-wider hover:bg-gray-50 dark:hover:bg-gray-600 transition shadow-xs">
                     {{ __('Batal') }}
                 </a>

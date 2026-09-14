@@ -29,7 +29,9 @@
 </head>
 
 <body class="bg-slate-950 font-sans text-slate-100 antialiased min-h-screen flex flex-col">
-
+    @php
+        $cartItems = auth()->user()?->keranjang?->items()->with('produk')->get() ?? collect();
+    @endphp
     <!-- ================================================= -->
     <!-- VIEW 1: TAMPILAN ANDROID / MOBILE                 -->
     <!-- ================================================= -->
@@ -48,11 +50,18 @@
                         <i class="fa-solid fa-magnifying-glass text-xs text-blue-200 mr-2"></i>
                         <span class="text-xs text-blue-100 font-medium tracking-wide">Pencarian...</span>
                     </div>
-                    <a href=""
-                        class="w-9 h-9 rounded-full border flex items-center justify-center transition {{ request()->routeIs('user-pelatihan.show') || request()->routeIs('user-pelatihan.index') ? 'bg-slate-100 border-slate-300 text-slate-700 hover:bg-slate-200' : 'bg-[#0a1226]/90 border-blue-950/60 text-blue-200 hover:text-white' }}"
-                        title="Keranjang">
-                        <i class="fa-solid fa-cart-shopping text-sm"></i>
-                    </a>
+                    <div class="relative" x-data="{ cartOpen: false }" @click.away="cartOpen = false">
+                        <button type="button" @click="cartOpen = !cartOpen"
+                            class="w-9 h-9 rounded-full border flex items-center justify-center transition {{ request()->routeIs('user-pelatihan.show') || request()->routeIs('user-pelatihan.index') ? 'bg-slate-100 border-slate-300 text-slate-700 hover:bg-slate-200' : 'bg-[#0a1226]/90 border-blue-950/60 text-blue-200 hover:text-white' }}"
+                            title="Keranjang">
+                            <i class="fa-solid fa-cart-shopping text-sm"></i>
+                            @if ($cartItems->sum('jumlah') > 0)
+                                <span
+                                    class="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-orange-500 px-1 text-[9px] font-black text-white shadow">{{ $cartItems->sum('jumlah') > 99 ? '99+' : $cartItems->sum('jumlah') }}</span>
+                            @endif
+                        </button>
+                        @include('layouts.partials.cart-dropdown')
+                    </div>
                     {{-- Tombol Notifikasi / Lonceng --}}
                     <div class="relative" x-data="{ notifOpen: false }" @click.away="notifOpen = false">
                         <button @click="notifOpen = !notifOpen"
@@ -158,28 +167,24 @@
             <!-- ========================================== -->
             <div class="grid grid-cols-1 gap-3 md:gap-6 mb-4 md:mb-8 relative z-7">
 
-                <!-- Hero Banner Slider -->
                 <div id="banner-slider-container"
                     class="relative w-full overflow-hidden rounded-3xl shadow-xl border border-slate-800 mb-1 md:mb-4 z-10">
-                    <!-- Slider Track -->
+
                     <div class="heroSlider flex transition-transform duration-700 ease-out w-full">
-                        <!-- Slide 1 -->
-                        <div class="slide-item min-w-full w-full relative overflow-hidden">
+                        <div class="slide-item min-w-full w-full shrink-0 relative overflow-hidden">
                             <img src="{{ asset('b1.jpeg') }}" alt="Banner 1" class="w-full h-auto object-contain">
                         </div>
-                        <!-- Slide 2 -->
-                        <div class="slide-item min-w-full w-full relative overflow-hidden">
+                        <div class="slide-item min-w-full w-full shrink-0 relative overflow-hidden">
                             <img src="{{ asset('b2.jpeg') }}" alt="Banner 2" class="w-full h-auto object-contain">
                         </div>
-                        <div class="slide-item min-w-full w-full relative overflow-hidden">
+                        <div class="slide-item min-w-full w-full shrink-0 relative overflow-hidden">
                             <img src="{{ asset('b3.jpeg') }}" alt="Banner 3" class="w-full h-auto object-contain">
                         </div>
-                        <div class="slide-item min-w-full w-full relative overflow-hidden">
+                        <div class="slide-item min-w-full w-full shrink-0 relative overflow-hidden">
                             <img src="{{ asset('b4.jpeg') }}" alt="Banner 4" class="w-full h-auto object-contain">
                         </div>
                     </div>
 
-                    <!-- Indikator Dots -->
                     <div class="absolute bottom-3 right-4 z-30 flex space-x-1.5" id="slider-dots">
                         <button class="dot h-2 w-5 bg-white rounded-full transition-all duration-300"
                             data-index="0"></button>
@@ -192,7 +197,6 @@
                     </div>
                 </div>
 
-                <!-- Skrip JavaScript Slider Banner -->
                 <script>
                     document.addEventListener("DOMContentLoaded", function() {
                         const container = document.getElementById("banner-slider-container");
@@ -201,14 +205,22 @@
                         const slider = container.querySelector(".heroSlider");
                         const slides = container.querySelectorAll(".slide-item");
                         const dots = container.querySelectorAll("#slider-dots .dot");
-                        let currentIndex = 0;
-                        const totalSlides = slides.length;
-                        const intervalTime = 2000;
 
-                        function updateSlider() {
-                            slider.style.transform = `translateX(-${currentIndex * 100}%)`;
+                        if (slides.length === 0) return;
+
+                        const totalSlides = slides.length;
+                        let currentIndex = 0;
+                        const intervalTime = 4000; // Durasi per slide (4 detik)
+                        let isTransitioning = false;
+
+                        // Clone slide 1 untuk dimasukkan ke ujung akhir (efek infinite loop)
+                        const firstSlideClone = slides[0].cloneNode(true);
+                        slider.appendChild(firstSlideClone);
+
+                        function updateDots(activeIdx) {
+                            const normalizedIndex = activeIdx % totalSlides;
                             dots.forEach((dot, index) => {
-                                if (index === currentIndex) {
+                                if (index === normalizedIndex) {
                                     dot.classList.remove("w-2", "bg-white/50");
                                     dot.classList.add("w-5", "bg-white");
                                 } else {
@@ -218,20 +230,53 @@
                             });
                         }
 
-                        function nextSlide() {
-                            currentIndex = (currentIndex + 1) % totalSlides;
-                            updateSlider();
+                        function goToSlide(index, animated = true) {
+                            if (animated) {
+                                slider.style.transition = "transform 700ms ease-out";
+                            } else {
+                                slider.style.transition = "none";
+                            }
+                            slider.style.transform = `translateX(-${index * 100}%)`;
+                            updateDots(index);
                         }
+
+                        function nextSlide() {
+                            if (isTransitioning) return;
+                            currentIndex++;
+                            isTransitioning = true;
+                            goToSlide(currentIndex, true);
+                        }
+
+                        // Handler saat transisi slide selesai
+                        slider.addEventListener("transitionend", function() {
+                            isTransitioning = false;
+                            // Jika sudah sampai di slide clone (ujung akhir)
+                            if (currentIndex === totalSlides) {
+                                currentIndex = 0;
+                                goToSlide(0, false); // Berpindah ke slide 0 secara instan tanpa efek rewind
+                            }
+                        });
 
                         let slideInterval = setInterval(nextSlide, intervalTime);
 
-                        dots.forEach((dot, index) => {
+                        // Handler klik pada indikator dots
+                        dots.forEach((dot) => {
                             dot.addEventListener("click", function() {
-                                currentIndex = index;
-                                updateSlider();
+                                if (isTransitioning) return;
+                                currentIndex = parseInt(this.getAttribute("data-index"));
+                                goToSlide(currentIndex, true);
+
+                                // Reset timer saat di-klik manual
                                 clearInterval(slideInterval);
                                 slideInterval = setInterval(nextSlide, intervalTime);
                             });
+                        });
+
+                        // Berhentikan slider sejenak saat kursor hover di atas banner
+                        container.addEventListener("mouseenter", () => clearInterval(slideInterval));
+                        container.addEventListener("mouseleave", () => {
+                            clearInterval(slideInterval);
+                            slideInterval = setInterval(nextSlide, intervalTime);
                         });
                     });
                 </script>
@@ -513,75 +558,117 @@
                 </div>
 
                 <!-- Program Bantuan Hukum (Slider) -->
-                <div id="slider-container-pelatihan" class="relative">
-                    <br>
-                    <br>
-                    <div class="flex justify-between items-center mb-4">
-                        <div>
-                            <h3 class="text-lg font-extrabold text-slate-900 leading-tight">Program Pelatihan</h3>
-                            <span class="text-xs text-slate-400 font-medium">Geser otomatis atau gunakan tombol</span>
-                        </div>
+                 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
 
-                        <!-- Tombol Navigasi Manual -->
-                        <div class="flex items-center space-x-2">
-                            <button id="slide-left-btn"
-                                class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center transition shadow-sm">
-                                <i class="fa-solid fa-chevron-left text-xs"></i>
-                            </button>
-                            <button id="slide-right-btn"
-                                class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center transition shadow-sm">
-                                <i class="fa-solid fa-chevron-right text-xs"></i>
-                            </button>
-                        </div>
+                <div class="relative py-4 max-w-7xl mx-auto px-4">
+                    <div class="mb-4">
+                        <h3 class="text-lg font-extrabold text-slate-900 leading-tight">Program Pelatihan</h3>
+                        <span class="text-xs text-slate-400 font-medium">Berjalan otomatis & berputar tanpa
+                            henti</span>
                     </div>
 
-                    <!-- Slider Container dengan Tambahan CSS Inline untuk Menyembunyikan Scrollbar secara Total -->
-                    <div id="pelatihan-slider"
-                        class="flex overflow-x-auto space-x-4 pb-4 -mx-4 sm:-mx-6 px-4 sm:px-6 snap-x snap-mandatory scroll-smooth"
-                        style="scrollbar-width: none; -ms-overflow-style: none;">
+                    <div class="swiper myPelatihanSwiper relative">
+                        <div class="swiper-wrapper">
+                            @foreach ($pelatihans as $index => $pelatihan)
+                                @php
+                                    $bgGradient = match ($index % 3) {
+                                        0 => 'from-blue-800 to-indigo-900',
+                                        1 => 'from-slate-800 to-blue-900',
+                                        default => 'from-slate-900 to-slate-800',
+                                    };
+                                @endphp
 
-                        <!-- CSS tambahan khusus untuk webkit (Chrome, Safari, Edge) agar scrollbar benar-benar hilang -->
-                        <style>
-                            #pelatihan-slider::-webkit-scrollbar {
-                                display: none;
-                            }
-                        </style>
-
-                        @foreach ($pelatihans as $index => $pelatihan)
-                            @php
-                                $bgGradient = match ($index % 3) {
-                                    0 => 'from-blue-800 to-indigo-900',
-                                    1 => 'from-slate-800 to-blue-900',
-                                    default => 'from-slate-900 to-slate-800',
-                                };
-                            @endphp
-
-                            <a href="{{ route('user-pelatihan.show', $pelatihan) }}"
-                                class="menu-item-auth snap-start shrink-0 w-[280px] sm:w-[320px] bg-gradient-to-br {{ $bgGradient }} rounded-2xl p-6 text-white shadow-md flex flex-col justify-between h-[180px] transition-transform duration-300 hover:scale-105">
-                                <div>
-                                    <h4 class="font-black text-base tracking-wide">{{ $pelatihan->judul }}</h4>
-                                    <div class="mt-2 text-xs opacity-90 space-y-1 font-medium">
-                                        <p>• Mulai:
-                                            {{ \Carbon\Carbon::parse($pelatihan->tanggal_mulai)->translatedFormat('d F Y') }}
-                                        </p>
-                                        <p class="text-sm font-extrabold text-amber-400 mt-1">
-                                            Rp {{ number_format($pelatihan->harga, 0, ',', '.') }}
-                                        </p>
-                                    </div>
+                                <div class="swiper-slide">
+                                    <a href="{{ route('user-pelatihan.show', $pelatihan) }}"
+                                        class="block bg-gradient-to-br {{ $bgGradient }} rounded-2xl p-6 text-white shadow-md flex flex-col justify-between h-[180px] transition-transform duration-300 hover:scale-105">
+                                        <div>
+                                            <h4 class="font-black text-base tracking-wide line-clamp-1">
+                                                {{ $pelatihan->judul }}</h4>
+                                            <div class="mt-2 text-xs opacity-90 space-y-1 font-medium">
+                                                <p>• Mulai:
+                                                    {{ \Carbon\Carbon::parse($pelatihan->tanggal_mulai)->translatedFormat('d F Y') }}
+                                                </p>
+                                                <p class="text-sm font-extrabold text-amber-400 mt-1">
+                                                    Rp {{ number_format($pelatihan->harga, 0, ',', '.') }}
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div
+                                            class="bg-white text-slate-900 font-bold text-xs px-4 py-2 rounded-full shadow w-max">
+                                            Lihat Detail
+                                        </div>
+                                    </a>
                                 </div>
-                                <div
-                                    class="bg-white text-slate-900 font-bold text-xs px-4 py-2 rounded-full shadow w-max">
-                                    Lihat Detail
-                                </div>
-                            </a>
-                        @endforeach
+                            @endforeach
+                        </div>
+
+                        <div
+                            class="swiper-button-next !w-9 !h-9 !bg-white/90 !text-slate-800 rounded-full shadow-md after:!text-xs">
+                        </div>
+                        <div
+                            class="swiper-button-prev !w-9 !h-9 !bg-white/90 !text-slate-800 rounded-full shadow-md after:!text-xs">
+                        </div>
                     </div>
                 </div>
+
+                <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+                <script>
+                    document.addEventListener("DOMContentLoaded", function() {
+                        new Swiper(".myPelatihanSwiper", {
+                            // Jumlah kartu yang tampil sesuai ukuran layar
+                            slidesPerView: 1.2,
+                            spaceBetween: 16,
+
+                            // Loop tanpa batas (saat kartu terakhir lewat, lanjut ke kartu pertama tanpa melompat/mundur)
+                            loop: true,
+
+                            // Auto slide otomatis
+                            autoplay: {
+                                delay: 3000, // Durasi diam per kartu (3 detik)
+                                disableOnInteraction: false, // Tetap auto-play meski disentuh/diklik
+                                pauseOnMouseEnter: true, // Berhenti sejenak saat kursor di atas slider
+                            },
+
+                            // Kecepatan transisi pergeseran (mulus)
+                            speed: 800,
+
+                            // Tombol navigasi panah
+                            navigation: {
+                                nextEl: ".swiper-button-next",
+                                prevEl: ".swiper-button-prev",
+                            },
+
+                            // Respon ukuran layar
+                            breakpoints: {
+                                640: {
+                                    slidesPerView: 2.2,
+                                    spaceBetween: 16,
+                                },
+                                1024: {
+                                    slidesPerView: 3.2,
+                                    spaceBetween: 20,
+                                },
+                                1280: {
+                                    slidesPerView: 4,
+                                    spaceBetween: 20,
+                                }
+                            }
+                        });
+                    });
+                </script>
 
 
                 <!-- Berita & Artikel Hukum -->
                 <div class="space-y-4 pb-6">
-                    <h3 class="text-lg font-extrabold text-slate-900">Artikel & Informasi Terbaru</h3>
+                    <div class="flex items-center justify-between gap-4">
+                        <h3 class="text-lg font-extrabold text-slate-900">Artikel & Informasi Terbaru</h3>
+                        <a href="{{ route('artikel.index.public') }}"
+                            class="inline-flex items-center gap-1.5 text-xs font-bold text-blue-600 hover:text-blue-700 transition-colors whitespace-nowrap">
+                            <span>Lihat semua artikel</span>
+                            <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                        </a>
+                    </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                         @forelse ($artikels as $artikel)
                             <!-- Menghapus class 'menu-item-auth' pada card artikel -->
@@ -679,7 +766,8 @@
             </a>
 
             <!-- 2. Artikel -->
-            <a href="" class="flex flex-col items-center text-slate-400 hover:text-blue-700 py-1 transition">
+            <a href="{{ route('artikel.index.public') }}"
+                class="flex flex-col items-center text-slate-400 hover:text-blue-700 py-1 transition">
                 <div class="w-9 h-9 rounded-full flex items-center justify-center">
                     <i class="fa-solid fa-newspaper text-base"></i>
                 </div>

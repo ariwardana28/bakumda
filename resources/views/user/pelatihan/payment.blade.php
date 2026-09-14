@@ -21,7 +21,7 @@
                         Menunggu Pembayaran
                     </span>
                     <h1 class="text-xl sm:text-2xl md:text-3xl font-extrabold tracking-tight">Selesaikan Pembayaran Anda</h1>
-                    <p class="text-gray-300 text-xs sm:text-sm mt-1">Silakan lakukan transfer sesuai nominal di bawah untuk mengaktifkan pendaftaran.</p>
+                    <p class="text-gray-300 text-xs sm:text-sm mt-1">Selesaikan pembayaran melalui halaman checkout Xendit.</p>
                 </div>
                 <div class="bg-white/10 backdrop-blur-md border border-white/20 p-4 rounded-2xl text-left md:text-right w-full md:w-auto md:min-w-[220px]">
                     <span class="text-[10px] sm:text-xs text-gray-300 block uppercase tracking-wider mb-1">Total Tagihan</span>
@@ -31,8 +31,25 @@
         </div>
 
         <div class="p-6 sm:p-8 space-y-8">
+            {{-- Pembayaran Xendit --}}
+            <div class="rounded-2xl border border-blue-100 bg-blue-50/50 p-5 sm:p-8 text-center">
+                <div class="mx-auto mb-4 w-14 h-14 rounded-2xl bg-blue-600 text-white flex items-center justify-center shadow-lg shadow-blue-500/25">
+                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8V6m0 12v-2m9-4a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </div>
+                <h3 class="text-base sm:text-lg font-bold text-gray-900 mb-2">Bayar dengan Xendit</h3>
+                <p class="text-sm text-gray-600 max-w-lg mx-auto mb-6">Gunakan transfer bank, e-wallet, QRIS, atau metode pembayaran lain yang tersedia di checkout Xendit.</p>
+                @if ($pembayaran->xendit_invoice_url)
+                    <a href="{{ $pembayaran->xendit_invoice_url }}" target="_blank" rel="noopener" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm px-8 py-3.5 rounded-xl transition-colors shadow-lg shadow-blue-500/25">
+                        <span>Lanjut ke Pembayaran Xendit</span>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                    </a>
+                @else
+                    <p class="text-sm text-red-600">Checkout Xendit belum tersedia. Silakan coba muat ulang halaman.</p>
+                @endif
+            </div>
+
             {{-- Informasi Rekening Tujuan --}}
-            <div>
+            <div class="hidden">
                 <h3 class="text-xs font-bold uppercase tracking-wider text-gray-400 mb-4">Pilih Rekening Tujuan Transfer</h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {{-- Bank BCA --}}
@@ -94,7 +111,7 @@
             </div>
 
             {{-- Form Upload Bukti Transfer --}}
-            <form action="{{ route('user-pelatihan.payment.store', $pendaftaran->id) }}" method="POST" enctype="multipart/form-data" class="space-y-6 pt-4 border-t border-gray-100">
+            <form action="{{ route('user-pelatihan.payment.store', $pendaftaran->id) }}" method="POST" enctype="multipart/form-data" class="hidden">
                 @csrf
                 <div>
                     <label class="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-2">Unggah Bukti Pembayaran / Struk Transfer</label>
@@ -141,36 +158,4 @@
     </div>
 </div>
 
-<script>
-    function selectBank(element) {
-        document.querySelectorAll('.bank-card').forEach(card => {
-            card.classList.remove('border-blue-600', 'bg-blue-50/40');
-            card.classList.add('border-gray-200', 'bg-white');
-            const check = card.querySelector('.check-icon');
-            if(check) check.classList.add('hidden');
-        });
-        
-        element.classList.remove('border-gray-200', 'bg-white');
-        element.classList.add('border-blue-600', 'bg-blue-50/40');
-        const activeCheck = element.querySelector('.check-icon');
-        if(activeCheck) activeCheck.classList.remove('hidden');
-    }
-
-    function updateFileName(input) {
-        if (input.files && input.files[0]) {
-            const fileName = input.files[0].name;
-            document.getElementById('file-name').textContent = fileName;
-            document.getElementById('upload-placeholder').classList.add('hidden');
-            document.getElementById('file-preview-container').classList.remove('hidden');
-            document.getElementById('file-preview-container').classList.add('flex');
-        }
-    }
-
-    function copyToClipboard(text, event) {
-        event.stopPropagation();
-        navigator.clipboard.writeText(text).then(() => {
-            alert('Nomor rekening berhasil disalin: ' + text);
-        });
-    }
-</script>
 @endsection

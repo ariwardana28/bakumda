@@ -22,7 +22,7 @@ class GeminiController extends Controller
             // Ubah dari 'gemini-1.5-flash' menjadi 'gemini-2.5-flash'
             // $result = Gemini::generativeModel(model: 'gemini-2.5-flash')->generateContent($request->input('prompt'));
             // Ubah bagian ini di dalam Controller Anda:
-            $result = Gemini::generativeModel(model: 'gemini-3.7-flash')->generateContent($request->input('prompt'));
+            $result = Gemini::generativeModel(model: 'gemini-3.6-flash')->generateContent($request->input('prompt'));
             return response()->json([
                 'success' => true,
                 'response' => $result->text(),

@@ -13,6 +13,25 @@ use Illuminate\Support\Facades\Auth; // Tambahkan ini
 
 class HalamanUtamaController extends Controller
 {
+    public function artikel(Request $request)
+    {
+        $search = $request->string('search')->trim()->toString();
+
+        $artikels = Artikel::with('kategori')
+            ->where('status', 'published')
+            ->when($search, function ($query) use ($search) {
+                $query->where(function ($query) use ($search) {
+                    $query->where('judul', 'like', "%{$search}%")
+                        ->orWhere('isi', 'like', "%{$search}%");
+                });
+            })
+            ->latest('tanggal')
+            ->paginate(12)
+            ->withQueryString();
+
+        return view('user.artikel.public-index', compact('artikels', 'search'));
+    }
+
     public function index()
     {
         // Jika pengguna sudah login, langsung arahkan ke dashboard.
@@ -171,13 +190,12 @@ class HalamanUtamaController extends Controller
         $latestBerlaku = $anggotaCard->latestBerlaku;
 
         // Ekstrak nama provinsi dari jabatan
+        // Format yang tersimpan bisa "KORWIL - ACEH" atau "KORWIL PROVINSI ACEH"
         $province = 'TIDAK DIKETAHUI';
         if ($latestBerlaku && !empty($latestBerlaku->jabatan)) {
-            // Mencari teks setelah "KORWIL PROVINSI "
-            $jabatanUpper = strtoupper($latestBerlaku->jabatan);
-            $prefix = 'KORWIL PROVINSI ';
-            if (str_starts_with($jabatanUpper, $prefix)) {
-                $province = substr($latestBerlaku->jabatan, strlen($prefix));
+            $province = strtoupper(trim(preg_replace('/^\s*KORWIL\s*(PROVINSI\s*)?[-:]?\s*/i', '', $latestBerlaku->jabatan)));
+            if ($province === '' || $province === 'KORWIL') {
+                $province = 'TIDAK DIKETAHUI';
             }
         }
 

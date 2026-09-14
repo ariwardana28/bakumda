@@ -18,8 +18,13 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Xendit\Configuration;
+use Xendit\Invoice\CreateInvoiceRequest;
+use Xendit\Invoice\InvoiceApi;
+use Xendit\XenditSdkException;
 
 class UserPelatihanController extends Controller
 {
@@ -29,7 +34,7 @@ class UserPelatihanController extends Controller
     public static function middleware(): array
     {
         return [
-            'permission:user-pelatihan-view'   => ['only' => ['index']],
+            'permission:user-pelatihan-view'   => ['only' => ['index', 'katalog']],
             'permission:user-pelatihan-create' => ['only' => ['create', 'store']],
             'permission:user-pelatihan-show'   => ['only' => ['show', 'status']],
             // Izin untuk melihat halaman pembayaran dan memprosesnya
@@ -46,7 +51,10 @@ class UserPelatihanController extends Controller
         $jenisId = $request->input('pelatihan_jenis_id');
         $userId = Auth::id();
 
-        // 1. Ambil data jenis pelatihan beserta relasi pelatihannya
+        // 1. Ambil SEMUA jenis pelatihan beserta relasi pelatihannya.
+        //    PENTING: jangan filter $jenisPelatihans berdasarkan $jenisId di sini,
+        //    karena koleksi ini dipakai untuk render filter bar yang harus selalu
+        //    menampilkan SEMUA tombol kategori, bukan cuma kategori yang dipilih.
         $jenisPelatihans = PelatihanJenis::with(['pelatihans' => function ($query) use ($userId, $search) {
             $query->with(['userPendaftaran' => function ($q) use ($userId) {
                 $q->where('users_id', $userId)->with('latestStatus');
@@ -60,13 +68,11 @@ class UserPelatihanController extends Controller
             }
 
             $query->latest();
-        }])
-            ->when($jenisId, function ($query) use ($jenisId) {
-                $query->where('id', $jenisId);
-            })
-            ->get();
+        }])->get();
 
-        // 2. Query cadangan (jika $pelatihans dibutuhkan di view)
+        // 2. Query cadangan (jika $pelatihans dibutuhkan di view) - ini yang
+        //    memang harus difilter berdasarkan $jenisId, karena ini query kursus,
+        //    bukan query daftar kategori.
         $pelatihans = Pelatihan::with(['userPendaftaran' => function ($query) use ($userId) {
             $query->where('users_id', $userId)->with('latestStatus');
         }])->when($search, function ($query, $search) {
@@ -80,6 +86,47 @@ class UserPelatihanController extends Controller
             ->get();
 
         return view('user.pelatihan.index', compact('pelatihans', 'jenisPelatihans'));
+    }
+
+    public function katalog(Request $request)
+    {
+        $search = $request->input('search');
+        $jenisId = $request->input('pelatihan_jenis_id');
+        $userId = Auth::id();
+
+        // 1. Ambil SEMUA jenis pelatihan beserta relasi pelatihannya.
+        $jenisPelatihans = PelatihanJenis::with(['pelatihans' => function ($query) use ($userId, $search) {
+            $query->with(['userPendaftaran' => function ($q) use ($userId) {
+                $q->where('users_id', $userId)->with('latestStatus');
+            }]);
+
+            if ($search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('judul', 'like', "%{$search}%")
+                        ->orWhere('deskripsi', 'like', "%{$search}%");
+                });
+            }
+
+            $query->latest();
+        }])->get();
+
+        // 2. Query data pelatihan yang difilter berdasarkan kata kunci pencarian ($search) dan jenis ($jenisId)
+        $pelatihans = Pelatihan::with(['userPendaftaran' => function ($query) use ($userId) {
+            $query->where('users_id', $userId)->with('latestStatus');
+        }, 'jenisPelatihan'])
+            ->when($search, function ($query, $search) {
+                return $query->where(function ($q) use ($search) {
+                    $q->where('judul', 'like', "%{$search}%")
+                        ->orWhere('deskripsi', 'like', "%{$search}%");
+                });
+            })
+            ->when($jenisId, function ($query, $jenisId) {
+                return $query->where('pelatihan_jenis_id', $jenisId);
+            })
+            ->latest()
+            ->get();
+
+        return view('user.pelatihan.katalog', compact('pelatihans', 'jenisPelatihans', 'search', 'jenisId'));
     }
 
     public function create(Pelatihan $pelatihan)
@@ -210,8 +257,93 @@ class UserPelatihanController extends Controller
             return redirect()->route('user-pelatihan.index')->with('error', 'Data pelatihan tidak ditemukan.');
         }
 
-        // Mengarahkan ke view pembayaran dengan data yang diperlukan
-        return view('user.pelatihan.payment', compact('pelatihan', 'pendaftaran'));
+        $pembayaran = PelatihanPembayaran::firstOrCreate(
+            [
+                'pelatihan_id' => $pendaftaran->pelatihan_id,
+                'user_id' => $pendaftaran->users_id,
+                'pelatihan_anggota_id' => $pendaftaran->id,
+            ],
+            [
+                'jumlah_pembayaran' => $pelatihan->harga,
+                'status_pembayaran' => 'pending',
+            ]
+        );
+
+        if (!$pembayaran->xendit_invoice_url && $pembayaran->status_pembayaran === 'pending') {
+            if (!config('services.xendit.secret_key')) {
+                return redirect()->route('user-pelatihan.status', $pendaftaran->id)
+                    ->with('error', 'Pembayaran belum dapat dibuat karena Xendit belum dikonfigurasi.');
+            }
+
+            try {
+                Configuration::setXenditKey(config('services.xendit.secret_key'));
+                $invoice = (new InvoiceApi())->createInvoice(new CreateInvoiceRequest([
+                    'external_id' => 'pelatihan-' . $pendaftaran->id . '-' . Str::uuid(),
+                    'amount' => (float) $pelatihan->harga,
+                    'payer_email' => $pendaftaran->user?->email,
+                    'description' => 'Pembayaran pelatihan ' . $pelatihan->judul,
+                    'invoice_duration' => 86400,
+                    'currency' => 'IDR',
+                    'success_redirect_url' => route('user-pelatihan.status', $pendaftaran->id),
+                    'failure_redirect_url' => route('user-pelatihan.payment', $pendaftaran->id),
+                    'metadata' => ['pelatihan_anggota_id' => $pendaftaran->id],
+                ]));
+            } catch (XenditSdkException $exception) {
+                Log::error('Xendit invoice creation failed.', [
+                    'pelatihan_anggota_id' => $pendaftaran->id,
+                    'message' => $exception->getMessage(),
+                ]);
+
+                return redirect()->route('user-pelatihan.status', $pendaftaran->id)
+                    ->with('error', 'Invoice Xendit gagal dibuat. Periksa API key Xendit pada konfigurasi aplikasi.');
+            }
+
+            $pembayaran->update([
+                'xendit_invoice_id' => $invoice->getId(),
+                'xendit_invoice_url' => $invoice->getInvoiceUrl(),
+            ]);
+        }
+
+        if ($pembayaran->xendit_invoice_url) {
+            return redirect()->away($pembayaran->xendit_invoice_url);
+        }
+
+        return view('user.pelatihan.payment', compact('pelatihan', 'pendaftaran', 'pembayaran'));
+    }
+
+    public function xenditWebhook(Request $request)
+    {
+        $callbackToken = config('services.xendit.webhook_token');
+        if (!$callbackToken || !hash_equals($callbackToken, (string) $request->header('x-callback-token'))) {
+            abort(403);
+        }
+
+        $status = strtoupper((string) $request->input('status'));
+        $pembayaran = PelatihanPembayaran::where('xendit_invoice_id', $request->input('id'))->first();
+
+        if (!$pembayaran) {
+            return response()->json(['message' => 'Invoice tidak ditemukan.'], 404);
+        }
+
+        if (in_array($status, ['PAID', 'SETTLED'], true)) {
+            $pembayaran->update([
+                'status_pembayaran' => 'success',
+                'tanggal_pembayaran' => $pembayaran->tanggal_pembayaran ?? now(),
+            ]);
+
+            $latestStatus = $pembayaran->pelatihanAnggota?->latestStatus?->status;
+            if (!in_array($latestStatus, ['Aktif', 'Disetujui', 'Pembayaran Disetujui'], true)) {
+                PelatihanAnggotaStatus::create([
+                    'pelatihan_anggota_id' => $pembayaran->pelatihan_anggota_id,
+                    'status' => 'Pembayaran Disetujui',
+                    'keterangan' => 'Pembayaran Xendit berhasil diterima.',
+                ]);
+            }
+        } elseif (in_array($status, ['EXPIRED', 'FAILED'], true)) {
+            $pembayaran->update(['status_pembayaran' => 'failed']);
+        }
+
+        return response()->json(['received' => true]);
     }
 
     /**
@@ -267,7 +399,7 @@ class UserPelatihanController extends Controller
             'route'   => route('user-pelatihan.status', $pendaftaran->id, false),
         ]);
 
-        
+
         return redirect()->route('user-pelatihan.status', $pendaftaran->id)
             ->with('success', 'Konfirmasi pembayaran berhasil dikirim. Pendaftaran Anda akan segera diverifikasi.');
     }

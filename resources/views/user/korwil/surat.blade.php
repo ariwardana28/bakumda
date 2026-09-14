@@ -11,10 +11,10 @@
                 class="py-2 px-4 rounded-xl bg-white hover:bg-slate-100 text-slate-700 font-semibold text-xs uppercase tracking-wider transition flex items-center gap-2 border border-slate-200 shadow-sm">
                 <i class="fa-solid fa-arrow-left text-rose-700"></i> <span>Kembali</span>
             </a>
-            <button onclick="window.print()"
+            {{-- <button onclick="window.print()"
                 class="py-2 px-4 rounded-xl bg-rose-700 hover:bg-rose-800 text-white font-semibold text-xs uppercase tracking-wider transition flex items-center gap-2 shadow-sm">
-                {{-- <i class="fa-solid fa-print"></i> <span>Cetak Surat</span> --}}
-            </button>
+                <i class="fa-solid fa-print"></i> <span>Cetak Surat</span>
+            </button> --}}
         </div>
 
         {{-- Lembar Surat Penunjukan (Kertas Dokumen Formal) --}}
@@ -22,7 +22,8 @@
 
             {{-- Kop Surat / Header Organisasi --}}
             <div class="text-center border-b-2 border-slate-900 pb-6 space-y-2">
-                <div class="w-12 h-12 mx-auto rounded-xl bg-rose-700 text-white flex items-center justify-center text-xl shadow-md mb-2">
+                <div
+                    class="w-12 h-12 mx-auto rounded-xl bg-rose-700 text-white flex items-center justify-center text-xl shadow-md mb-2">
                     <i class="fa-solid fa-scale-balanced"></i>
                 </div>
                 <h2 class="text-lg sm:text-xl font-black uppercase tracking-wider text-slate-900">
@@ -35,7 +36,8 @@
 
             {{-- Judul Surat & Nomor --}}
             <div class="text-center space-y-1 pt-2">
-                <h1 class="text-sm sm:text-base font-bold uppercase tracking-wide text-slate-900 underline underline-offset-4">
+                <h1
+                    class="text-sm sm:text-base font-bold uppercase tracking-wide text-slate-900 underline underline-offset-4">
                     SURAT KEPUTUSAN PENGURUS PUSAT BAKUMDA
                 </h1>
                 <div class="pt-2">
@@ -51,10 +53,12 @@
                 <div class="font-bold uppercase tracking-wide text-slate-900">Menimbang:</div>
                 <ol class="list-decimal list-inside space-y-2 pl-2 text-slate-700">
                     <li class="pl-1">
-                        Bahwa dalam rangka memperluas jangkauan operasional dan efektivitas organisasi BAKUMDA di tingkat daerah, diperlukan adanya Koordinator Wilayah (Korwil).
+                        Bahwa dalam rangka memperluas jangkauan operasional dan efektivitas organisasi BAKUMDA di tingkat
+                        daerah, diperlukan adanya Koordinator Wilayah (Korwil).
                     </li>
                     <li class="pl-1">
-                        Bahwa nama yang tercantum dalam surat ini dianggap cakap dan memenuhi syarat untuk mengemban amanah sebagai Korwil Provinsi.
+                        Bahwa nama yang tercantum dalam surat ini dianggap cakap dan memenuhi syarat untuk mengemban amanah
+                        sebagai Korwil Provinsi.
                     </li>
                 </ol>
             </div>
@@ -64,7 +68,7 @@
                 <div class="font-bold uppercase tracking-wide text-slate-900 text-center py-1 bg-slate-100 rounded-lg">
                     MEMUTUSKAN
                 </div>
-                
+
                 <div class="space-y-1">
                     <span class="font-bold text-slate-900 block uppercase">Menunjuk:</span>
                 </div>
@@ -74,13 +78,13 @@
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-1">
                         <span class="font-semibold text-slate-500">Nama Lengkap</span>
                         <span class="sm:col-span-2 font-bold text-slate-900 uppercase">
-                            : {{ optional($anggota)->nama ?? 'YASSER ARAFAT' }}
+                            : {{ strtoupper(optional($anggota)->nama ?? (optional($anggota->user)->name ?? '-')) }}
                         </span>
                     </div>
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-1">
                         <span class="font-semibold text-slate-500">NIK / ID Anggota</span>
                         <span class="sm:col-span-2 font-bold font-mono text-rose-700">
-                            : {{ optional($anggotaCard)->card_id ?? ($anggota->nia ?? 'KTPA.2026.0001') }}
+                            : {{ optional($anggotaCard)->card_id ?? '-' }}
                         </span>
                     </div>
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-1">
@@ -111,7 +115,8 @@
             {{-- Penutup Surat --}}
             <div class="space-y-3 text-xs sm:text-sm text-justify leading-relaxed text-slate-700 pt-2">
                 <p>
-                    Surat penunjukan ini berlaku sejak tanggal ditetapkan hingga dilakukan evaluasi lebih lanjut oleh Pengurus Pusat.
+                    Surat penunjukan ini berlaku sejak tanggal ditetapkan hingga dilakukan evaluasi lebih lanjut oleh
+                    Pengurus Pusat.
                 </p>
                 <p>
                     Demikian surat penunjukan ini dibuat untuk dilaksanakan dengan penuh rasa tanggung jawab.

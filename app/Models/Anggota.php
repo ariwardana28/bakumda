@@ -17,6 +17,14 @@ class Anggota extends Model
     ];
 
     /**
+     * Accessor nama anggota — data nama sebenarnya ada di tabel users.
+     */
+    public function getNamaAttribute()
+    {
+        return $this->user->name ?? null;
+    }
+
+    /**
      * Get the card associated with the Anggota.
      */
     public function card()

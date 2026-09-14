@@ -18,6 +18,8 @@ class PelatihanPembayaran extends Model
         'pelatihan_anggota_id',
         'jumlah_pembayaran',
         'status_pembayaran',
+        'xendit_invoice_id',
+        'xendit_invoice_url',
         'tanggal_pembayaran',
         'bukti_pembayaran',
         'catatan',

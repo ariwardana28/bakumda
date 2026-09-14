@@ -4,7 +4,8 @@
 @section('page-subtitle', 'Informasi profil perusahaan, landasan visi, serta misi strategis organisasi.')
 
 @section('content')
-    <div class="space-y-6 max-w-7xl mx-auto pb-10" x-data="companyProfileApp()">
+    {{-- Penambahan px-4 sm:px-6 lg:px-8 untuk jarak kiri-kanan dan pt-6 sm:pt-8 untuk jarak atas --}}
+    <div class="space-y-6 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 sm:pt-8 pb-10" x-data="companyProfileApp()">
 
         <!-- Navigasi Tab / List Pilihan -->
         <div

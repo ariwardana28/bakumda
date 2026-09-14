@@ -6,6 +6,7 @@
     <div class="max-w-6xl mx-auto py-8 px-4 space-y-6" x-data="{
         search: '',
         perPage: '10',
+        currentPage: 1,
         provinces: [
             'Aceh', 'Sumatera Utara', 'Sumatera Barat', 'Riau', 'Kepulauan Riau',
             'Jambi', 'Sumatera Selatan', 'Bengkulu', 'Lampung', 'Kepulauan Bangka Belitung',
@@ -16,13 +17,29 @@
             'Maluku', 'Maluku Utara', 'Papua', 'Papua Barat', 'Papua Selatan', 'Papua Tengah', 'Papua Pegunungan', 'Papua Barat Daya'
         ],
         get filteredProvinces() {
-            let result = this.provinces.filter(p => p.toLowerCase().includes(this.search.toLowerCase()));
-            if (this.perPage !== 'all') {
-                return result.slice(0, parseInt(this.perPage));
-            }
-            return result;
+            return this.provinces.filter(p => p.toLowerCase().includes(this.search.toLowerCase()));
+        },
+        get totalPages() {
+            if (this.perPage === 'all') return 1;
+            return Math.max(1, Math.ceil(this.filteredProvinces.length / parseInt(this.perPage)));
+        },
+        get paginatedProvinces() {
+            if (this.perPage === 'all') return this.filteredProvinces;
+            const per = parseInt(this.perPage);
+            const page = Math.min(this.currentPage, this.totalPages);
+            return this.filteredProvinces.slice((page - 1) * per, page * per);
+        },
+        goToPage(page) {
+            this.currentPage = page;
+        },
+        prevPage() {
+            if (this.currentPage > 1) this.currentPage--;
+        },
+        nextPage() {
+            if (this.currentPage < this.totalPages) this.currentPage++;
         }
-    }">
+    }" x-init="$watch('search', () => currentPage = 1);
+    $watch('perPage', () => currentPage = 1)">
 
         {{-- Kartu Utama --}}
         <div
@@ -42,7 +59,8 @@
                         <i class="fa-solid fa-sitemap"></i>
                     </div>
                     <h1 class="text-xl sm:text-2xl font-black tracking-tight">Daftar Koordinator Wilayah (Korwil)</h1>
-                    <p class="text-xs text-rose-100 font-medium">Nama yang tercantum telah mendapat SK Mandat Oleh Direktorat Pimpinan Pusat BAKUMDA</p>
+                    <p class="text-xs text-rose-100 font-medium">Nama yang tercantum telah mendapat SK Mandat Oleh
+                        Direktorat Pimpinan Pusat BAKUMDA</p>
                 </div>
             </div>
 
@@ -86,9 +104,11 @@
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-200/60 font-medium text-slate-700">
-                            <template x-for="(province, index) in filteredProvinces" :key="province">
+                            <template x-for="(province, index) in paginatedProvinces" :key="province">
                                 <tr class="hover:bg-slate-50/80 transition-colors">
-                                    <td class="py-3 px-4 text-center text-slate-500 font-semibold" x-text="index + 1"></td>
+                                    <td class="py-3 px-4 text-center text-slate-500 font-semibold"
+                                        x-text="perPage === 'all' ? index + 1 : (currentPage - 1) * parseInt(perPage) + index + 1">
+                                    </td>
                                     <td class="py-3 px-4 font-bold text-slate-900" x-text="province"></td>
                                     <td class="py-3 px-4 text-center">
                                         <div class="flex items-center justify-center gap-1.5">
@@ -114,6 +134,53 @@
                             </template>
                         </tbody>
                     </table>
+                </div>
+
+                {{-- Info & Pagination (1, 2, 3, ...) --}}
+                <div class="flex flex-col sm:flex-row items-center justify-between gap-4"
+                    x-show="filteredProvinces.length > 0">
+                    <p class="text-xs sm:text-sm text-slate-500 font-medium" x-show="perPage !== 'all'">
+                        Menampilkan
+                        <span x-text="(currentPage - 1) * parseInt(perPage) + 1"></span>
+                        -
+                        <span x-text="Math.min(currentPage * parseInt(perPage), filteredProvinces.length)"></span>
+                        dari
+                        <span x-text="filteredProvinces.length"></span>
+                        data
+                    </p>
+                    <p class="text-xs sm:text-sm text-slate-500 font-medium" x-show="perPage === 'all'">
+                        Menampilkan <span x-text="filteredProvinces.length"></span> data
+                    </p>
+
+                    <nav class="flex items-center gap-1" x-show="perPage !== 'all' && totalPages > 1">
+                        {{-- Tombol Sebelumnya --}}
+                        <button @click="prevPage()" :disabled="currentPage === 1"
+                            class="px-3 py-1.5 rounded-xl text-xs font-bold border transition-colors"
+                            :class="currentPage === 1 ?
+                                'bg-slate-50 text-slate-300 border-slate-200 cursor-not-allowed' :
+                                'bg-white text-slate-600 border-slate-300 hover:bg-rose-50 hover:text-rose-700 hover:border-rose-300'">
+                            <i class="fa-solid fa-chevron-left"></i>
+                        </button>
+
+                        {{-- Nomor Halaman 1, 2, 3, ... --}}
+                        <template x-for="page in totalPages" :key="page">
+                            <button @click="goToPage(page)"
+                                class="min-w-[34px] px-3 py-1.5 rounded-xl text-xs font-bold border transition-colors"
+                                :class="page === currentPage ?
+                                    'bg-rose-700 text-white border-rose-700 shadow-sm' :
+                                    'bg-white text-slate-600 border-slate-300 hover:bg-rose-50 hover:text-rose-700 hover:border-rose-300'"
+                                x-text="page"></button>
+                        </template>
+
+                        {{-- Tombol Selanjutnya --}}
+                        <button @click="nextPage()" :disabled="currentPage === totalPages"
+                            class="px-3 py-1.5 rounded-xl text-xs font-bold border transition-colors"
+                            :class="currentPage === totalPages ?
+                                'bg-slate-50 text-slate-300 border-slate-200 cursor-not-allowed' :
+                                'bg-white text-slate-600 border-slate-300 hover:bg-rose-50 hover:text-rose-700 hover:border-rose-300'">
+                            <i class="fa-solid fa-chevron-right"></i>
+                        </button>
+                    </nav>
                 </div>
 
                 {{-- Tombol Kembali --}}

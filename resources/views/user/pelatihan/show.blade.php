@@ -97,7 +97,11 @@
                             {{ $pelatihan->deskripsi }}
                         </p>
                     </div>
-
+<br>
+<br>
+<br>
+<br>
+<br>
                     {{-- Section: Apa yang Akan Dipelajari --}}
                     <div class="space-y-6 pt-4">
                         <h2 class="text-3xl font-extrabold text-slate-900">Apa yang Akan Anda Pelajari</h2>

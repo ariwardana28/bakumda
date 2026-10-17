@@ -50,10 +50,10 @@
 
         <!-- Header Tetap (Sticky) -->
         <header
-            class="sticky top-0 left-0 right-0 z-40 px-6 sm:px-12 pt-8 pb-4 bg-slate-900/80 backdrop-blur-md border-b border-black shadow-[0_4px_25px_-2px_rgba(0,0,0,0.8)]">
+            class="sticky top-0 left-0 right-0 z-40 px-6 sm:px-12 pt-8 pb-4 bg-gradient-to-r from-[#0d1b3a] via-[#1b316b] to-[#0f1e3f] backdrop-blur-md border-b border-black/40 shadow-[0_4px_25px_-2px_rgba(0,0,0,0.8)]">
             <div class="flex items-center justify-between relative z-10">
                 <div class="flex items-center space-x-2.5">
-                    <img src="{{ asset('log.png') }}" alt="Logo" class="h-10 sm:h-12 w-auto object-contain">
+                    <img src="{{ asset('log.png') }}" alt="Logo" class="h-12 sm:h-14 w-auto object-contain">
                 </div>
                 <div class="flex items-center space-x-3">
                     {{-- <div
@@ -65,7 +65,7 @@
                         <button type="button" @click="cartOpen = !cartOpen"
                             class="w-9 h-9 rounded-full border flex items-center justify-center transition {{ request()->routeIs('user-pelatihan.show') || request()->routeIs('user-pelatihan.index') ? 'bg-slate-100 border-slate-300 text-slate-700 hover:bg-slate-200' : 'bg-[#0a1226]/90 border-blue-950/60 text-blue-200 hover:text-white' }}"
                             title="Keranjang">
-                            <i class="fa-solid fa-cart-shopping text-sm"></i>
+                            <i class="fa-solid fa-cart-shopping text-sm text-white"></i>
                             @if ($cartItems->sum('jumlah') > 0)
                                 <span
                                     class="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-orange-500 px-1 text-[9px] font-black text-white shadow">{{ $cartItems->sum('jumlah') > 99 ? '99+' : $cartItems->sum('jumlah') }}</span>
@@ -77,7 +77,7 @@
                     <div class="relative" x-data="{ notifOpen: false }" @click.away="notifOpen = false">
                         <button @click="notifOpen = !notifOpen"
                             class="w-9 h-9 rounded-full border flex items-center justify-center transition {{ request()->routeIs('user-pelatihan.show') || request()->routeIs('user-pelatihan.index') ? 'bg-slate-100 border-slate-300 text-slate-700 hover:bg-slate-200' : 'bg-[#0a1226]/90 border-blue-950/60 text-blue-200 hover:text-white' }}">
-                            <i class="fa-regular fa-bell text-sm"></i>
+                            <i class="fa-regular fa-bell text-sm" text-white></i>
                         </button>
 
                         @php
@@ -379,8 +379,8 @@
                                     Ajukan Diri Menjadi Anggota BAKUMDA
                                 </h4> --}}
                                 <a href="{{ route('user-anggota.index') }}"
-                                    class="menu-item-auth bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-300 hover:to-orange-400 text-white font-bold text-[8px] md:text-[9px] px-4 py-1.5 rounded-full shadow transition cursor-pointer inline-flex items-center justify-center">
-                                    DAFTAR KEANGGOTAAN
+                                    class="menu-item-auth bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-300 hover:to-orange-400 text-white font-bold text-[10px] md:text-[11px] px-4 py-1.5 rounded-full shadow transition cursor-pointer inline-flex items-center justify-center">
+                                    DAFTAR SEKARANG
                                 </a>
                                 <p class="text-[11px] sm:text-xs text-blue-200/80 font-medium mt-1">
                                     Proses Cepat & Mudah.
@@ -419,7 +419,7 @@
                             </div>
 
                             <!-- Bungkus tombol berdampingan -->
-                            <div class="flex items-center gap-2 shrink-0">
+                            {{-- <div class="flex items-center gap-2 shrink-0">
                                 <!-- Tombol Ikuti DIKLATKUM -->
                                 <a href="{{ route('user-pelatihan.index') }}"
                                     class="menu-item-auth bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold text-[8px] md:text-[9px] px-4 py-1.5 rounded-full shadow transition cursor-pointer inline-flex items-center justify-center">
@@ -427,11 +427,11 @@
                                 </a>
 
                                 <!-- Tombol Daftar Keanggotaan (Diubah menjadi tag <a> yang valid) -->
-                                {{-- <a href="{{ route('user-anggota.index') }}"
+                                <a href="{{ route('user-anggota.index') }}"
                                     class="menu-item-auth bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-300 hover:to-orange-400 text-white font-bold text-[8px] md:text-[9px] px-4 py-1.5 rounded-full shadow transition cursor-pointer inline-flex items-center justify-center">
                                     DAFTAR KEANGGOTAAN
-                                </a> --}}
-                            </div>
+                                </a>
+                            </div> --}}
                         </div>
                     </div>
                 @endif
@@ -816,25 +816,27 @@
 
         <!-- Mobile Bottom Navigation Bar -->
         <div
-            class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-100 px-6 py-2.5 flex items-center justify-around z-50 shadow-[0_-4px_20px_rgba(0,0,0,0.06)]">
-            <!-- 1. Beranda -->
+            class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-100 px-6 py-2.5 flex items-center justify-around z-50 shadow-[0_-6px_25px_rgba(37,99,235,0.35)]">
+            <!-- 1. Beranda (Aktif - Warna Biru) -->
             <a href="{{ url('/') }}" class="flex flex-col items-center text-blue-700 py-1">
                 <div class="w-9 h-9 rounded-full bg-blue-50 flex items-center justify-center"> {{-- @TODO: Ganti dengan route('dashboard') --}}
-                    <i class="fa-solid fa-house text-base"></i>
+                    <i class="fa-solid fa-house text-base text-blue-700"></i>
                 </div>
-                <span class="text-[10px] font-bold mt-0.5">Beranda</span>
+                <span class="text-[10px] font-bold mt-0.5 text-blue-700">Beranda</span>
             </a>
 
-            <!-- 2. Artikel -->
+            <!-- 2. Sertifikat -->
             <a href="{{ route('sertifikat.index') }}"
-                class="flex flex-col items-center text-slate-400 hover:text-blue-700 py-1 transition">
-                <div class="w-9 h-9 rounded-full flex items-center justify-center">
-                    <i class="fa-solid fa-stamp text-base"></i>
+                class="flex flex-col items-center text-slate-500 hover:text-blue-700 py-1 transition-colors duration-200 group">
+                <div
+                    class="w-9 h-9 rounded-full flex items-center justify-center group-hover:bg-blue-50 transition-colors">
+                    <i
+                        class="fa-solid fa-newspaper  text-base text-slate-600 group-hover:text-blue-700 transition-colors"></i>
                 </div>
                 <span class="text-[10px] font-medium mt-0.5">Sertifikat</span>
             </a>
 
-            <!-- 3. QR (Scan) -->
+            <!-- 3. QR (Scan) - Tetap Merah sebagai Aksen -->
             <div class="relative -top-5">
                 <a href="{{ route('kartu-anggota.cek.form') }}"
                     class="w-14 h-14 rounded-full bg-gradient-to-tr from-red-700 to-rose-900 text-white flex items-center justify-center shadow-lg border-4 border-white transition-transform hover:scale-105">
@@ -844,18 +846,22 @@
 
             <!-- 4. Kartu -->
             <a href="{{ route('user-anggota.index') }}"
-                class="flex flex-col items-center text-slate-400 hover:text-blue-700 py-1 transition">
-                <div class="w-9 h-9 rounded-full flex items-center justify-center">
-                    <i class="fa-solid fa-id-card text-base"></i>
+                class="flex flex-col items-center text-slate-500 hover:text-blue-700 py-1 transition-colors duration-200 group">
+                <div
+                    class="w-9 h-9 rounded-full flex items-center justify-center group-hover:bg-blue-50 transition-colors">
+                    <i
+                        class="fa-solid fa-id-card text-base text-slate-600 group-hover:text-blue-700 transition-colors"></i>
                 </div>
                 <span class="text-[10px] font-medium mt-0.5">Kartu</span>
             </a>
 
             <!-- 5. Profil --> {{-- @TODO: Ganti dengan route('profile.edit') --}}
             <a href="{{ route('profile.show') }}"
-                class="flex flex-col items-center text-slate-400 hover:text-blue-700 py-1 transition">
-                <div class="w-9 h-9 rounded-full flex items-center justify-center">
-                    <i class="fa-solid fa-user text-base"></i>
+                class="flex flex-col items-center text-slate-500 hover:text-blue-700 py-1 transition-colors duration-200 group">
+                <div
+                    class="w-9 h-9 rounded-full flex items-center justify-center group-hover:bg-blue-50 transition-colors">
+                    <i
+                        class="fa-solid fa-user text-base text-slate-600 group-hover:text-blue-700 transition-colors"></i>
                 </div>
                 <span class="text-[10px] font-medium mt-0.5">Profil</span>
             </a>

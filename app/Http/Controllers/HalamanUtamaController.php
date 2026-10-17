@@ -40,7 +40,8 @@ class HalamanUtamaController extends Controller
             return redirect()->route('dashboard');
         }
 
-        $pelatihans = Pelatihan::where('tampilkan_di_banner', true)->latest()->get();
+        $pelatihans_banner = Pelatihan::where('tampilkan_di_banner', true)->latest()->get();
+        $pelatihans = Pelatihan::all();
         $banners = $homepageBannerService->activeSlides();
         $user = Auth::user();
         $artikels = Artikel::where('status', 'published')->latest()->get();
@@ -65,7 +66,7 @@ class HalamanUtamaController extends Controller
             }
         }
 
-        return view('welcome', compact('pelatihans', 'banners', 'isRegistered', 'nama_anggota', 'no_ktpa', 'status_anggota', 'artikels'));
+        return view('welcome', compact('pelatihans', 'banners', 'isRegistered', 'nama_anggota', 'no_ktpa', 'status_anggota', 'artikels','pelatihans_banner'));
     }
 
     /**

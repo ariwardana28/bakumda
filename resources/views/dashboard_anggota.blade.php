@@ -9,7 +9,9 @@
     <!-- Tailwind CSS CDN -->
     <script>
         window.tailwind = window.tailwind || {};
-        window.tailwind.config = { darkMode: 'class' };
+        window.tailwind.config = {
+            darkMode: 'class'
+        };
     </script>
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome CDN -->
@@ -169,26 +171,26 @@
 
         <!-- Konten Utama yang Bisa di-scroll -->
         <main class="flex-1 overflow-y-auto px-6 sm:px-12 pt-6 pb-28">
-
-
             <!-- ========================================== -->
             <!-- HERO BANNER & KTA / PENDAFTARAN            -->
             <!-- ========================================== -->
             <div class="grid grid-cols-1 gap-3 md:gap-6 mb-4 md:mb-8 relative z-7">
 
                 <div id="banner-slider-container"
-                    class="relative w-full overflow-hidden rounded-3xl shadow-xl border border-slate-800 mb-1 md:mb-4 z-10">
+                    class="relative -mx-6 sm:-mx-12 -mt-6 w-auto overflow-hidden rounded-none shadow-none border-0 mb-0 z-10">
 
                     <div class="heroSlider flex transition-transform duration-700 ease-out w-full">
                         @forelse ($banners as $banner)
                             <div class="slide-item min-w-full w-full shrink-0 relative overflow-hidden">
                                 @if ($banner->tautan)
                                     <a href="{{ $banner->tautan }}" class="block">
-                                        <img src="{{ Storage::url($banner->gambar) }}" alt="{{ $banner->judul ?? 'Banner BAKUMDA' }}"
+                                        <img src="{{ Storage::url($banner->gambar) }}"
+                                            alt="{{ $banner->judul ?? 'Banner BAKUMDA' }}"
                                             class="w-full h-auto object-contain">
                                     </a>
                                 @else
-                                    <img src="{{ Storage::url($banner->gambar) }}" alt="{{ $banner->judul ?? 'Banner BAKUMDA' }}"
+                                    <img src="{{ Storage::url($banner->gambar) }}"
+                                        alt="{{ $banner->judul ?? 'Banner BAKUMDA' }}"
                                         class="w-full h-auto object-contain">
                                 @endif
                             </div>
@@ -211,12 +213,14 @@
                     <div class="absolute bottom-3 right-4 z-30 flex space-x-1.5" id="slider-dots">
                         @if ($banners->isNotEmpty())
                             @foreach ($banners as $index => $banner)
-                                <button class="dot h-2 {{ $index === 0 ? 'w-5 bg-white' : 'w-2 bg-white/50' }} rounded-full transition-all duration-300"
+                                <button
+                                    class="dot h-2 {{ $index === 0 ? 'w-5 bg-white' : 'w-2 bg-white/50' }} rounded-full transition-all duration-300"
                                     data-index="{{ $index }}" aria-label="Banner {{ $index + 1 }}"></button>
                             @endforeach
                         @else
                             @foreach (range(0, 3) as $index)
-                                <button class="dot h-2 {{ $index === 0 ? 'w-5 bg-white' : 'w-2 bg-white/50' }} rounded-full transition-all duration-300"
+                                <button
+                                    class="dot h-2 {{ $index === 0 ? 'w-5 bg-white' : 'w-2 bg-white/50' }} rounded-full transition-all duration-300"
                                     data-index="{{ $index }}" aria-label="Banner {{ $index + 1 }}"></button>
                             @endforeach
                         @endif
@@ -325,7 +329,7 @@
                                 <div class="flex items-center space-x-2 mb-1">
 
                                     <span
-                                        class="text-[10px] md:text-xs font-bold text-amber-300 uppercase tracking-wider">
+                                        class="text-[9px] md:text-xs font-bold text-amber-300 uppercase tracking-wider">
                                         Anda Telah Terdaftar
                                     </span>
                                 </div>
@@ -335,7 +339,7 @@
                                     {{ $nama_anggota ?? 'DR. H. ARIS M.' }}
                                 </div>
                                 <p
-                                    class="text-xs md:text-sm text-blue-200/80 font-extrabold uppercase tracking-wide mt-1">
+                                    class="text-[8px] md:text-xs text-blue-200/80 font-extrabold uppercase tracking-wide mt-1">
 
                                     {{ $no_ktpa ?? '7371 2094 0000 3127' }}
                                 </p>
@@ -361,18 +365,24 @@
                 @else
                     <!-- Tampilan Pendaftaran Anggota Baru -->
                     <div
-                        class="mt-1 md:mt-0 bg-gradient-to-br from-blue-900 to-indigo-950 border border-blue-800/60 rounded-3xl p-5 md:p-6 shadow-xl flex flex-col justify-between transition-transform duration-300 hover:scale-[1.02] group">
+                        class="mt-1 md:mt-0 bg-gradient-to-br from-blue-900 to-indigo-950 border border-blue-800/60 rounded-3xl p-4 md:p-5 shadow-xl flex flex-col justify-between transition-transform duration-300 hover:scale-[1.02] group">
                         <div class="flex items-center justify-between gap-4">
                             <div>
-                                <div class="mb-2">
-                                    <span class="text-xs font-bold text-yellow-300 uppercase tracking-wider">Anda Belum
+                                <div class="mb-1">
+                                    <span
+                                        class="text-[9px] md:text-[10px] font-bold text-yellow-300 uppercase tracking-wider">Anda
+                                        Belum
                                         Terdaftar</span>
                                 </div>
-                                <h4
-                                    class="font-black text-white text-base md:text-lg tracking-wide group-hover:text-blue-200 transition">
+                                {{-- <h4
+                                    class="font-black text-white text-sm md:text-base tracking-wide group-hover:text-blue-200 transition">
                                     Ajukan Diri Menjadi Anggota BAKUMDA
-                                </h4>
-                                <p class="text-[8px] md:text-xs text-blue-200/80 font-medium mt-1">
+                                </h4> --}}
+                                <a href="{{ route('user-anggota.index') }}"
+                                    class="menu-item-auth bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-300 hover:to-orange-400 text-white font-bold text-[8px] md:text-[9px] px-4 py-1.5 rounded-full shadow transition cursor-pointer inline-flex items-center justify-center">
+                                    DAFTAR KEANGGOTAAN
+                                </a>
+                                <p class="text-[11px] sm:text-xs text-blue-200/80 font-medium mt-1">
                                     Proses Cepat & Mudah.
                                 </p>
                             </div>
@@ -381,27 +391,28 @@
                                 class="w-24 h-16 md:w-28 md:h-20 rounded-2xl bg-gradient-to-br from-slate-800 via-slate-900 to-slate-950 border border-slate-700/80 p-3 flex flex-col justify-between shrink-0 shadow-lg z-10 my-auto">
                                 <div class="flex justify-between items-start">
                                     <span
-                                        class="text-[9px] md:text-[10px] text-slate-400 font-black tracking-wider">BAKUMDA</span>
+                                        class="text-[7px] md:text-[8px] text-slate-400 font-black tracking-wider">BAKUMDA</span>
                                     <div
-                                        class="w-2.5 h-2.5 rounded-full bg-amber-400 shadow-[0_0_10px_rgba(251,191,36,0.9)]">
+                                        class="w-2 h-2 rounded-full bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.9)]">
                                     </div>
                                 </div>
                                 <div
-                                    class="w-8 md:w-10 h-4 md:h-5 bg-gradient-to-r from-amber-400/30 to-amber-200/40 border border-amber-400/40 rounded-[4px] ml-auto flex items-center justify-center">
+                                    class="w-7 md:w-8 h-3 md:h-4 bg-gradient-to-r from-amber-400/30 to-amber-200/40 border border-amber-400/40 rounded-[3px] ml-auto flex items-center justify-center">
                                     <div class="w-full h-[1.5px] bg-amber-400/50"></div>
                                 </div>
                             </div>
                         </div>
 
                         <div
-                            class="pt-4 mt-3 border-t border-blue-800/60 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-                              <div class="flex items-start gap-2 max-w-sm">
-                                <svg class="w-4 h-4 text-blue-400 shrink-0 mt-0.5" fill="none" stroke="currentColor"
-                                    viewBox="0 0 24 24">
+                            class="pt-3 mt-2 border-t border-blue-800/60 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+
+                            <div class="flex items-start gap-2 max-w-sm">
+                                <svg class="w-4 h-4 text-blue-400 shrink-0 mt-0.5" fill="none"
+                                    stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                 </svg>
-                                <p class="text-[11px] md:text-xs text-slate-300 leading-relaxed">
+                                <p class="text-[8px] md:text-xs text-slate-300 leading-relaxed">
                                     Pastikan Anda telah memiliki <span class="text-amber-400 font-semibold">Sertifikat
                                         DIKLATKUM</span> sebagai syarat utama keanggotaan.
                                 </p>
@@ -411,15 +422,15 @@
                             <div class="flex items-center gap-2 shrink-0">
                                 <!-- Tombol Ikuti DIKLATKUM -->
                                 <a href="{{ route('user-pelatihan.index') }}"
-                                    class="menu-item-auth bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold text-xs px-4 py-2 rounded-full shadow transition cursor-pointer inline-flex items-center justify-center">
+                                    class="menu-item-auth bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold text-[8px] md:text-[9px] px-4 py-1.5 rounded-full shadow transition cursor-pointer inline-flex items-center justify-center">
                                     IKUTI DIKLATKUM
                                 </a>
 
                                 <!-- Tombol Daftar Keanggotaan (Diubah menjadi tag <a> yang valid) -->
-                                <a href="{{ route('user-anggota.index') }}"
-                                    class="menu-item-auth bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-300 hover:to-orange-400 text-white font-bold text-xs px-4 py-2 rounded-full shadow transition cursor-pointer inline-flex items-center justify-center">
+                                {{-- <a href="{{ route('user-anggota.index') }}"
+                                    class="menu-item-auth bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-300 hover:to-orange-400 text-white font-bold text-[8px] md:text-[9px] px-4 py-1.5 rounded-full shadow transition cursor-pointer inline-flex items-center justify-center">
                                     DAFTAR KEANGGOTAAN
-                                </a>
+                                </a> --}}
                             </div>
                         </div>
                     </div>
@@ -428,45 +439,53 @@
             <br>
 
             <div x-data="{ showAuthModal: false }"
-                class="bg-white text-slate-900 rounded-t-[2.5rem] rounded-b-[2.5rem] -mt-4 pt-10 px-6 sm:px-12 shadow-2xl relative z-20 flex-1 space-y-8 pb-12">
+                class="bg-white text-slate-900 -mx-6 sm:-mx-12 -mt-4 rounded-t-2xl pt-10 px-6 sm:px-12 shadow-2xl relative z-20 flex-1 space-y-8 pb-12">
 
                 <!-- Modal Peringatan Akses -->
                 <div x-show="showAuthModal" x-transition:enter="transition ease-out duration-300"
                     x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
                     x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100"
                     x-transition:leave-end="opacity-0"
-                    class="fixed inset-0 bg-black bg-opacity-60 z-[99] flex items-center justify-center p-4" x-cloak>
+                    class="fixed inset-0 bg-slate-950/40 backdrop-blur-sm z-[99] flex items-center justify-center p-4"
+                    x-cloak>
                     <div @click.away="showAuthModal = false" x-show="showAuthModal"
                         x-transition:enter="transition ease-out duration-300"
                         x-transition:enter-start="opacity-0 scale-90" x-transition:enter-end="opacity-100 scale-100"
                         x-transition:leave="transition ease-in duration-200"
                         x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-90"
-                        class="bg-white rounded-2xl shadow-xl w-full max-w-md mx-auto p-6 text-center relative">
+                        class="bg-white rounded-3xl shadow-2xl w-full max-w-xl mx-auto px-6 py-8 sm:px-10 sm:py-10 text-center relative">
 
                         <!-- Tombol X di Kanan Atas -->
                         <button @click="showAuthModal = false"
-                            class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 transition">
+                            class="absolute top-4 right-4 w-11 h-11 rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200 hover:text-slate-700 transition"
+                            aria-label="Tutup">
                             <i class="fa-solid fa-xmark text-lg"></i>
                         </button>
 
-                        <div class="mx-auto w-16 h-16 rounded-full bg-red-100 flex items-center justify-center mb-4">
-                            <i class="fa-solid fa-lock text-red-500 text-2xl"></i>
+                        <div
+                            class="mx-auto w-[84px] h-[84px] rounded-3xl bg-blue-50 flex items-center justify-center mb-6 shadow-inner">
+                            <i class="fa-solid fa-lock text-blue-600 text-3xl"></i>
                         </div>
-                        <h3 class="text-xl font-bold text-slate-800">Akses Terbatas</h3>
-                        <p class="text-slate-500 mt-2 mb-6">
-                            Fitur ini hanya tersedia untuk anggota terverifikasi. Syarat menjadi anggota wajib mengikuti
-                            <strong>DIKLATKUM</strong> terlebih dahulu. Silakan ikuti pelatihan atau daftar menjadi
-                            anggota untuk menikmati semua fitur eksklusif.
+                        <h3 class="text-2xl sm:text-3xl font-extrabold text-slate-900">Login atau Daftar Sekarang</h3>
+                        <p class="text-slate-500 mt-2 mb-10">
+                            Silakan pilih opsi di bawah ini untuk mengakses menu eksklusif BAKUMDA.
                         </p>
-                        <div class="flex flex-col sm:flex-row gap-3 justify-center">
-                            <a href="{{ route('user-pelatihan.index') }}"
-                                class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-3 px-5 rounded-xl transition text-center flex items-center justify-center">
-                                Ikuti DIKLATKUM
+                        <div class="flex flex-col gap-4">
+                            <a href="{{ route('login') }}"
+                                class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-5 px-5 rounded-2xl shadow-lg shadow-blue-200 transition text-center flex items-center justify-center gap-3">
+                                <i class="fa-solid fa-right-to-bracket"></i>
+                                Masuk / Login
                             </a>
-                            <a href="{{ route('user-anggota.index') }}"
-                                class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-5 rounded-xl shadow-lg shadow-blue-200 transition text-center flex items-center justify-center">
-                                Daftar Anggota
+                            <a href="{{ route('register') }}"
+                                class="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-5 px-5 rounded-2xl transition text-center flex items-center justify-center gap-3">
+                                <i class="fa-solid fa-user-plus"></i>
+                                Daftar Akun Baru
                             </a>
+                        </div>
+                        <div class="mt-9 border-t border-slate-100 pt-7 text-sm text-slate-500">
+                            Butuh bantuan akses?
+                            <a href="https://wa.me/628123456789" target="_blank" rel="noopener noreferrer"
+                                class="font-semibold text-blue-600 hover:text-blue-700">Hubungi Admin</a>
                         </div>
                     </div>
                 </div>
@@ -474,15 +493,17 @@
                 <!-- ========================================== -->
                 <!-- MENU UTAMA (KONDISI MOBILE vs DESKTOP)    -->
                 <!-- ========================================== -->
-                <div>
+                <div class="-mx-6 sm:-mx-12 bg-white px-4 sm:px-6">
                     @php
-                        $isMember = isset($isRegistered) && $isRegistered;
-                        $authAction = $isMember ? '' : 'href="#" @click.prevent="showAuthModal = true"';
+                        $isLoggedIn = auth()->check();
+                        $authAction = $isLoggedIn ? '' : 'href="#" @click.prevent="showAuthModal = true"';
+                        $desktopAuthAction = $isLoggedIn ? '' : 'href="' . route('login') . '"';
                     @endphp
 
                     <!-- Grid Menu: 4 Kolom untuk Mobile (<= 13 Inch), 8 Kolom untuk Desktop (> 13 Inch) -->
-                    <h3 class="text-lg font-extrabold text-slate-900 leading-tight">Fitur Eksklusif</h3><br>
-                    <div class="grid grid-cols-4 min-[1281px]:grid-cols-8 gap-y-6 gap-x-4">
+                    <h3 class="relative -top-10 text-lg font-extrabold text-slate-900 leading-tight">Fitur Eksklusif
+                    </h3>
+                    <div class="-mt-4 grid grid-cols-4 min-[1281px]:grid-cols-8 gap-y-6 gap-x-4">
 
                         <!-- Menu 1 (Mobile: Pelatihan, Desktop: Konsultasi) -->
                         <a href="{{ route('user-pelatihan.index') }}"
@@ -500,8 +521,8 @@
                                 class="text-xs font-semibold text-slate-700 mt-2 text-center leading-tight">Pelatihan</span>
                         </a>
 
-                         <!-- Menu 4 (Mobile: Inspirator, Desktop: Paralegal) -->
-                        <a {!! $isMember ? 'href="' . route('user-referral.index') . '"' : $authAction !!}
+                        <!-- Menu 4 (Mobile: Inspirator, Desktop: Paralegal) -->
+                        <a {!! $isLoggedIn ? 'href="' . route('user-referral.index') . '"' : $authAction !!}
                             class="menu-item-auth flex flex-col items-center cursor-pointer group">
                             <div
                                 class="w-16 h-16 md:w-18 md:h-18 rounded-2xl bg-gradient-to-tr from-blue-600 to-cyan-700 flex items-center justify-center text-white shadow-md shadow-blue-500/20 group-hover:scale-105 transition">
@@ -514,7 +535,7 @@
                         </a>
 
                         <!-- Menu 3 (Mobile: Legalku, Desktop: UU & Perda) -->
-                        <a {!! $isMember ? 'href="' . url('/user-surat') . '"' : $authAction !!}
+                        <a {!! $isLoggedIn ? 'href="' . url('/user-surat') . '"' : $authAction !!}
                             class="menu-item-auth flex flex-col items-center cursor-pointer group">
                             <div
                                 class="w-16 h-16 md:w-18 md:h-18 rounded-2xl bg-gradient-to-tr from-slate-800 to-blue-900 flex items-center justify-center text-white shadow-md shadow-blue-500/20 group-hover:scale-105 transition">
@@ -527,7 +548,7 @@
                                 class="text-xs font-semibold text-slate-700 mt-2 text-center leading-tight">E-Dokumen</span>
                         </a>
 
-                        <a href="{{ url('/ai-chat') }}" class="flex flex-col items-center cursor-pointer group">
+                        <a {!! $isLoggedIn ? 'href="' . url('/ai-chat') . '"' : $authAction !!} class="flex flex-col items-center cursor-pointer group">
                             <div
                                 class="w-16 h-16 md:w-18 md:h-18 rounded-2xl bg-gradient-to-tr from-blue-600 to-cyan-700 flex items-center justify-center text-white shadow-md shadow-blue-500/20 group-hover:scale-105 transition">
                                 <i class="fa-solid fa-robot max-[1280px]:block min-[1281px]:hidden text-2xl"></i>
@@ -538,7 +559,7 @@
                         </a>
 
                         <!-- Menu 5 (Mobile: Struktur, Desktop: Dokumen) -->
-                        <a {!! $isMember ? 'href="' . route('korwil') . '"' : $authAction !!}
+                        <a href="{{ route('korwil') }}"
                             class="menu-item-auth flex flex-col items-center cursor-pointer group">
                             <div
                                 class="w-16 h-16 md:w-18 md:h-18 rounded-2xl bg-gradient-to-tr from-amber-600 to-yellow-600 flex items-center justify-center text-white shadow-md shadow-amber-500/20 group-hover:scale-105 transition">
@@ -551,7 +572,7 @@
                         </a>
 
                         <!-- Menu 6 (Mobile: E-Organisasi, Desktop: Mediator) -->
-                        <a {!! $isMember ? 'href="' . url('/about') . '"' : $authAction !!}
+                        <a href="{{ url('/about') }}"
                             class="menu-item-auth flex flex-col items-center cursor-pointer group">
                             <div
                                 class="w-16 h-16 md:w-18 md:h-18 rounded-2xl bg-gradient-to-tr from-blue-900 to-slate-900 flex items-center justify-center text-white shadow-md shadow-blue-500/20 group-hover:scale-105 transition">
@@ -578,7 +599,7 @@
                         </a>
 
                         <!-- Menu 7 (Mobile: Merchandise, Desktop: Darurat) -->
-                        <a {!! $isMember ? 'href="' . route('user-kerjasamas.index') . '"' : $authAction !!}
+                        <a {!! $isLoggedIn ? 'href="' . route('user-kerjasamas.index') . '"' : $authAction !!}
                             class="menu-item-auth flex flex-col items-center cursor-pointer group">
                             <div
                                 class="w-16 h-16 md:w-18 md:h-18 rounded-2xl bg-gradient-to-tr from-red-600 to-rose-800 flex items-center justify-center text-white shadow-md shadow-red-500/20 group-hover:scale-105 transition">
@@ -593,13 +614,23 @@
                 </div>
 
                 <!-- Program Bantuan Hukum (Slider) -->
-                 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+                <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
 
                 <div class="relative py-4 max-w-7xl mx-auto px-4">
-                    <div class="mb-4">
-                        <h3 class="text-lg font-extrabold text-slate-900 leading-tight">Program Pelatihan</h3>
-                        <span class="text-xs text-slate-400 font-medium">Berjalan otomatis & berputar tanpa
-                            henti</span>
+                    <div class="mb-4 flex items-center justify-between gap-4">
+                        <div>
+                            <h3 class="text-lg font-extrabold text-slate-900 leading-tight">Program Pelatihan</h3>
+                            <span class="text-xs text-slate-400 font-medium">Berjalan otomatis & berputar tanpa
+                                henti</span>
+                        </div>
+                        <div class="flex shrink-0 items-center gap-2">
+                            <div
+                                class="swiper-button-prev !static !m-0 !w-9 !h-9 !bg-white/90 !text-slate-800 rounded-full shadow-md after:!text-xs">
+                            </div>
+                            <div
+                                class="swiper-button-next !static !m-0 !w-9 !h-9 !bg-white/90 !text-slate-800 rounded-full shadow-md after:!text-xs">
+                            </div>
+                        </div>
                     </div>
 
                     <div class="swiper myPelatihanSwiper relative">
@@ -637,12 +668,6 @@
                             @endforeach
                         </div>
 
-                        <div
-                            class="swiper-button-next !w-9 !h-9 !bg-white/90 !text-slate-800 rounded-full shadow-md after:!text-xs">
-                        </div>
-                        <div
-                            class="swiper-button-prev !w-9 !h-9 !bg-white/90 !text-slate-800 rounded-full shadow-md after:!text-xs">
-                        </div>
                     </div>
                 </div>
 
@@ -865,7 +890,7 @@
                     </div>
                     <div x-show="sidebarOpen" x-transition.opacity class="truncate">
                         <h1 class="font-extrabold text-white text-base tracking-wider">BAKUMDA</h1>
-                        <p class="text-[10px] text-amber-400 font-medium">Admin Control Panel</p>
+                        <p class="text-[10px] text-amber-400 font-medium">Portal BAKUMDA</p>
                     </div>
                 </div>
 
@@ -876,7 +901,7 @@
                         <i class="fa-solid fa-house w-5 text-center shrink-0 text-base"></i>
                         <span x-show="sidebarOpen" x-transition.opacity class="truncate">Beranda</span>
                     </a>
-                    <a href=""
+                    <a href="{{ route('artikel.index.public') }}"
                         class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/60 font-medium text-sm transition">
                         <i class="fa-solid fa-newspaper w-5 text-center shrink-0 text-base"></i>
                         <span x-show="sidebarOpen" x-transition.opacity class="truncate">Artikel</span>
@@ -891,7 +916,7 @@
                         <i class="fa-solid fa-id-card w-5 text-center shrink-0 text-base"></i>
                         <span x-show="sidebarOpen" x-transition.opacity class="truncate">Kartu</span>
                     </a>
-                    <a href="{{ route('profile.show') }}"
+                    <a href="{{ route('login') }}"
                         class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/60 font-medium text-sm transition">
                         <i class="fa-solid fa-user-shield w-5 text-center shrink-0 text-base"></i>
                         <span x-show="sidebarOpen" x-transition.opacity class="truncate">Profile</span>
@@ -899,26 +924,23 @@
                 </nav>
             </div>
 
-            <!-- User Info & Logout Footer -->
+            <!-- Guest Access Footer -->
             <div class="border-t border-slate-800 bg-slate-900/50 flex flex-col">
-                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                    @csrf
-                </form>
                 <div class="px-3 pb-3">
-                    <a href="#"
-                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
-                        class="flex items-center space-x-3 px-3.5 py-2 rounded-xl text-red-400 hover:bg-red-500/10 font-medium text-sm transition">
-                        <i class="fa-solid fa-right-from-bracket w-5 text-center shrink-0 text-base"></i>
-                        <span x-show="sidebarOpen" x-transition.opacity class="truncate">Logout</span>
+                    <a href="{{ route('login') }}"
+                        class="flex items-center space-x-3 px-3.5 py-2 rounded-xl text-blue-300 hover:bg-blue-500/10 font-medium text-sm transition">
+                        <i class="fa-solid fa-right-to-bracket w-5 text-center shrink-0 text-base"></i>
+                        <span x-show="sidebarOpen" x-transition.opacity class="truncate">Masuk</span>
                     </a>
                 </div>
                 <div class="p-4 flex items-center space-x-3 overflow-hidden border-t border-slate-800/60">
                     <div
                         class="w-9 h-9 rounded-full bg-blue-600/20 border border-blue-500/30 flex items-center justify-center text-blue-400 font-bold text-xs shrink-0">
-                        AD</div>
+                        P</div>
                     <div x-show="sidebarOpen" x-transition.opacity class="overflow-hidden truncate">
-                        <h4 class="text-xs font-bold text-white truncate">{{ Auth::user()->name }}</h4>
-                        <p class="text-[10px] text-amber-400 truncate">Anggota</p>
+                        <h4 class="text-xs font-bold text-white truncate">{{ Auth::user()?->name ?? 'Pengunjung' }}
+                        </h4>
+                        <p class="text-[10px] text-amber-400 truncate">Belum masuk</p>
                     </div>
                 </div>
             </div>
@@ -935,8 +957,8 @@
                         <i class="fa-solid fa-bars text-sm"></i>
                     </button>
                     <div>
-                        <h2 class="text-sm font-extrabold text-white">Dashboard Overview</h2>
-                        <p class="text-[11px] text-slate-400">Selamat datang kembali, Administrator.</p>
+                        <h2 class="text-sm font-extrabold text-white">Beranda BAKUMDA</h2>
+                        <p class="text-[11px] text-slate-400">Jelajahi layanan dan informasi BAKUMDA.</p>
                     </div>
                 </div>
                 <div class="items-center space-x-4 hidden sm:flex">
@@ -1108,7 +1130,7 @@
                         </a>
 
                         <!-- Menu 4 (Inspirator) -->
-                        <a {!! $isMember ? 'href="' . route('user-referral.index') . '"' : $authAction !!}
+                        <a {!! $isLoggedIn ? 'href="' . route('user-referral.index') . '"' : $desktopAuthAction !!}
                             class="menu-item-auth flex flex-col items-center cursor-pointer group">
                             <div
                                 class="w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-gradient-to-tr from-blue-600 to-cyan-700 flex items-center justify-center text-white shadow-md shadow-blue-500/20 group-hover:scale-105 transition">
@@ -1119,8 +1141,7 @@
                         </a>
 
                         <!-- Menu Kartu Anggota (KTA) di Fitur Eksklusif -->
-                        <a href="{{ route('user-anggota.index') }}"
-                            class="flex flex-col items-center cursor-pointer group">
+                        <a {!! $isLoggedIn ? 'href="' . route('user-anggota.index') . '"' : $desktopAuthAction !!} class="flex flex-col items-center cursor-pointer group">
                             <div
                                 class="w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-gradient-to-tr from-amber-600 to-amber-500 flex items-center justify-center text-white shadow-md shadow-amber-500/20 group-hover:scale-105 transition">
                                 <i class="fa-solid fa-id-card text-xl md:text-2xl"></i>
@@ -1130,7 +1151,7 @@
                         </a>
 
                         <!-- Menu 3 (E-Dokumen) -->
-                        <a {!! $isMember ? 'href="' . url('/user-surat') . '"' : $authAction !!}
+                        <a {!! $isLoggedIn ? 'href="' . url('/user-surat') . '"' : $desktopAuthAction !!}
                             class="menu-item-auth flex flex-col items-center cursor-pointer group">
                             <div
                                 class="w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-gradient-to-tr from-slate-800 to-blue-900 flex items-center justify-center text-white shadow-md shadow-blue-500/20 group-hover:scale-105 transition">
@@ -1141,7 +1162,7 @@
                         </a>
 
                         <!-- Menu 5 (Asisten Legal / AI Chat) -->
-                        <a href="{{ url('/ai-chat') }}" class="flex flex-col items-center cursor-pointer group">
+                        <a {!! $isLoggedIn ? 'href="' . url('/ai-chat') . '"' : $desktopAuthAction !!} class="flex flex-col items-center cursor-pointer group">
                             <div
                                 class="w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-gradient-to-tr from-blue-600 to-cyan-700 flex items-center justify-center text-white shadow-md shadow-blue-500/20 group-hover:scale-105 transition">
                                 <i class="fa-solid fa-robot text-xl md:text-2xl"></i>
@@ -1151,7 +1172,7 @@
                         </a>
 
                         <!-- Menu 6 (Korwil) -->
-                        <a {!! $isMember ? 'href="' . route('korwil') . '"' : $authAction !!}
+                        <a href="{{ route('korwil') }}"
                             class="menu-item-auth flex flex-col items-center cursor-pointer group">
                             <div
                                 class="w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-gradient-to-tr from-amber-600 to-yellow-600 flex items-center justify-center text-white shadow-md shadow-amber-500/20 group-hover:scale-105 transition">
@@ -1162,7 +1183,7 @@
                         </a>
 
                         <!-- Menu 7 (E-Organisasi) -->
-                        <a {!! $isMember ? 'href="' . url('/about') . '"' : $authAction !!}
+                        <a href="{{ url('/about') }}"
                             class="menu-item-auth flex flex-col items-center cursor-pointer group">
                             <div
                                 class="w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-gradient-to-tr from-blue-900 to-slate-900 flex items-center justify-center text-white shadow-md shadow-blue-500/20 group-hover:scale-105 transition">
@@ -1172,7 +1193,7 @@
                                 class="text-xs font-semibold text-slate-300 mt-2 text-center leading-tight">E-Organisasi</span>
                         </a>
 
-                         <!-- Menu 2 (Artikel) -->
+                        <!-- Menu 2 (Artikel) -->
                         <a href="{{ route('artikel.index.public') }}"
                             class="flex flex-col items-center cursor-pointer group">
                             <div
@@ -1184,7 +1205,7 @@
                         </a>
 
                         <!-- Menu 8 (Kerja Sama) -->
-                        <a {!! $isMember ? 'href="' . route('user-kerjasamas.index') . '"' : $authAction !!}
+                        <a {!! $isLoggedIn ? 'href="' . route('user-kerjasamas.index') . '"' : $desktopAuthAction !!}
                             class="menu-item-auth flex flex-col items-center cursor-pointer group">
                             <div
                                 class="w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-gradient-to-tr from-red-600 to-rose-800 flex items-center justify-center text-white shadow-md shadow-red-500/20 group-hover:scale-105 transition">

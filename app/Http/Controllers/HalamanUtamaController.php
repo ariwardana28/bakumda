@@ -9,6 +9,7 @@ use App\Models\Sertifikat;
 use App\Models\AnggotaBerlaku;
 use App\Models\AnggotaCard;
 use App\Models\Artikel;
+use App\Services\HomepageBannerService;
 use Illuminate\Support\Facades\Auth; // Tambahkan ini
 
 class HalamanUtamaController extends Controller
@@ -32,7 +33,7 @@ class HalamanUtamaController extends Controller
         return view('user.artikel.public-index', compact('artikels', 'search'));
     }
 
-    public function index()
+    public function index(HomepageBannerService $homepageBannerService)
     {
         // Jika pengguna sudah login, langsung arahkan ke dashboard.
         if (Auth::check()) {
@@ -40,6 +41,7 @@ class HalamanUtamaController extends Controller
         }
 
         $pelatihans = Pelatihan::where('tampilkan_di_banner', true)->latest()->get();
+        $banners = $homepageBannerService->activeSlides();
         $user = Auth::user();
         $artikels = Artikel::where('status', 'published')->latest()->get();
         $isRegistered = false;
@@ -63,7 +65,7 @@ class HalamanUtamaController extends Controller
             }
         }
 
-        return view('welcome', compact('pelatihans', 'isRegistered', 'nama_anggota', 'no_ktpa', 'status_anggota', 'artikels'));
+        return view('welcome', compact('pelatihans', 'banners', 'isRegistered', 'nama_anggota', 'no_ktpa', 'status_anggota', 'artikels'));
     }
 
     /**

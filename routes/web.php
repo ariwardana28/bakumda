@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\AnggotaCardController;
 use App\Http\Controllers\Admin\AnggotaController;
+use App\Http\Controllers\Admin\BannerController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -44,6 +45,7 @@ Route::post('/webhooks/xendit/invoice', [UserPelatihanController::class, 'xendit
     ->name('webhooks.xendit.invoice');
 
 Route::get('/', [HalamanUtamaController::class, 'index'])->name('welcome');
+Route::get('/semua-artikel', [HalamanUtamaController::class, 'artikel'])->name('artikel.index.public');
 Route::get('/korwil', [HalamanUtamaController::class, 'korwil'])->name('korwil');
 Route::get('/korwil/{province}', [HalamanUtamaController::class, 'showKorwilByProvince'])->name('user.korwil.show');
 Route::get('/korwil/surat/{anggotaCard}', [HalamanUtamaController::class, 'showKorwilSurat'])->name('user.korwil.surat');
@@ -266,7 +268,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     |--------------------------------------------------------------------------
     */
     Route::resource('artikel', ArtikelController::class)->names('artikel')->parameter('artikel', 'artikel:slug');
-    Route::get('/semua-artikel', [HalamanUtamaController::class, 'artikel'])->name('artikel.index.public');
 
 
     // Refferal
@@ -324,6 +325,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
             // --- Pelatihan & Materi Management (Admin) ---
             Route::resource('pelatihan', PelatihanController::class);
+            Route::resource('banner', BannerController::class)->except(['show']);
             Route::resource('pelatihan.materi', MateriController::class);
             Route::get('materi', [MateriController::class, 'index'])->name('materi.index');
 

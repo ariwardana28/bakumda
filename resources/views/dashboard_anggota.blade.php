@@ -54,11 +54,11 @@
                     <img src="{{ asset('log.png') }}" alt="Logo" class="h-10 sm:h-12 w-auto object-contain">
                 </div>
                 <div class="flex items-center space-x-3">
-                    <div
+                    {{-- <div
                         class="flex items-center bg-white/10 backdrop-blur-md border border-white/10 rounded-full px-3.5 py-1.5 shadow-inner">
                         <i class="fa-solid fa-magnifying-glass text-xs text-blue-200 mr-2"></i>
                         <span class="text-xs text-blue-100 font-medium tracking-wide">Pencarian...</span>
-                    </div>
+                    </div> --}}
                     <div class="relative" x-data="{ cartOpen: false }" @click.away="cartOpen = false">
                         <button type="button" @click="cartOpen = !cartOpen"
                             class="w-9 h-9 rounded-full border flex items-center justify-center transition {{ request()->routeIs('user-pelatihan.show') || request()->routeIs('user-pelatihan.index') ? 'bg-slate-100 border-slate-300 text-slate-700 hover:bg-slate-200' : 'bg-[#0a1226]/90 border-blue-950/60 text-blue-200 hover:text-white' }}"
@@ -180,29 +180,46 @@
                     class="relative w-full overflow-hidden rounded-3xl shadow-xl border border-slate-800 mb-1 md:mb-4 z-10">
 
                     <div class="heroSlider flex transition-transform duration-700 ease-out w-full">
-                        <div class="slide-item min-w-full w-full shrink-0 relative overflow-hidden">
-                            <img src="{{ asset('b1.jpeg') }}" alt="Banner 1" class="w-full h-auto object-contain">
-                        </div>
-                        <div class="slide-item min-w-full w-full shrink-0 relative overflow-hidden">
-                            <img src="{{ asset('b2.jpeg') }}" alt="Banner 2" class="w-full h-auto object-contain">
-                        </div>
-                        <div class="slide-item min-w-full w-full shrink-0 relative overflow-hidden">
-                            <img src="{{ asset('b3.jpeg') }}" alt="Banner 3" class="w-full h-auto object-contain">
-                        </div>
-                        <div class="slide-item min-w-full w-full shrink-0 relative overflow-hidden">
-                            <img src="{{ asset('b4.jpeg') }}" alt="Banner 4" class="w-full h-auto object-contain">
-                        </div>
+                        @forelse ($banners as $banner)
+                            <div class="slide-item min-w-full w-full shrink-0 relative overflow-hidden">
+                                @if ($banner->tautan)
+                                    <a href="{{ $banner->tautan }}" class="block">
+                                        <img src="{{ Storage::url($banner->gambar) }}" alt="{{ $banner->judul ?? 'Banner BAKUMDA' }}"
+                                            class="w-full h-auto object-contain">
+                                    </a>
+                                @else
+                                    <img src="{{ Storage::url($banner->gambar) }}" alt="{{ $banner->judul ?? 'Banner BAKUMDA' }}"
+                                        class="w-full h-auto object-contain">
+                                @endif
+                            </div>
+                        @empty
+                            <div class="slide-item min-w-full w-full shrink-0 relative overflow-hidden">
+                                <img src="{{ asset('b1.jpeg') }}" alt="Banner 1" class="w-full h-auto object-contain">
+                            </div>
+                            <div class="slide-item min-w-full w-full shrink-0 relative overflow-hidden">
+                                <img src="{{ asset('b2.jpeg') }}" alt="Banner 2" class="w-full h-auto object-contain">
+                            </div>
+                            <div class="slide-item min-w-full w-full shrink-0 relative overflow-hidden">
+                                <img src="{{ asset('b3.jpeg') }}" alt="Banner 3" class="w-full h-auto object-contain">
+                            </div>
+                            <div class="slide-item min-w-full w-full shrink-0 relative overflow-hidden">
+                                <img src="{{ asset('b4.jpeg') }}" alt="Banner 4" class="w-full h-auto object-contain">
+                            </div>
+                        @endforelse
                     </div>
 
                     <div class="absolute bottom-3 right-4 z-30 flex space-x-1.5" id="slider-dots">
-                        <button class="dot h-2 w-5 bg-white rounded-full transition-all duration-300"
-                            data-index="0"></button>
-                        <button class="dot h-2 w-2 bg-white/50 rounded-full transition-all duration-300"
-                            data-index="1"></button>
-                        <button class="dot h-2 w-2 bg-white/50 rounded-full transition-all duration-300"
-                            data-index="2"></button>
-                        <button class="dot h-2 w-2 bg-white/50 rounded-full transition-all duration-300"
-                            data-index="3"></button>
+                        @if ($banners->isNotEmpty())
+                            @foreach ($banners as $index => $banner)
+                                <button class="dot h-2 {{ $index === 0 ? 'w-5 bg-white' : 'w-2 bg-white/50' }} rounded-full transition-all duration-300"
+                                    data-index="{{ $index }}" aria-label="Banner {{ $index + 1 }}"></button>
+                            @endforeach
+                        @else
+                            @foreach (range(0, 3) as $index)
+                                <button class="dot h-2 {{ $index === 0 ? 'w-5 bg-white' : 'w-2 bg-white/50' }} rounded-full transition-all duration-300"
+                                    data-index="{{ $index }}" aria-label="Banner {{ $index + 1 }}"></button>
+                            @endforeach
+                        @endif
                     </div>
                 </div>
 

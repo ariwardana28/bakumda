@@ -9,6 +9,7 @@ use App\Models\AnggotaStatus;
 use App\Models\Notification;
 use App\Models\Pelatihan;
 use App\Models\Artikel;
+use App\Services\HomepageBannerService;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
@@ -20,11 +21,12 @@ class DashboardController extends Controller
      * Menampilkan halaman dashboard beserta data statistik.
      * Mengarahkan pengguna berdasarkan rolenya.
      */
-    public function index(): View|RedirectResponse
+    public function index(HomepageBannerService $homepageBannerService): View|RedirectResponse
     {
         $user = Auth::user();
 
         $pelatihans = Pelatihan::latest()->get();
+        $banners = $homepageBannerService->activeSlides();
 
         // Ambil 2 artikel terbaru yang sudah di-publish
         $artikels = Artikel::where('status', 'published')->latest()->get();
@@ -64,7 +66,7 @@ class DashboardController extends Controller
             // if (!$anggota) {
             //     return redirect()->route('welcome');
             // }
-            return view('dashboard_anggota', compact('anggota', 'pelatihans', 'artikels', 'isRegistered', 'nama_anggota', 'no_ktpa', 'status_anggota')); // Arahkan ke dashboard khusus anggota
+            return view('dashboard_anggota', compact('anggota', 'pelatihans', 'banners', 'artikels', 'isRegistered', 'nama_anggota', 'no_ktpa', 'status_anggota')); // Arahkan ke dashboard khusus anggota
         }
 
         // Ambil data statistik dari database

@@ -144,6 +144,17 @@
                     <span x-show="sidebarOpen" class="whitespace-nowrap text-xs tracking-wide">Dashboard</span>
                 </a>
 
+                @can('pelatihan-view')
+                    @php $isBannerActive = request()->routeIs('admin.banner.*'); @endphp
+                    <a href="{{ route('admin.banner.index') }}"
+                        class="flex items-center gap-3.5 px-3.5 py-3 rounded-xl transition-all duration-200 group relative {{ $isBannerActive ? 'font-semibold text-brand-600 bg-brand-50/80 dark:bg-brand-500/15 dark:text-brand-400 shadow-sm' : 'font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100/60 dark:text-slate-400 dark:hover:text-slate-100 dark:hover:bg-slate-800/40' }}">
+                        <div class="absolute left-0 w-1 h-5 bg-brand-600 dark:bg-brand-400 rounded-r-full"
+                            x-show="sidebarOpen && {{ $isBannerActive ? 'true' : 'false' }}"></div>
+                        <i class="fa-regular fa-images text-sm w-5 text-center transition-transform group-hover:scale-110"></i>
+                        <span x-show="sidebarOpen" class="whitespace-nowrap text-xs tracking-wide">Banner</span>
+                    </a>
+                @endcan
+
                 <!-- Dropdown Manajemen Anggota -->
                 @canany(['anggota-view', 'kartu-anggota-view', 'korwil-view'])
                     @php
@@ -165,6 +176,7 @@
                                 class="fa-solid fa-chevron-down text-[10px] text-slate-400 transition-transform duration-200"
                                 :class="{ 'rotate-180': anggotaManagementOpen }"></i>
                         </button>
+
 
                         <div x-show="anggotaManagementOpen" x-collapse class="pt-1.5 pl-4 space-y-1">
                             @can('anggota-view')
@@ -215,7 +227,8 @@
                 @canany(['pelatihan-view', 'pelatihan-pembayaran-view'])
                     @php
                         $isPelatihanGroupActive =
-                            request()->routeIs('admin.pelatihan.*') || request()->routeIs('pelatihan-anggota.*');
+                            request()->routeIs('admin.pelatihan.*') ||
+                            request()->routeIs('pelatihan-anggota.*');
                     @endphp
                     <div x-data="{ pelatihanManagementOpen: {{ $isPelatihanGroupActive ? 'true' : 'false' }} }">
                         <button @click="pelatihanManagementOpen = !pelatihanManagementOpen"
@@ -283,8 +296,10 @@
                         class="flex items-center gap-3.5 px-3.5 py-3 rounded-xl transition-all duration-200 group relative {{ $isKeranjangActive ? 'font-semibold text-brand-600 bg-brand-50/80 dark:bg-brand-500/15 dark:text-brand-400 shadow-sm' : 'font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100/60 dark:text-slate-400 dark:hover:text-slate-100 dark:hover:bg-slate-800/40' }}">
                         <div class="absolute left-0 w-1 h-5 bg-brand-600 dark:bg-brand-400 rounded-r-full"
                             x-show="sidebarOpen && {{ $isKeranjangActive ? 'true' : 'false' }}"></div>
-                        <i class="fa-solid fa-cart-shopping text-sm w-5 text-center transition-transform group-hover:scale-110"></i>
-                        <span x-show="sidebarOpen" class="whitespace-nowrap text-xs tracking-wide">Keranjang Pesanan</span>
+                        <i
+                            class="fa-solid fa-cart-shopping text-sm w-5 text-center transition-transform group-hover:scale-110"></i>
+                        <span x-show="sidebarOpen" class="whitespace-nowrap text-xs tracking-wide">Keranjang
+                            Pesanan</span>
                     </a>
 
                     @php $isPesananActive = request()->routeIs('admin.pesanan.*'); @endphp
@@ -292,8 +307,10 @@
                         class="flex items-center gap-3.5 px-3.5 py-3 rounded-xl transition-all duration-200 group relative {{ $isPesananActive ? 'font-semibold text-brand-600 bg-brand-50/80 dark:bg-brand-500/15 dark:text-brand-400 shadow-sm' : 'font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100/60 dark:text-slate-400 dark:hover:text-slate-100 dark:hover:bg-slate-800/40' }}">
                         <div class="absolute left-0 w-1 h-5 bg-brand-600 dark:bg-brand-400 rounded-r-full"
                             x-show="sidebarOpen && {{ $isPesananActive ? 'true' : 'false' }}"></div>
-                        <i class="fa-solid fa-receipt text-sm w-5 text-center transition-transform group-hover:scale-110"></i>
-                        <span x-show="sidebarOpen" class="whitespace-nowrap text-xs tracking-wide">Pesanan Merchandise</span>
+                        <i
+                            class="fa-solid fa-receipt text-sm w-5 text-center transition-transform group-hover:scale-110"></i>
+                        <span x-show="sidebarOpen" class="whitespace-nowrap text-xs tracking-wide">Pesanan
+                            Merchandise</span>
                     </a>
                 @endcan
 

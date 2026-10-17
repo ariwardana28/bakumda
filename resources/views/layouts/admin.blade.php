@@ -150,7 +150,8 @@
                         class="flex items-center gap-3.5 px-3.5 py-3 rounded-xl transition-all duration-200 group relative {{ $isBannerActive ? 'font-semibold text-brand-600 bg-brand-50/80 dark:bg-brand-500/15 dark:text-brand-400 shadow-sm' : 'font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100/60 dark:text-slate-400 dark:hover:text-slate-100 dark:hover:bg-slate-800/40' }}">
                         <div class="absolute left-0 w-1 h-5 bg-brand-600 dark:bg-brand-400 rounded-r-full"
                             x-show="sidebarOpen && {{ $isBannerActive ? 'true' : 'false' }}"></div>
-                        <i class="fa-regular fa-images text-sm w-5 text-center transition-transform group-hover:scale-110"></i>
+                        <i
+                            class="fa-regular fa-images text-sm w-5 text-center transition-transform group-hover:scale-110"></i>
                         <span x-show="sidebarOpen" class="whitespace-nowrap text-xs tracking-wide">Banner</span>
                     </a>
                 @endcan
@@ -227,8 +228,7 @@
                 @canany(['pelatihan-view', 'pelatihan-pembayaran-view'])
                     @php
                         $isPelatihanGroupActive =
-                            request()->routeIs('admin.pelatihan.*') ||
-                            request()->routeIs('pelatihan-anggota.*');
+                            request()->routeIs('admin.pelatihan.*') || request()->routeIs('pelatihan-anggota.*');
                     @endphp
                     <div x-data="{ pelatihanManagementOpen: {{ $isPelatihanGroupActive ? 'true' : 'false' }} }">
                         <button @click="pelatihanManagementOpen = !pelatihanManagementOpen"
@@ -268,14 +268,36 @@
 
                 @can('referral-view')
                     <!-- Referral (Claims) -->
-                    @php $isReferralActive = request()->routeIs('admin.referral.*'); @endphp
+                    @php
+                        $isReferralActive = request()->routeIs('admin.referral.*');
+                        $pendingClaimCount = \App\Models\ReferralPayment::where('status', 'pending')->count();
+                    @endphp
                     <a href="{{ route('admin.referral.index') }}"
                         class="flex items-center gap-3.5 px-3.5 py-3 rounded-xl transition-all duration-200 group relative {{ $isReferralActive ? 'font-semibold text-brand-600 bg-brand-50/80 dark:bg-brand-500/15 dark:text-brand-400 shadow-sm' : 'font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100/60 dark:text-slate-400 dark:hover:text-slate-100 dark:hover:bg-slate-800/40' }}">
                         <div class="absolute left-0 w-1 h-5 bg-brand-600 dark:bg-brand-400 rounded-r-full"
                             x-show="sidebarOpen && {{ $isReferralActive ? 'true' : 'false' }}"></div>
-                        <i
-                            class="fa-solid fa-handshake text-sm w-5 text-center transition-transform group-hover:scale-110"></i>
+
+                        <!-- Ikon + badge (badge kecil muncul di ikon saat sidebar diciutkan) -->
+                        <span class="relative shrink-0">
+                            <i
+                                class="fa-solid fa-handshake text-sm w-5 text-center transition-transform group-hover:scale-110"></i>
+                            @if ($pendingClaimCount > 0)
+                                <span x-show="!sidebarOpen"
+                                    class="absolute -top-2 -right-2 min-w-[16px] h-4 px-1 rounded-full bg-rose-500 text-white text-[9px] font-bold flex items-center justify-center ring-2 ring-white dark:ring-slate-900">
+                                    {{ $pendingClaimCount > 99 ? '99+' : $pendingClaimCount }}
+                                </span>
+                            @endif
+                        </span>
+
                         <span x-show="sidebarOpen" class="whitespace-nowrap text-xs tracking-wide">Klaim Referral</span>
+
+                        <!-- Badge di samping teks (saat sidebar terbuka) -->
+                        @if ($pendingClaimCount > 0)
+                            <span x-show="sidebarOpen"
+                                class="ml-auto min-w-[20px] h-5 px-1.5 rounded-full bg-rose-500 text-white text-[10px] font-bold flex items-center justify-center animate-pulse">
+                                {{ $pendingClaimCount > 99 ? '99+' : $pendingClaimCount }}
+                            </span>
+                        @endif
                     </a>
                 @endcan
 

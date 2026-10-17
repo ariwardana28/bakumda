@@ -3,16 +3,16 @@
 @section('title', 'Inspirator')
 
 @section('content')
-    <div class="px-3 md:px-8 py-4 md:py-6 space-y-6 md:space-y-8 max-w-7xl mx-auto">
+    <div class="px-3 md:px-8 py-4 md:py-6 pb-28 md:pb-6 space-y-6 md:space-y-8 max-w-7xl mx-auto">
         <!-- Kartu Identitas Pengguna -->
         <div class="flex items-center gap-4 p-4 bg-white border border-amber-300 rounded-2xl shadow-sm mb-4">
             <div
-                class="w-12 h-12 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center text-white font-bold text-lg shadow-md">
+                class="w-12 h-12 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center text-white font-bold text-lg shadow-md shrink-0">
                 {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
             </div>
-            <div class="flex-1">
+            <div class="flex-1 min-w-0">
                 <p class="text-[10px] uppercase font-bold text-orange-600 tracking-widest">Pemilik Akun</p>
-                <h2 class="text-lg font-extrabold text-stone-900">{{ Auth::user()->name }}</h2>
+                <h2 class="text-lg font-extrabold text-stone-900 truncate">{{ Auth::user()->name }}</h2>
             </div>
             <div class="hidden sm:block text-right">
                 <span
@@ -24,7 +24,7 @@
 
         <!-- Hero Section / Banner Utama -->
         <div x-data="{ openGuideModal: false }"
-            class="relative overflow-hidden rounded-2xl md:rounded-3xl bg-gradient-to-br from-amber-400 via-orange-500 to-amber-500 p-6 sm:p-8 md:p-10 text-white shadow-2xl border border-amber-300/40 group">
+            class="relative overflow-hidden rounded-2xl md:rounded-3xl bg-gradient-to-br from-amber-400 via-orange-500 to-amber-500 p-4 sm:p-8 md:p-10 text-white shadow-2xl border border-amber-300/40 group">
             <!-- Dekorasi Background -->
             <div
                 class="absolute -right-20 -top-20 w-64 md:w-96 h-64 md:h-96 bg-white/20 rounded-full blur-3xl pointer-events-none">
@@ -33,22 +33,22 @@
                 class="absolute -left-20 -bottom-20 w-60 md:w-80 h-60 md:h-80 bg-yellow-200/30 rounded-full blur-3xl pointer-events-none">
             </div>
 
-            <div class="relative z-10 space-y-6">
+            <div class="relative z-10 space-y-5 sm:space-y-6">
                 <!-- Header dengan Badge & Tombol Panduan -->
-                <div class="flex items-center justify-between gap-4">
+                <div class="flex items-center justify-between gap-2">
                     <span
-                        class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/90 border border-white text-stone-900 text-[10px] md:text-xs font-black tracking-wide uppercase shadow-md backdrop-blur-md">
+                        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/90 border border-white text-stone-900 text-[9px] sm:text-xs font-black tracking-normal sm:tracking-wide uppercase shadow-md whitespace-nowrap">
                         <i class="fa-solid fa-gift text-orange-600"></i> Program Referral BAKUMDA
                     </span>
                     <button @click="openGuideModal = true" title="Panduan Program"
-                        class="px-5 py-2.5 rounded-2xl bg-white hover:bg-stone-50 text-orange-600 shadow-lg hover:shadow-xl hover:scale-105 transition-all flex items-center gap-2.5 border border-white/80 backdrop-blur-md text-sm sm:text-base font-extrabold cursor-pointer">
-                        <i class="fa-solid fa-book-open-reader text-base sm:text-lg"></i>
+                        class="shrink-0 px-3 py-2 sm:px-5 sm:py-2.5 rounded-xl sm:rounded-2xl bg-white hover:bg-stone-50 text-orange-600 shadow-lg transition-all flex items-center gap-1.5 sm:gap-2.5 border border-white/80 text-xs sm:text-base font-extrabold cursor-pointer whitespace-nowrap">
+                        <i class="fa-solid fa-book-open-reader text-sm sm:text-lg"></i>
                         <span>Panduan</span>
                     </button>
                 </div>
 
                 <div class="space-y-2 max-w-xl">
-                    <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-white drop-shadow-sm">
+                    <h1 class="text-xl sm:text-3xl font-extrabold tracking-tight text-white drop-shadow-sm leading-snug">
                         Ajak Teman Bergabung Pada Program Pelatihan Pendidikan BAKUMDA & Dapatkan Reward
                     </h1>
                     <p class="text-xs sm:text-sm text-amber-50 font-medium leading-relaxed">
@@ -82,18 +82,19 @@
                         @endphp
 
                         <div
-                            class="relative bg-white backdrop-blur-md border {{ $isCompleted ? 'border-green-500 shadow-green-500/10' : 'border-stone-200' }} p-5 rounded-2xl space-y-4 shadow-xl hover:shadow-2xl transition-all group overflow-hidden text-stone-900">
+                            class="relative bg-white border {{ $isCompleted ? 'border-green-500 shadow-green-500/10' : 'border-stone-200' }} p-4 sm:p-5 rounded-2xl space-y-3 sm:space-y-4 shadow-xl hover:shadow-2xl transition-all group overflow-hidden text-stone-900">
 
                             @if ($isCompleted)
                                 <div class="absolute inset-0 bg-amber-500/5 pointer-events-none"></div>
                             @endif
 
-                            <div class="flex justify-between items-start">
+                            <div class="flex flex-wrap justify-between items-start gap-2">
                                 <div class="space-y-0.5">
-                                    <span class="text-xs font-bold text-stone-500 uppercase tracking-widest">
+                                    <span
+                                        class="block text-[11px] sm:text-xs font-bold text-stone-500 uppercase tracking-wider whitespace-nowrap">
                                         {{ $ref->tier_type == 'tier_10' ? 'Tier 10 Penggunaan' : 'Tier 5 Penggunaan' }}
                                     </span>
-                                    <h3 class="text-2xl font-black text-stone-900">
+                                    <h3 class="text-xl sm:text-2xl font-black text-stone-900">
                                         {{ $ref->tier_type == 'tier_10' ? 'Rp200.000' : 'Rp250.000' }}
                                     </h3>
                                 </div>
@@ -108,23 +109,23 @@
                                             amount: '{{ number_format($pendingClaim->amount, 0, ',', '.') }}',
                                             createdAt: '{{ date('d M Y, H:i', strtotime($pendingClaim->created_at)) }}' 
                                         })"
-                                        class="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white text-[10px] font-black rounded-lg shadow-md transition-all cursor-pointer flex items-center gap-1.5">
+                                        class="shrink-0 whitespace-nowrap px-3 py-2 bg-amber-500 hover:bg-amber-600 text-white text-[10px] font-black rounded-lg shadow-md transition-all cursor-pointer flex items-center gap-1.5">
                                         <i class="fa-solid fa-clock-rotate-left"></i> Proses Claim
                                     </button>
                                 @elseif ($unclaimedCount > 0)
                                     <button type="button"
                                         @click="$dispatch('open-claim-modal', { codeId: {{ $ref->id }}, unclaimedCount: {{ $unclaimedCount }}, rewardAmount: '{{ $ref->tier_type == 'tier_10' ? '200.000' : '250.000' }}' })"
-                                        class="px-4 py-2 bg-gradient-to-r from-green-400 to-emerald-600 text-white text-[10px] font-black rounded-lg shadow-lg hover:scale-105 transition-transform animate-pulse cursor-pointer">
+                                        class="shrink-0 whitespace-nowrap px-3 py-2 bg-gradient-to-r from-green-400 to-emerald-600 text-white text-[10px] font-black rounded-lg shadow-lg hover:scale-105 transition-transform animate-pulse cursor-pointer">
                                         KLAIM SEKARANG ({{ $unclaimedCount }})
                                     </button>
                                 @elseif ($ref->status === 'claimed' && $unclaimedCount == 0)
                                     <span
-                                        class="px-4 py-2 bg-slate-200 text-slate-500 text-[10px] font-black rounded-lg shadow-inner cursor-not-allowed">
+                                        class="shrink-0 whitespace-nowrap px-3 py-2 bg-slate-200 text-slate-500 text-[10px] font-black rounded-lg shadow-inner cursor-not-allowed">
                                         <i class="fa-solid fa-check-double"></i> DIKLAIM
                                     </span>
                                 @else
                                     <div
-                                        class="text-[10px] font-bold text-orange-600 bg-orange-50 px-2.5 py-1 rounded-md border border-orange-200 shadow-inner">
+                                        class="shrink-0 whitespace-nowrap text-[10px] font-bold text-orange-600 bg-orange-50 px-2.5 py-1 rounded-md border border-orange-200 shadow-inner">
                                         {{ $unclaimedTransactionsCount % $target }} / {{ $target }}
                                     </div>
                                 @endif
@@ -137,17 +138,16 @@
                                 </div>
                             </div>
 
-                            <div class="flex items-center gap-2 pt-2">
-                                <div class="flex-1 px-4 py-3 bg-stone-50 border border-stone-200 rounded-xl font-mono text-sm font-bold text-stone-900 tracking-widest select-all shadow-inner"
+                            <div class="flex items-center gap-2 pt-1">
+                                <div class="flex-1 min-w-0 truncate px-3 py-3 bg-stone-50 border border-stone-200 rounded-xl font-mono text-xs sm:text-sm font-bold text-stone-900 tracking-wider select-all shadow-inner"
                                     id="code-{{ $ref->id }}">
                                     {{ $ref->code }}
                                 </div>
 
-                                <button
-                                    onclick="navigator.clipboard.writeText(document.getElementById('code-{{ $ref->id }}').innerText); alert('Kode referral berhasil disalin!');"
-                                    class="h-12 px-4 rounded-xl bg-stone-100 hover:bg-orange-500 hover:text-white text-stone-700 font-bold transition-all flex items-center gap-2 shrink-0 border border-stone-200 text-xs cursor-pointer">
+                                <button type="button" onclick="copyReferralCode('code-{{ $ref->id }}')"
+                                    class="h-11 px-3 rounded-xl bg-stone-100 hover:bg-orange-500 hover:text-white text-stone-700 font-bold transition-all flex items-center gap-1.5 shrink-0 border border-stone-200 text-xs cursor-pointer">
                                     <i class="fa-solid fa-copy"></i>
-                                    <span>Salin Kode</span>
+                                    <span>Salin</span>
                                 </button>
                             </div>
                         </div>
@@ -156,9 +156,10 @@
             </div>
 
             <!-- MODAL KLAIM REWARD -->
-            <div x-data="{ openClaimModal: false, codeId: null, maxUnclaimed: 0, claimQty: 1, rewardAmount: '' }" x-show="openClaimModal"
+            <div x-data="{ openClaimModal: false, codeId: null, maxUnclaimed: 0, claimQty: 1, rewardAmount: '', submitting: false }" x-show="openClaimModal"
                 @open-claim-modal.window="
                     openClaimModal = true; 
+                    submitting = false;
                     codeId = $event.detail.codeId; 
                     maxUnclaimed = $event.detail.unclaimedCount; 
                     claimQty = $event.detail.unclaimedCount; 
@@ -409,7 +410,7 @@
         <!-- Statistik Ringkas -->
         <div class="space-y-4">
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-                {{-- 🌟 TAMBAHAN: Alpine Store global untuk modal daftar referral sukses --}}
+                {{-- Alpine Store global untuk modal daftar referral sukses --}}
                 <script>
                     document.addEventListener('alpine:init', () => {
                         Alpine.store('referralSuksesModal', {
@@ -435,9 +436,9 @@
 
                     $totalSuccess = $referralSuksesList->count();
                 @endphp
-                {{-- Kartu Total Referral Sukses (sekarang bisa diklik) --}}
+                {{-- Kartu Total Referral Sukses (bisa diklik) --}}
                 <div x-data="{}" @click="$store.referralSuksesModal.open()"
-                    class="p-5 md:p-6 rounded-2xl bg-white border border-slate-200/80 shadow-sm flex items-center gap-4 cursor-pointer hover:border-red-200 hover:shadow-md transition group">
+                    class="p-4 md:p-6 rounded-2xl bg-white border border-slate-200/80 shadow-sm flex items-center gap-4 cursor-pointer hover:border-red-200 hover:shadow-md transition group">
                     <div
                         class="w-12 h-12 rounded-xl bg-red-50 text-red-600 flex items-center justify-center text-lg font-bold shrink-0 group-hover:scale-105 transition">
                         <i class="fa-solid fa-users"></i>
@@ -450,8 +451,8 @@
                         class="fa-solid fa-chevron-right text-slate-300 group-hover:text-red-400 group-hover:translate-x-0.5 transition text-xs"></i>
                 </div>
 
-                {{-- 🌟 TAMBAHAN: Modal Daftar Referral Sukses --}}
-                <!-- Perbaikan: Naikkan z-index modal agar berada di atas bottom navigation menu -->
+                {{-- Modal Daftar Referral Sukses --}}
+                <!-- z-index dinaikkan agar berada di atas bottom navigation menu -->
                 <div x-data="{}" x-show="$store.referralSuksesModal.show"
                     x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0"
                     x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200"
@@ -521,8 +522,8 @@
                         </div>
                     </div>
                 </div>
-             
-                <div class="p-5 md:p-6 rounded-2xl bg-white border border-slate-200/80 shadow-sm flex items-center gap-4">
+
+                <div class="p-4 md:p-6 rounded-2xl bg-white border border-slate-200/80 shadow-sm flex items-center gap-4">
                     <div
                         class="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-lg font-bold shrink-0">
                         <i class="fa-solid fa-wallet"></i>
@@ -534,7 +535,7 @@
                     </div>
                 </div>
 
-                <div class="p-5 md:p-6 rounded-2xl bg-white border border-slate-200/80 shadow-sm flex items-center gap-4">
+                <div class="p-4 md:p-6 rounded-2xl bg-white border border-slate-200/80 shadow-sm flex items-center gap-4">
                     <div
                         class="w-12 h-12 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center text-lg font-bold shrink-0">
                         <i class="fa-solid fa-chart-line"></i>
@@ -549,7 +550,7 @@
         </div>
 
         <!-- Riwayat Transaksi Referral -->
-        <div class="p-5 sm:p-6 md:p-8 rounded-2xl md:rounded-3xl bg-white border border-slate-200/80 shadow-sm space-y-4">
+        <div class="p-4 sm:p-6 md:p-8 rounded-2xl md:rounded-3xl bg-white border border-slate-200/80 shadow-sm space-y-4">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-3 border-b border-slate-100">
                 <div>
                     <h2 class="text-base font-extrabold text-slate-900">Riwayat Transaksi Referral</h2>
@@ -567,7 +568,7 @@
             </div>
 
             <div class="overflow-x-auto">
-                <table class="w-full text-left border-collapse text-xs sm:text-sm">
+                <table class="w-full text-left border-collapse text-xs sm:text-sm whitespace-nowrap">
                     <thead>
                         <tr
                             class="border-b border-slate-200 text-slate-400 font-semibold uppercase text-[11px] tracking-wider">
@@ -622,7 +623,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="6" class="py-6 text-center text-slate-400 italic">
+                                <td colspan="6" class="py-6 text-center text-slate-400 italic whitespace-normal">
                                     Belum ada riwayat pengajuan klaim/pencairan dana.
                                 </td>
                             </tr>
@@ -635,12 +636,51 @@
                     {{ $payments->links() }}
                 </div>
             </div>
-
-            {{-- @if ($transactions->hasPages())
-                <div class="pt-4">
-                    {{ $transactions->links() }}
-                </div>
-            @endif --}}
         </div>
     </div>
 @endsection
+
+@push('scripts')
+    <script>
+        async function copyReferralCode(elementId) {
+            const codeElement = document.getElementById(elementId);
+            const code = codeElement?.textContent?.trim();
+
+            if (!code) {
+                alert('Kode referral tidak ditemukan.');
+                return;
+            }
+
+            try {
+                if (window.isSecureContext && navigator.clipboard?.writeText) {
+                    await navigator.clipboard.writeText(code);
+                } else {
+                    const temporaryInput = document.createElement('textarea');
+                    temporaryInput.value = code;
+                    temporaryInput.setAttribute('readonly', '');
+                    temporaryInput.style.position = 'fixed';
+                    temporaryInput.style.left = '-9999px';
+                    document.body.appendChild(temporaryInput);
+                    temporaryInput.focus();
+                    temporaryInput.select();
+                    temporaryInput.setSelectionRange(0, temporaryInput.value.length);
+
+                    let copied = false;
+                    try {
+                        copied = document.execCommand('copy');
+                    } finally {
+                        temporaryInput.remove();
+                    }
+
+                    if (!copied) {
+                        throw new Error('Clipboard copy failed');
+                    }
+                }
+
+                alert('Kode referral berhasil disalin!');
+            } catch (error) {
+                alert('Kode tidak dapat disalin otomatis. Tekan lama kode referral untuk menyalinnya.');
+            }
+        }
+    </script>
+@endpush

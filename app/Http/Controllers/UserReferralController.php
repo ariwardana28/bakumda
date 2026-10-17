@@ -153,75 +153,67 @@ class UserReferralController extends Controller
     /**
      * Memproses permintaan klaim semua reward yang tersedia.
      */
-  public function claimAll(Request $request)
-{
-    $request->validate([
-        'referral_code_id' => 'required|exists:referral_codes,id',
-        'claim_qty' => 'required|integer|min:1',
-        'bank_name' => 'required|string|max:255',
-        'account_number' => 'required|string|max:255',
-        'account_name' => 'required|string|max:255',
-    ]);
-
-    $referralCode = ReferralCode::where('id', $request->referral_code_id)
-        ->where('user_id', auth()->id())
-        ->firstOrFail();
-
-    $target = $referralCode->tier_type == 'tier_10' ? 10 : 5;
-    $rewardPerClaim = $referralCode->tier_type == 'tier_10' ? 200000 : 250000;
-
-    // 1. Ambil transaksi berhasil yang BELUM diklaim (is_claimed = 0)
-    $successfulTransactions = $referralCode->transactions()
-        ->whereIn('status', ['berhasil', 'success'])
-        ->where('is_claimed', 0)
-        ->get();
-
-    // Hitung berapa banyak klaim yang bisa dilakukan dari transaksi yang belum diklaim
-    $maxUnclaimed = floor($successfulTransactions->count() / $target);
-
-    $qtyToClaim = (int) $request->claim_qty;
-    if ($qtyToClaim > $maxUnclaimed || $maxUnclaimed <= 0) {
-        return back()->with('error', 'Jumlah klaim melebihi batas transaksi yang tersedia.');
-    }
-
-    // 2. Simpan data pencairan ke tabel referral_payments
-    $payment = \App\Models\ReferralPayment::create([
-        'user_id' => auth()->id(),
-        'amount' => $qtyToClaim * $rewardPerClaim,
-        'status' => 'pending',
-        'bank_name' => $request->bank_name,
-        'account_number' => $request->account_number,
-        'account_name' => $request->account_name,
-    ]);
-
-    // 3. Ambil sejumlah transaksi yang akan diklaim ($qtyToClaim * $target)
-    $transactionsToClaim = $successfulTransactions->take($qtyToClaim * $target);
-
-    foreach ($transactionsToClaim as $trx) {
-        // Tandai transaksi sudah diklaim
-        $trx->update(['is_claimed' => 1]);
-
-        // Simpan detail ke tabel referral_payment_details
-        \App\Models\ReferralPaymentDetail::create([
-            'referral_payment_id' => $payment->id,
-            'referral_transaction_id' => $trx->id,
-            'reward_amount' => $rewardPerClaim / $target,
+    public function claimAll(Request $request)
+    {
+        $request->validate([
+            'referral_code_id' => 'required|exists:referral_codes,id',
+            'claim_qty' => 'required|integer|min:1',
+            'bank_name' => 'required|string|max:255',
+            'account_number' => 'required|string|max:255',
+            'account_name' => 'required|string|max:255',
         ]);
+
+        $referralCode = ReferralCode::where('id', $request->referral_code_id)
+            ->where('user_id', auth()->id())
+            ->firstOrFail();
+
+        $target = $referralCode->tier_type == 'tier_10' ? 10 : 5;
+        $rewardPerClaim = $referralCode->tier_type == 'tier_10' ? 200000 : 250000;
+        $qtyToClaim = (int) $request->claim_qty;
+
+        try {
+            DB::transaction(function () use ($request, $referralCode, $target, $rewardPerClaim, $qtyToClaim) {
+
+                // 1. Ambil & KUNCI transaksi yang belum diklaim.
+                // Request lain yang masuk bersamaan akan menunggu di sini.
+                $successfulTransactions = $referralCode->transactions()
+                    ->whereIn('status', ['berhasil', 'success'])
+                    ->where('is_claimed', 0)
+                    ->lockForUpdate()
+                    ->get();
+
+                // 2. Validasi ulang setelah dikunci
+                $maxUnclaimed = intdiv($successfulTransactions->count(), $target);
+
+                if ($maxUnclaimed <= 0 || $qtyToClaim > $maxUnclaimed) {
+                    throw new \RuntimeException('Jumlah klaim melebihi batas transaksi yang tersedia.');
+                }
+
+                // 3. Simpan data pencairan
+                $payment = ReferralPayment::create([
+                    'user_id' => auth()->id(),
+                    'amount' => $qtyToClaim * $rewardPerClaim,
+                    'status' => 'pending',
+                    'bank_name' => $request->bank_name,
+                    'account_number' => $request->account_number,
+                    'account_name' => $request->account_name,
+                ]);
+
+                // 4. Tandai transaksi + simpan detail
+                foreach ($successfulTransactions->take($qtyToClaim * $target) as $trx) {
+                    $trx->update(['is_claimed' => 1]);
+
+                    ReferralPaymentDetail::create([
+                        'referral_payment_id' => $payment->id,
+                        'referral_transaction_id' => $trx->id,
+                        'reward_amount' => $rewardPerClaim / $target,
+                    ]);
+                }
+            });
+        } catch (\RuntimeException $e) {
+            return back()->with('error', $e->getMessage());
+        }
+
+        return back()->with('success', "Berhasil mengajukan klaim sebanyak {$qtyToClaim}x reward!");
     }
-
-    // 4. (Opsional) Cek jika ingin mengubah status referral code menjadi 'claimed' 
-    // jika sudah tidak ada lagi transaksi sukses yang belum diklaim
-    $remainingUnclaimedCount = $referralCode->transactions()
-        ->whereIn('status', ['berhasil', 'success'])
-        ->where('is_claimed', 0)
-        ->count();
-
-    if ($remainingUnclaimedCount < $target) {
-        // Jika sisa transaksi kurang dari target minimal, tandai status selesai/claimed jika diperlukan
-        // $referralCode->status = 'claimed';
-        // $referralCode->save();
-    }
-
-    return back()->with('success', "Berhasil mengajukan klaim sebanyak {$qtyToClaim}x reward!");
-}
 }

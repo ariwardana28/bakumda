@@ -184,11 +184,13 @@
                             <div class="slide-item min-w-full w-full shrink-0 relative overflow-hidden">
                                 @if ($banner->tautan)
                                     <a href="{{ $banner->tautan }}" class="block">
-                                        <img src="{{ Storage::url($banner->gambar) }}" alt="{{ $banner->judul ?? 'Banner BAKUMDA' }}"
+                                        <img src="{{ Storage::url($banner->gambar) }}"
+                                            alt="{{ $banner->judul ?? 'Banner BAKUMDA' }}"
                                             class="w-full h-auto object-contain">
                                     </a>
                                 @else
-                                    <img src="{{ Storage::url($banner->gambar) }}" alt="{{ $banner->judul ?? 'Banner BAKUMDA' }}"
+                                    <img src="{{ Storage::url($banner->gambar) }}"
+                                        alt="{{ $banner->judul ?? 'Banner BAKUMDA' }}"
                                         class="w-full h-auto object-contain">
                                 @endif
                             </div>
@@ -211,12 +213,14 @@
                     <div class="absolute bottom-3 right-4 z-30 flex space-x-1.5" id="slider-dots">
                         @if ($banners->isNotEmpty())
                             @foreach ($banners as $index => $banner)
-                                <button class="dot h-2 {{ $index === 0 ? 'w-5 bg-white' : 'w-2 bg-white/50' }} rounded-full transition-all duration-300"
+                                <button
+                                    class="dot h-2 {{ $index === 0 ? 'w-5 bg-white' : 'w-2 bg-white/50' }} rounded-full transition-all duration-300"
                                     data-index="{{ $index }}" aria-label="Banner {{ $index + 1 }}"></button>
                             @endforeach
                         @else
                             @foreach (range(0, 3) as $index)
-                                <button class="dot h-2 {{ $index === 0 ? 'w-5 bg-white' : 'w-2 bg-white/50' }} rounded-full transition-all duration-300"
+                                <button
+                                    class="dot h-2 {{ $index === 0 ? 'w-5 bg-white' : 'w-2 bg-white/50' }} rounded-full transition-all duration-300"
                                     data-index="{{ $index }}" aria-label="Banner {{ $index + 1 }}"></button>
                             @endforeach
                         @endif
@@ -370,16 +374,20 @@
                                         Belum
                                         Terdaftar</span>
                                 </div>
-                                <h4
+                                {{-- <h4
                                     class="font-black text-white text-sm md:text-base tracking-wide group-hover:text-blue-200 transition">
                                     Ajukan Diri Menjadi Anggota BAKUMDA
-                                </h4>
+                                </h4> --}}
+                                <a href="{{ route('user-anggota.index') }}"
+                                    class="menu-item-auth bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-300 hover:to-orange-400 text-white font-bold text-[8px] md:text-[9px] px-4 py-1.5 rounded-full shadow transition cursor-pointer inline-flex items-center justify-center">
+                                    DAFTAR KEANGGOTAAN
+                                </a>
                                 <p class="text-[11px] sm:text-xs text-blue-200/80 font-medium mt-1">
                                     Proses Cepat & Mudah.
                                 </p>
                             </div>
                             <!-- Kartu mini/chip di sebelah kanan -->
-                              <div
+                            <div
                                 class="w-24 h-16 md:w-28 md:h-20 rounded-2xl bg-gradient-to-br from-slate-800 via-slate-900 to-slate-950 border border-slate-700/80 p-3 flex flex-col justify-between shrink-0 shadow-lg z-10 my-auto">
                                 <div class="flex justify-between items-start">
                                     <span
@@ -409,7 +417,7 @@
                                         DIKLATKUM</span> sebagai syarat utama keanggotaan.
                                 </p>
                             </div>
-                            
+
                             <!-- Bungkus tombol berdampingan -->
                             <div class="flex items-center gap-2 shrink-0">
                                 <!-- Tombol Ikuti DIKLATKUM -->
@@ -419,10 +427,10 @@
                                 </a>
 
                                 <!-- Tombol Daftar Keanggotaan (Diubah menjadi tag <a> yang valid) -->
-                                <a href="{{ route('user-anggota.index') }}"
+                                {{-- <a href="{{ route('user-anggota.index') }}"
                                     class="menu-item-auth bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-300 hover:to-orange-400 text-white font-bold text-[8px] md:text-[9px] px-4 py-1.5 rounded-full shadow transition cursor-pointer inline-flex items-center justify-center">
                                     DAFTAR KEANGGOTAAN
-                                </a>
+                                </a> --}}
                             </div>
                         </div>
                     </div>
@@ -438,7 +446,8 @@
                     x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
                     x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100"
                     x-transition:leave-end="opacity-0"
-                    class="fixed inset-0 bg-slate-950/40 backdrop-blur-sm z-[99] flex items-center justify-center p-4" x-cloak>
+                    class="fixed inset-0 bg-slate-950/40 backdrop-blur-sm z-[99] flex items-center justify-center p-4"
+                    x-cloak>
                     <div @click.away="showAuthModal = false" x-show="showAuthModal"
                         x-transition:enter="transition ease-out duration-300"
                         x-transition:enter-start="opacity-0 scale-90" x-transition:enter-end="opacity-100 scale-100"
@@ -453,7 +462,8 @@
                             <i class="fa-solid fa-xmark text-lg"></i>
                         </button>
 
-                        <div class="mx-auto w-[84px] h-[84px] rounded-3xl bg-blue-50 flex items-center justify-center mb-6 shadow-inner">
+                        <div
+                            class="mx-auto w-[84px] h-[84px] rounded-3xl bg-blue-50 flex items-center justify-center mb-6 shadow-inner">
                             <i class="fa-solid fa-lock text-blue-600 text-3xl"></i>
                         </div>
                         <h3 class="text-2xl sm:text-3xl font-extrabold text-slate-900">Login atau Daftar Sekarang</h3>
@@ -538,8 +548,7 @@
                                 class="text-xs font-semibold text-slate-700 mt-2 text-center leading-tight">E-Dokumen</span>
                         </a>
 
-                        <a {!! $isLoggedIn ? 'href="' . url('/ai-chat') . '"' : $authAction !!}
-                            class="flex flex-col items-center cursor-pointer group">
+                        <a {!! $isLoggedIn ? 'href="' . url('/ai-chat') . '"' : $authAction !!} class="flex flex-col items-center cursor-pointer group">
                             <div
                                 class="w-16 h-16 md:w-18 md:h-18 rounded-2xl bg-gradient-to-tr from-blue-600 to-cyan-700 flex items-center justify-center text-white shadow-md shadow-blue-500/20 group-hover:scale-105 transition">
                                 <i class="fa-solid fa-robot max-[1280px]:block min-[1281px]:hidden text-2xl"></i>
@@ -1132,8 +1141,7 @@
                         </a>
 
                         <!-- Menu Kartu Anggota (KTA) di Fitur Eksklusif -->
-                        <a {!! $isLoggedIn ? 'href="' . route('user-anggota.index') . '"' : $desktopAuthAction !!}
-                            class="flex flex-col items-center cursor-pointer group">
+                        <a {!! $isLoggedIn ? 'href="' . route('user-anggota.index') . '"' : $desktopAuthAction !!} class="flex flex-col items-center cursor-pointer group">
                             <div
                                 class="w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-gradient-to-tr from-amber-600 to-amber-500 flex items-center justify-center text-white shadow-md shadow-amber-500/20 group-hover:scale-105 transition">
                                 <i class="fa-solid fa-id-card text-xl md:text-2xl"></i>
@@ -1154,8 +1162,7 @@
                         </a>
 
                         <!-- Menu 5 (Asisten Legal / AI Chat) -->
-                        <a {!! $isLoggedIn ? 'href="' . url('/ai-chat') . '"' : $desktopAuthAction !!}
-                            class="flex flex-col items-center cursor-pointer group">
+                        <a {!! $isLoggedIn ? 'href="' . url('/ai-chat') . '"' : $desktopAuthAction !!} class="flex flex-col items-center cursor-pointer group">
                             <div
                                 class="w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-gradient-to-tr from-blue-600 to-cyan-700 flex items-center justify-center text-white shadow-md shadow-blue-500/20 group-hover:scale-105 transition">
                                 <i class="fa-solid fa-robot text-xl md:text-2xl"></i>

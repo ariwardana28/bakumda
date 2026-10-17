@@ -46,21 +46,27 @@
             class="bg-slate-50/70 border border-slate-200/80 rounded-3xl shadow-lg backdrop-blur-sm overflow-hidden relative">
 
             {{-- Header Background Banner (Merah Pekat / Sesuai Tema) --}}
-            <div class="h-40 relative flex items-center justify-center px-6 text-center"
-                style="background: linear-gradient(135deg, #be123c 0%, #881337 100%);">
-                {{-- Dot Pattern Overlay --}}
-                <div
-                    class="absolute inset-0 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:12px_12px] opacity-10">
-                </div>
+            <div class="relative py-10 px-6 sm:px-10 text-white overflow-hidden bg-gradient-to-r from-rose-900 via-rose-800 to-rose-950">
+                {{-- Decorative Background Patterns --}}
+                <div class="absolute inset-0 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:16px_16px] opacity-10"></div>
+                <div class="absolute -right-10 -bottom-10 w-60 h-60 bg-rose-600/30 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="absolute -left-10 -top-10 w-60 h-60 bg-rose-500/20 rounded-full blur-3xl pointer-events-none"></div>
 
-                <div class="relative z-10 text-white space-y-2">
-                    <div
-                        class="w-12 h-12 mx-auto rounded-2xl flex items-center justify-center text-lg shadow-md mb-2 bg-white text-rose-700">
-                        <i class="fa-solid fa-sitemap"></i>
+                <div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
+                    <div class="flex items-center gap-4 text-center md:text-left">
+                        <div class="w-14 h-14 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-white text-2xl shadow-inner shrink-0">
+                            <i class="fa-solid fa-sitemap"></i>
+                        </div>
+                        <div>
+                            <span class="inline-block px-3 py-0.5 rounded-full bg-white/15 backdrop-blur-md border border-white/20 text-[10px] font-bold tracking-wider uppercase text-rose-200 mb-1">
+                                SOTK Wilayah
+                            </span>
+                            <h1 class="text-2xl sm:text-3xl font-black tracking-tight">Daftar Koordinator Wilayah (Korwil)</h1>
+                            <p class="text-xs sm:text-sm text-rose-100/90 font-medium mt-1">
+                                Wilayah Provinsi yang telah memiliki SK Mandat resmi dari DPP BAKUMDA
+                            </p>
+                        </div>
                     </div>
-                    <h1 class="text-xl sm:text-2xl font-black tracking-tight">Daftar Koordinator Wilayah (Korwil)</h1>
-                    <p class="text-xs text-rose-100 font-medium">Nama yang tercantum telah mendapat SK Mandat Oleh
-                        Direktorat Pimpinan Pusat BAKUMDA</p>
                 </div>
             </div>
 

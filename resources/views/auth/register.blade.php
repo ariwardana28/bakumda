@@ -340,46 +340,114 @@
                     </div>
 
                     <!-- Kata Sandi & Konfirmasi Kata Sandi -->
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <!-- Password Input -->
-                        <div class="space-y-1.5" x-data="{ showPassword: false }">
-                            <label class="block text-[11px] font-bold text-gray-700 uppercase tracking-wider">Kata
-                                Sandi</label>
-                            <div class="relative group">
-                                <span
-                                    class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400 group-focus-within:text-blue-600 transition-colors">
-                                    <i class="fa-solid fa-lock text-sm"></i>
-                                </span>
-                                <input :type="showPassword ? 'text' : 'password'" name="password" required
-                                    autocomplete="new-password"
-                                    class="w-full pl-11 pr-12 py-3.5 text-xs sm:text-sm rounded-2xl bg-white border border-gray-200/80 focus:ring-4 focus:ring-blue-500/15 focus:border-blue-600 outline-none transition-all duration-200 text-gray-900 font-semibold placeholder:text-gray-400 placeholder:font-normal @error('password') border-rose-500 bg-rose-50/30 focus:ring-rose-500/15 focus:border-rose-500 @enderror"
-                                    placeholder="Minimal 8 karakter">
-                                <button type="button" @click="showPassword = !showPassword"
-                                    class="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-gray-600 focus:outline-none transition-colors">
-                                    <i class="fa-solid text-sm" :class="showPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
-                                </button>
+                    <div x-data="{
+                        password: '',
+                        confirm: '',
+                        showPassword: false,
+                        showConfirm: false,
+                        get hasLength() { return this.password.length >= 8 },
+                        get hasUpper() { return /[A-Z]/.test(this.password) },
+                        get hasNumber() { return /[0-9]/.test(this.password) },
+                        get passwordValid() { return this.hasLength && this.hasUpper && this.hasNumber },
+                        get passwordState() {
+                            if (this.password === '') return '';
+                            return this.passwordValid ? 'valid' : 'invalid';
+                        },
+                        get confirmState() {
+                            if (this.confirm === '') return '';
+                            return this.confirm === this.password ? 'valid' : 'invalid';
+                        },
+                        stateClass(state) {
+                            if (state === 'valid') return 'border-emerald-500 bg-emerald-50/40 focus:ring-emerald-500/15 focus:border-emerald-500';
+                            if (state === 'invalid') return 'border-rose-500 bg-rose-50/40 focus:ring-rose-500/15 focus:border-rose-500';
+                            return 'border-gray-200/80 bg-white focus:ring-blue-500/15 focus:border-blue-600';
+                        }
+                    }" class="space-y-4">
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <!-- Password Input -->
+                            <div class="space-y-1.5">
+                                <label class="block text-[11px] font-bold text-gray-700 uppercase tracking-wider">Kata
+                                    Sandi</label>
+                                <div class="relative group">
+                                    <span
+                                        class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400 group-focus-within:text-blue-600 transition-colors">
+                                        <i class="fa-solid fa-lock text-sm"></i>
+                                    </span>
+                                    <input :type="showPassword ? 'text' : 'password'" name="password" required
+                                        autocomplete="new-password" x-model="password"
+                                        pattern="^(?=.*[A-Z])(?=.*[0-9]).{8,}$"
+                                        title="Minimal 8 karakter, mengandung huruf besar dan angka"
+                                        :class="stateClass(passwordState)"
+                                        class="w-full pl-11 pr-12 py-3.5 text-xs sm:text-sm rounded-2xl border focus:ring-4 outline-none transition-all duration-200 text-gray-900 font-semibold placeholder:text-gray-400 placeholder:font-normal"
+                                        placeholder="Minimal 8 karakter">
+                                    <button type="button" @click="showPassword = !showPassword"
+                                        class="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-gray-600 focus:outline-none transition-colors">
+                                        <i class="fa-solid text-sm" :class="showPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Confirm Password Input -->
+                            <div class="space-y-1.5">
+                                <label
+                                    class="block text-[11px] font-bold text-gray-700 uppercase tracking-wider">Konfirmasi
+                                    Kata Sandi</label>
+                                <div class="relative group">
+                                    <span
+                                        class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400 group-focus-within:text-blue-600 transition-colors">
+                                        <i class="fa-solid fa-lock text-sm"></i>
+                                    </span>
+                                    <input :type="showConfirm ? 'text' : 'password'" name="password_confirmation" required
+                                        autocomplete="new-password" x-model="confirm"
+                                        x-effect="$el.setCustomValidity(confirm !== '' && confirm !== password ? 'Konfirmasi kata sandi tidak sama' : '')"
+                                        :class="stateClass(confirmState)"
+                                        class="w-full pl-11 pr-12 py-3.5 text-xs sm:text-sm rounded-2xl border focus:ring-4 outline-none transition-all duration-200 text-gray-900 font-semibold placeholder:text-gray-400 placeholder:font-normal"
+                                        placeholder="Ulangi kata sandi">
+                                    <button type="button" @click="showConfirm = !showConfirm"
+                                        class="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-gray-600 focus:outline-none transition-colors">
+                                        <i class="fa-solid text-sm" :class="showConfirm ? 'fa-eye-slash' : 'fa-eye'"></i>
+                                    </button>
+                                </div>
+                                <p x-show="confirmState === 'invalid'" x-cloak
+                                    class="text-[11px] font-semibold text-rose-600 flex items-center gap-1.5">
+                                    <i class="fa-solid fa-circle-xmark"></i> Konfirmasi kata sandi tidak sama
+                                </p>
+                                <p x-show="confirmState === 'valid'" x-cloak
+                                    class="text-[11px] font-semibold text-emerald-600 flex items-center gap-1.5">
+                                    <i class="fa-solid fa-circle-check"></i> Kata sandi cocok
+                                </p>
                             </div>
                         </div>
 
-                        <!-- Confirm Password Input -->
-                        <div class="space-y-1.5" x-data="{ showConfirmPassword: false }">
-                            <label class="block text-[11px] font-bold text-gray-700 uppercase tracking-wider">Konfirmasi
-                                Kata Sandi</label>
-                            <div class="relative group">
+                        <!-- Alert & checklist syarat kata sandi -->
+                        <div x-show="password !== ''" x-cloak
+                            :class="passwordValid ? 'bg-emerald-50 border-emerald-200 text-emerald-700' :
+                                'bg-rose-50 border-rose-200 text-rose-600'"
+                            class="p-3.5 rounded-2xl border text-[11px] font-medium space-y-1.5 transition-colors">
+                            <div class="flex items-center gap-2 font-bold uppercase tracking-wider text-[10px]">
+                                <i class="fa-solid"
+                                    :class="passwordValid ? 'fa-circle-check' : 'fa-triangle-exclamation'"></i>
                                 <span
-                                    class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400 group-focus-within:text-blue-600 transition-colors">
-                                    <i class="fa-solid fa-lock text-sm"></i>
-                                </span>
-                                <input :type="showConfirmPassword ? 'text' : 'password'" name="password_confirmation"
-                                    required autocomplete="new-password"
-                                    class="w-full pl-11 pr-12 py-3.5 text-xs sm:text-sm rounded-2xl bg-white border border-gray-200/80 focus:ring-4 focus:ring-blue-500/15 focus:border-blue-600 outline-none transition-all duration-200 text-gray-900 font-semibold placeholder:text-gray-400 placeholder:font-normal @error('password_confirmation') border-rose-500 bg-rose-50/30 focus:ring-rose-500/15 focus:border-rose-500 @enderror"
-                                    placeholder="Ulangi kata sandi">
-                                <button type="button" @click="showConfirmPassword = !showConfirmPassword"
-                                    class="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-gray-600 focus:outline-none transition-colors">
-                                    <i class="fa-solid text-sm"
-                                        :class="showConfirmPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
-                                </button>
+                                    x-text="passwordValid ? 'Kata sandi memenuhi syarat' : 'Kata sandi belum memenuhi syarat'"></span>
                             </div>
+                            <ul class="space-y-1 pl-0.5">
+                                <li class="flex items-center gap-2">
+                                    <i class="fa-solid text-[10px]"
+                                        :class="hasLength ? 'fa-check text-emerald-600' : 'fa-xmark text-rose-500'"></i>
+                                    <span :class="hasLength ? 'text-emerald-700' : ''">Minimal 8 karakter</span>
+                                </li>
+                                <li class="flex items-center gap-2">
+                                    <i class="fa-solid text-[10px]"
+                                        :class="hasUpper ? 'fa-check text-emerald-600' : 'fa-xmark text-rose-500'"></i>
+                                    <span :class="hasUpper ? 'text-emerald-700' : ''">Mengandung huruf besar (A-Z)</span>
+                                </li>
+                                <li class="flex items-center gap-2">
+                                    <i class="fa-solid text-[10px]"
+                                        :class="hasNumber ? 'fa-check text-emerald-600' : 'fa-xmark text-rose-500'"></i>
+                                    <span :class="hasNumber ? 'text-emerald-700' : ''">Mengandung angka (0-9)</span>
+                                </li>
+                            </ul>
                         </div>
                     </div>
                 </div>
@@ -452,7 +520,7 @@
                         return this.kecamatans;
                     }
                     return this.kecamatans.filter(kc => kc.name.toLowerCase().includes(this.searchKecamatan
-                    .toLowerCase()));
+                        .toLowerCase()));
                 },
 
                 get filteredKelurahans() {
@@ -460,7 +528,7 @@
                         return this.kelurahans;
                     }
                     return this.kelurahans.filter(kl => kl.name.toLowerCase().includes(this.searchKelurahan
-                    .toLowerCase()));
+                        .toLowerCase()));
                 },
 
                 init() {

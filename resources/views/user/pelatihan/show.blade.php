@@ -13,7 +13,20 @@
         }
     </style>
 
-    {{-- 🌟 TAMBAHAN: Alpine Store global untuk state modal pendaftaran.
+    {{-- Pesan flash (error / info / success) dari controller --}}
+    @if (session('error') || session('info') || session('success'))
+        <div class="fixed top-20 left-1/2 -translate-x-1/2 z-[60] w-[calc(100%-2rem)] max-w-md" x-data="{ show: true }"
+            x-show="show" x-init="setTimeout(() => show = false, 6000)" x-transition>
+            <div
+                class="flex items-start gap-3 p-4 rounded-2xl shadow-xl border text-sm font-medium
+                {{ session('error') ? 'bg-rose-50 border-rose-200 text-rose-700' : (session('success') ? 'bg-emerald-50 border-emerald-200 text-emerald-700' : 'bg-sky-50 border-sky-200 text-sky-700') }}">
+                <span class="flex-1">{{ session('error') ?? (session('success') ?? session('info')) }}</span>
+                <button type="button" @click="show = false" class="opacity-60 hover:opacity-100">&times;</button>
+            </div>
+        </div>
+    @endif
+
+    {{-- Alpine Store global untuk state modal pendaftaran.
          Dipakai supaya tombol "Daftar Sekarang" di section manapun (meski beda x-data scope)
          tetap bisa membuka modal yang sama. --}}
     <script>
@@ -352,16 +365,41 @@
                             <div>
                                 @if ($pelatihan->userPendaftaran)
                                     @php
-                                        $status = strtolower(
-                                            $pelatihan->userPendaftaran->latestStatus ??
-                                                ($pelatihan->userPendaftaran->status ?? 'terdaftar'),
-                                        );
+                                        $pendaftaran = $pelatihan->userPendaftaran;
+
+                                        // Pastikan mengambil nilai kolom 'status' (string), bukan seluruh objek/JSON
+                                        $rawStatus = is_object($pendaftaran)
+                                            ? $pendaftaran->status ?? ''
+                                            : (is_array($pendaftaran)
+                                                ? $pendaftaran['status'] ?? ''
+                                                : '');
+                                        $status = strtolower(trim($rawStatus));
                                     @endphp
-                                    <div
-                                        class="w-full py-3 px-4 bg-sky-50 text-sky-700 border border-sky-200 rounded-xl font-bold text-center text-sm flex items-center justify-center gap-2">
-                                        <span class="w-2 h-2 rounded-full bg-sky-500"></span>
-                                        Status: {{ ucfirst($status) }}
-                                    </div>
+
+                                    @if (in_array($status, ['disetujui', 'diterima', 'approved']))
+                                        {{-- Status Pembayaran Disetujui -> Akses Materi --}}
+                                        <a href="#modul-materi"
+                                            class="w-full flex items-center justify-center gap-2 py-3.5 px-4 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white font-bold rounded-xl shadow-lg shadow-emerald-600/30 transition text-sm">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor"
+                                                viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                                            </svg>
+                                            <span>Akses Materi Pelatihan</span>
+                                        </a>
+                                    @else ($status === 'menunggu pembayaran')
+                                        {{-- Status Menunggu Pembayaran -> Tombol Lanjutkan Pembayaran --}}
+                                        <a href="{{ route('user-pelatihan.payment', is_object($pendaftaran) ? $pendaftaran->id : $pendaftaran['id']) }}"
+                                            class="w-full flex items-center justify-center gap-2 py-3.5 px-4 bg-amber-500 hover:bg-amber-600 active:bg-amber-700 text-white font-bold rounded-xl shadow-lg shadow-amber-500/30 transition text-sm">
+                                            <span>Lanjutkan Pembayaran</span>
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor"
+                                                viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                                            </svg>
+                                        </a>
+                                  
+                                    @endif
                                 @else
                                     @if ($pelatihan->kuota > 0)
                                         @auth
@@ -563,7 +601,7 @@
                             <div class="p-2 bg-sky-100 text-sky-600 rounded-xl shrink-0">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0 z" />
+                                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
                             </div>
                             <div>
@@ -757,7 +795,7 @@
                 class="absolute -bottom-40 -left-40 w-96 h-96 bg-sky-400/10 rounded-full blur-[120px] pointer-events-none">
             </div>
 
-            <!-- Card Container (Diubah max-w-xl jadi max-w-md & p-8/sm:p-12 jadi p-6/sm:p-8 agar lebih kecil) -->
+            <!-- Card Container -->
             <div
                 class="relative z-10 max-w-md w-full mx-auto p-6 sm:p-8 rounded-3xl bg-white/90 backdrop-blur-2xl border border-white shadow-[0_20px_50px_-15px_rgba(0,0,0,0.15)] text-center text-slate-900">
 
@@ -786,12 +824,45 @@
 
                 <!-- Tombol Aksi -->
                 <div>
-                    {{-- 🌟 DIUBAH: pakai $store.daftarModal.open() + @click.prevent supaya href="#" tidak scroll ke atas --}}
-                    <a href="#" @click.prevent="$store.daftarModal.open()"
-                        class="w-full inline-flex items-center justify-center px-8 py-3.5 rounded-xl bg-gradient-to-r from-blue-600 via-blue-500 to-indigo-600 text-white font-bold text-xs sm:text-sm shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 group">
-                        <span>Daftar Sekarang</span>
-                        <i class="fa-solid fa-arrow-right ml-2 text-xs transition-transform group-hover:translate-x-1"></i>
-                    </a>
+                    @if ($pelatihan->userPendaftaran)
+                        @php
+                            $ctaStatus = strtolower(
+                                $pelatihan->userPendaftaran->latestStatus ??
+                                    ($pelatihan->userPendaftaran->status ?? 'terdaftar'),
+                            );
+                        @endphp
+
+                        @if ($ctaStatus === 'menunggu pembayaran')
+                            <a href="{{ route('user-pelatihan.payment', $pelatihan->userPendaftaran->id) }}"
+                                class="w-full inline-flex items-center justify-center px-8 py-3.5 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs sm:text-sm shadow-lg shadow-amber-500/25 transition-all duration-300">
+                                <span>Lanjutkan Pembayaran</span>
+                                <i class="fa-solid fa-arrow-right ml-2 text-xs"></i>
+                            </a>
+                        @else
+                            <div
+                                class="w-full inline-flex items-center justify-center px-8 py-3.5 rounded-xl bg-sky-50 text-sky-700 border border-sky-200 font-bold text-xs sm:text-sm">
+                                Status: {{ ucfirst($ctaStatus) }}
+                            </div>
+                        @endif
+                    @else
+                        @auth
+                            <a href="#" @click.prevent="$store.daftarModal.open()"
+                                class="w-full inline-flex items-center justify-center px-8 py-3.5 rounded-xl bg-gradient-to-r from-blue-600 via-blue-500 to-indigo-600 text-white font-bold text-xs sm:text-sm shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 group">
+                                <span>Daftar Sekarang</span>
+                                <i
+                                    class="fa-solid fa-arrow-right ml-2 text-xs transition-transform group-hover:translate-x-1"></i>
+                            </a>
+                        @endauth
+
+                        @guest
+                            <a href="{{ route('login') }}"
+                                class="w-full inline-flex items-center justify-center px-8 py-3.5 rounded-xl bg-gradient-to-r from-blue-600 via-blue-500 to-indigo-600 text-white font-bold text-xs sm:text-sm shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 group">
+                                <span>Daftar Sekarang</span>
+                                <i
+                                    class="fa-solid fa-arrow-right ml-2 text-xs transition-transform group-hover:translate-x-1"></i>
+                            </a>
+                        @endguest
+                    @endif
                 </div>
 
             </div>
@@ -816,7 +887,7 @@
             <!-- Grid Container Card Kursus Dinamis dari Database -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 text-left mb-12">
 
-                {{-- Pastikan Anda mengirim variabel tambahan seperti $pelatihanLainnya dari Controller, atau mengambil data dari relasi/database --}}
+                {{-- Pastikan Anda mengirim variabel $pelatihanLainnya dari Controller --}}
                 @foreach ($pelatihanLainnya ?? [] as $item)
                     <div
                         class="group bg-white rounded-3xl border border-slate-100 shadow-xl shadow-slate-100/80 hover:shadow-2xl hover:shadow-blue-500/10 hover:border-blue-100 transition-all duration-300 flex flex-col justify-between overflow-hidden">
@@ -826,13 +897,13 @@
                                 <img src="{{ asset('storage/' . $item->gambar) }}" alt="{{ $item->judul }}"
                                     class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
 
-                                <!-- Status Badge (opsional jika ingin menampilkan status dari fillable) -->
+                                <!-- Status Badge -->
                                 <div
                                     class="absolute top-3 left-3 bg-white/90 backdrop-blur-md px-2.5 py-1 rounded-full shadow-sm text-[10px] font-extrabold text-blue-600 uppercase tracking-wider">
                                     {{ $item->status ?? 'Active' }}
                                 </div>
 
-                                <!-- Rating Dummy / Lokasi -->
+                                <!-- Lokasi -->
                                 <div
                                     class="absolute top-3 right-3 bg-white/90 backdrop-blur-md px-2.5 py-1 rounded-full shadow-sm flex items-center space-x-1 text-xs font-bold text-slate-800">
                                     <i class="fa-solid fa-location-dot text-blue-500 text-[10px]"></i>
@@ -840,7 +911,7 @@
                                 </div>
                             </div>
 
-                            <!-- Konten Card (Menggunakan kolom judul & deskripsi) -->
+                            <!-- Konten Card -->
                             <div class="p-5">
                                 <h4
                                     class="text-base font-bold text-slate-900 mb-2 leading-snug group-hover:text-blue-600 transition-colors line-clamp-1">
@@ -899,7 +970,7 @@
         </div>
     </section>
 
-    {{-- 🌟 TAMBAHAN: Modal Pendaftaran Pelatihan (2 step: ringkasan -> kode referral).
+    {{-- Modal Pendaftaran Pelatihan (2 step: ringkasan -> kode referral).
          Diletakkan di luar semua <section> di atas dan pakai Alpine.store global,
          supaya bisa dipicu dari tombol manapun di halaman ini. --}}
     <div x-data="{}" x-show="$store.daftarModal.show" x-transition:enter="ease-out duration-300"
@@ -917,8 +988,11 @@
             x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
             x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95">
 
-            <form action="{{ route('user-pelatihan.store', $pelatihan) }}" method="POST">
+            {{-- x-data submitting: cegah klik ganda saat form dikirim --}}
+            <form action="{{ route('user-pelatihan.store') }}" method="POST" x-data="{ submitting: false }"
+                @submit="if (submitting) { $event.preventDefault(); return; } submitting = true;">
                 @csrf
+                <input type="hidden" name="pelatihan_id" value="{{ $pelatihan->id }}">
                 {{-- Step 1: Informasi --}}
                 <div x-show="$store.daftarModal.step === 1" class="p-6 md:p-8">
                     <h3 class="text-xl font-bold text-gray-900">Ringkasan Pelatihan</h3>
@@ -1004,13 +1078,13 @@
                             &larr; Kembali
                         </button>
                         <div class="flex gap-3">
-                            <button type="submit"
-                                class="px-6 py-2.5 text-sm font-bold text-blue-600 bg-blue-100 hover:bg-blue-200 rounded-xl">
+                            <button type="submit" :disabled="submitting"
+                                class="px-6 py-2.5 text-sm font-bold text-blue-600 bg-blue-100 hover:bg-blue-200 rounded-xl disabled:opacity-60 disabled:cursor-not-allowed">
                                 Lewati & Daftar
                             </button>
-                            <button type="submit"
-                                class="px-6 py-2.5 text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-xl">
-                                Daftar Sekarang
+                            <button type="submit" :disabled="submitting"
+                                class="px-6 py-2.5 text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-xl disabled:opacity-60 disabled:cursor-not-allowed">
+                                <span x-text="submitting ? 'Memproses...' : 'Daftar Sekarang'">Daftar Sekarang</span>
                             </button>
                         </div>
                     </div>

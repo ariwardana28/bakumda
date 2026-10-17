@@ -136,6 +136,8 @@ class UserPelatihanController extends Controller
 
     public function store(Request $request, Pelatihan $pelatihan)
     {
+        $pelatihan = Pelatihan::findOrFail($request->input('pelatihan_id'));
+
         // Validasi referral_code (opsional), sekaligus tolak jika kode adalah milik user yang sedang login
         $request->validate([
             'referral_code' => [

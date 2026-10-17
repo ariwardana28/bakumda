@@ -2,68 +2,106 @@
 
 @section('content')
     {{-- HERO SECTION --}}
-    <section
-        class="relative w-full py-12 sm:py-16 flex items-center overflow-hidden p-4 sm:p-6 lg:p-8 bg-cover bg-center bg-no-repeat"
-        style="background-image: url('https://www.ibm-institute.com/wp-content/uploads/2026/07/skyline-desktop-new.webp');">
+    <section x-data="{
+        images: [
+            '{{ asset('bg1.jpg') }}',
+            '{{ asset('bg2.jpg') }}',
+            '{{ asset('bgs10.jpg') }}',
+            '{{ asset('bg3.jpg') }}'
+        ],
+        activeImage: 0,
+        nextImage: 1,
+        isFading: false,
+        init() {
+            setInterval(() => {
+                this.nextImage = (this.activeImage + 1) % this.images.length;
+                this.isFading = true;
+    
+                setTimeout(() => {
+                    this.activeImage = this.nextImage;
+                    this.isFading = false;
+                }, 1500);
+    
+            }, 6000);
+        }
+    }"
+        class="relative w-full py-12 sm:py-16 flex items-center overflow-hidden p-4 sm:p-6 lg:p-8 bg-slate-950">
 
-        {{-- Dark Overlay --}}
-        <div class="absolute inset-0 bg-slate-950/40"></div>
+        {{-- Layer 1: Gambar Utama / Aktif --}}
+        <div class="absolute inset-0 bg-cover bg-center bg-no-repeat"
+            :style="`background-image: url('${images[activeImage]}');`">
+        </div>
 
-        {{-- Main Container --}}
-        <div class="relative z-10 w-full max-w-6xl mx-auto">
+        {{-- Layer 2: Gambar Berikutnya (Cross-fade smoothly) --}}
+        <div class="absolute inset-0 bg-cover bg-center bg-no-repeat transition-opacity duration-[1500ms] ease-in-out"
+            :class="isFading ? 'opacity-100' : 'opacity-0'" :style="`background-image: url('${images[nextImage]}');`">
+        </div>
+
+        {{-- Light Overlay --}}
+        <div class="absolute inset-0 bg-slate-950/20"></div>
+
+        {{-- Darker Gradient Layer --}}
+        <div class="absolute inset-0 bg-slate-900/40"></div>
+
+        {{-- Container Utama (Menggunakan Flex dengan items-end agar sejajar di bawah) --}}
+        <div class="relative z-10 max-w-7xl mx-auto w-full flex flex-col md:flex-row md:items-end md:justify-between gap-6">
+
+            {{-- Card Glassmorphism Utama --}}
             <div
-                class="max-w-md p-6 sm:p-7 rounded-2xl bg-white/10 backdrop-blur-xl border border-white/20 shadow-xl text-white">
+                class="max-w-2xl p-8 md:p-10 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 shadow-2xl text-white">
 
+                {{-- Subtitle / Tagline --}}
                 <span class="text-[10px] sm:text-[11px] font-bold uppercase tracking-[0.18em] text-slate-200">
-                    Online Courses & Certificates
+                    Program Kursus & Sertifikasi Online
                 </span>
 
                 <h1 class="mt-2.5 text-2xl sm:text-3xl font-extrabold leading-snug tracking-tight text-white">
-                    Learn business skills in hours, not years.
+                    Tingkatkan Skill Bersama Bakumda Institute.
                 </h1>
 
                 <p class="mt-2.5 text-xs sm:text-sm text-slate-200/90 leading-relaxed font-normal">
-                    Choose from over 30 short, practical management courses. Start right away and earn your professional
-                    certificate today.
+                    Pilih dari berbagai pelatihan Hukum yang praktis dan singkat. Mulai sekarang dan dapatkan Sertifikat
+                    Profesional Anda hari ini.
                 </p>
 
-                <div class="mt-6 flex flex-wrap items-center gap-2.5">
+                {{-- Action Buttons --}}
+                <div class="mt-8 flex flex-wrap items-center gap-4">
                     <a href="#"
-                        class="inline-flex items-center gap-1.5 px-4 py-2.5 bg-white text-slate-900 font-bold rounded-full text-xs hover:bg-slate-100 transition shadow-md">
-                        <span>Explore all courses</span>
-                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        class="inline-flex items-center gap-2 px-6 py-3 bg-white text-slate-900 font-semibold rounded-full text-sm hover:bg-slate-100 transition">
+                        Explore all courses
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M14 5l7 7m0 0l-7 7m7-7H3" />
                         </svg>
                     </a>
 
                     <a href="#"
-                        class="inline-flex items-center gap-1.5 px-4 py-2.5 bg-white/10 hover:bg-white/20 text-white font-semibold rounded-full text-xs border border-white/30 backdrop-blur-md transition">
-                        <span>How it works</span>
-                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        class="inline-flex items-center gap-2 px-6 py-3 bg-white/10 hover:bg-white/20 text-white font-semibold rounded-full text-sm border border-white/30 backdrop-blur-sm transition">
+                        How it works
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                         </svg>
                     </a>
                 </div>
 
-                <div
-                    class="mt-6 pt-4 border-t border-white/15 flex flex-wrap items-center gap-4 text-[11px] text-slate-200/90 font-medium">
-                    <div class="flex items-center gap-1.5">
-                        <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                {{-- Features List --}}
+                <div class="mt-8 pt-6 border-t border-white/10 flex flex-wrap items-center gap-6 text-xs text-slate-200">
+                    <div class="flex items-center gap-2">
+                        <svg class="w-4 h-4 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                         </svg>
                         <span>All levels welcome</span>
                     </div>
-                    <div class="flex items-center gap-1.5">
-                        <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="flex items-center gap-2">
+                        <svg class="w-4 h-4 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M18.364 5.636a9 9 0 010 12.728m0 0l-2.829-2.829m2.829 2.829L21 21M15.536 8.464a5 5 0 010 7.072m0 0l-2.829-2.829" />
                         </svg>
                         <span>Self-paced</span>
                     </div>
-                    <div class="flex items-center gap-1.5">
-                        <svg class="w-3.5 h-3.5 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="flex items-center gap-2">
+                        <svg class="w-4 h-4 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
                         </svg>
@@ -72,6 +110,28 @@
                 </div>
 
             </div>
+
+            {{-- Stats Badge (Sekarang Sejajar di Bawah Kanan) --}}
+            <div class="self-end">
+                <div
+                    class="inline-flex items-center gap-6 px-6 py-4 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 text-white text-xs shadow-xl">
+                    <div class="text-center">
+                        <p class="font-extrabold text-sm sm:text-base">250,000+</p>
+                        <p class="text-[10px] text-slate-300 uppercase tracking-wider">Learners</p>
+                    </div>
+                    <div class="w-px h-6 bg-white/20"></div>
+                    <div class="text-center">
+                        <p class="font-extrabold text-sm sm:text-base">100+</p>
+                        <p class="text-[10px] text-slate-300 uppercase tracking-wider">Countries</p>
+                    </div>
+                    <div class="w-px h-6 bg-white/20"></div>
+                    <div class="text-center">
+                        <p class="font-extrabold text-sm sm:text-base">30+</p>
+                        <p class="text-[10px] text-slate-300 uppercase tracking-wider">Courses</p>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </section>
 
@@ -152,7 +212,8 @@
                                 class="text-xs bg-sky-50 hover:bg-sky-100 text-sky-600 font-semibold px-3 py-1 rounded-md transition-colors flex items-center gap-1">
                                 Show
                                 <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 5l7 7-7 7">
                                     </path>
                                 </svg>
                             </a>
@@ -173,7 +234,7 @@
 
             {{-- Button Catalog --}}
             <div class="mt-10 text-center">
-                <a href="{{route('user-pelatihan.katalog')}}"
+                <a href="{{ route('user-pelatihan.katalog') }}"
                     class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-sky-400 to-sky-500 hover:from-sky-500 hover:to-sky-600 text-white font-medium text-sm rounded-full shadow-md shadow-sky-200 transition">
                     Browse the full catalog
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

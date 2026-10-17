@@ -17,6 +17,7 @@ class Pelatihan extends Model
         'harga',
         'kuota',
         'gambar',
+        'tampilkan_di_banner',
         'status',
         'pelatihan_jenis_id'
     ];
@@ -24,6 +25,7 @@ class Pelatihan extends Model
     protected $casts = [
         'tanggal_mulai' => 'datetime',
         'tanggal_selesai' => 'datetime',
+        'tampilkan_di_banner' => 'boolean',
     ];
 
     /**

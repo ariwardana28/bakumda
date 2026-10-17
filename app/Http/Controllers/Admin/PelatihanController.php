@@ -58,6 +58,7 @@ class PelatihanController extends Controller
             'harga'              => 'required|numeric|min:0',
             'kuota'              => 'nullable|integer|min:0',
             'gambar'             => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'tampilkan_di_banner' => 'required|boolean',
             'status'             => 'required|in:akan datang,berlangsung,selesai,dibatalkan',
         ]);
 
@@ -101,6 +102,7 @@ class PelatihanController extends Controller
             'harga'              => 'required|numeric|min:0',
             'kuota'              => 'nullable|integer|min:0',
             'gambar'             => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'tampilkan_di_banner' => 'required|boolean',
             'status'             => 'required|in:akan datang,berlangsung,selesai,dibatalkan',
         ]);
 

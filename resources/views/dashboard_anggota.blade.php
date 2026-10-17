@@ -4,14 +4,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light">
     <title>@yield('title', 'BAKUMDA - Bantuan Hukum Daerah')</title>
     <!-- Tailwind CSS CDN -->
+    <script>
+        window.tailwind = window.tailwind || {};
+        window.tailwind.config = { darkMode: 'class' };
+    </script>
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Alpine.js CDN -->
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <style>
+        :root {
+            color-scheme: only light;
+        }
+
         [x-cloak] {
             display: none !important;
         }
@@ -346,7 +355,7 @@
                                     class="font-black text-white text-base md:text-lg tracking-wide group-hover:text-blue-200 transition">
                                     Ajukan Diri Menjadi Anggota BAKUMDA
                                 </h4>
-                                <p class="text-xs sm:text-sm text-blue-200/80 font-medium mt-1">
+                                <p class="text-[8px] md:text-xs text-blue-200/80 font-medium mt-1">
                                     Proses Cepat & Mudah.
                                 </p>
                             </div>
@@ -369,8 +378,17 @@
 
                         <div
                             class="pt-4 mt-3 border-t border-blue-800/60 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-                            <span class="text-[11px] text-blue-300 font-medium">Pastikan Anda Telah Memiliki Sertifikat
-                                DIKLATKUM Sebagai Syarat Utama Untuk Bergabung</span>
+                              <div class="flex items-start gap-2 max-w-sm">
+                                <svg class="w-4 h-4 text-blue-400 shrink-0 mt-0.5" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                <p class="text-[11px] md:text-xs text-slate-300 leading-relaxed">
+                                    Pastikan Anda telah memiliki <span class="text-amber-400 font-semibold">Sertifikat
+                                        DIKLATKUM</span> sebagai syarat utama keanggotaan.
+                                </p>
+                            </div>
 
                             <!-- Bungkus tombol berdampingan -->
                             <div class="flex items-center gap-2 shrink-0">
@@ -465,17 +483,17 @@
                                 class="text-xs font-semibold text-slate-700 mt-2 text-center leading-tight">Pelatihan</span>
                         </a>
 
-                        <!-- Menu 2 (Mobile: Sertifikat, Desktop: Advokasi) -->
-                        <a href="{{ route('sertifikat.index') }}"
-                            class="flex flex-col items-center cursor-pointer group">
+                         <!-- Menu 4 (Mobile: Inspirator, Desktop: Paralegal) -->
+                        <a {!! $isMember ? 'href="' . route('user-referral.index') . '"' : $authAction !!}
+                            class="menu-item-auth flex flex-col items-center cursor-pointer group">
                             <div
-                                class="w-16 h-16 md:w-18 md:h-18 rounded-2xl bg-gradient-to-tr from-blue-800 to-blue-600 flex items-center justify-center text-white shadow-md shadow-blue-500/20 group-hover:scale-105 transition">
-                                <i class="fa-solid fa-certificate max-[1280px]:block min-[1281px]:hidden text-2xl"></i>
+                                class="w-16 h-16 md:w-18 md:h-18 rounded-2xl bg-gradient-to-tr from-blue-600 to-cyan-700 flex items-center justify-center text-white shadow-md shadow-blue-500/20 group-hover:scale-105 transition">
+                                <i class="fa-solid fa-lightbulb max-[1280px]:block min-[1281px]:hidden text-2xl"></i>
                                 <i
-                                    class="fa-solid fa-certificate hidden max-[1280px]:hidden min-[1281px]:block text-xl"></i>
+                                    class="fa-solid fa-lightbulb hidden max-[1280px]:hidden min-[1281px]:block text-xl"></i>
                             </div>
                             <span
-                                class="text-xs font-semibold text-slate-700 mt-2 text-center leading-tight">Sertifikat</span>
+                                class="text-xs font-semibold text-slate-700 mt-2 text-center leading-tight">Inspirator</span>
                         </a>
 
                         <!-- Menu 3 (Mobile: Legalku, Desktop: UU & Perda) -->
@@ -490,19 +508,6 @@
                             </div>
                             <span
                                 class="text-xs font-semibold text-slate-700 mt-2 text-center leading-tight">E-Dokumen</span>
-                        </a>
-
-                        <!-- Menu 4 (Mobile: Inspirator, Desktop: Paralegal) -->
-                        <a {!! $isMember ? 'href="' . route('user-referral.index') . '"' : $authAction !!}
-                            class="menu-item-auth flex flex-col items-center cursor-pointer group">
-                            <div
-                                class="w-16 h-16 md:w-18 md:h-18 rounded-2xl bg-gradient-to-tr from-blue-600 to-cyan-700 flex items-center justify-center text-white shadow-md shadow-blue-500/20 group-hover:scale-105 transition">
-                                <i class="fa-solid fa-lightbulb max-[1280px]:block min-[1281px]:hidden text-2xl"></i>
-                                <i
-                                    class="fa-solid fa-lightbulb hidden max-[1280px]:hidden min-[1281px]:block text-xl"></i>
-                            </div>
-                            <span
-                                class="text-xs font-semibold text-slate-700 mt-2 text-center leading-tight">Inspirator</span>
                         </a>
 
                         <a href="{{ url('/ai-chat') }}" class="flex flex-col items-center cursor-pointer group">
@@ -540,6 +545,19 @@
                             </div>
                             <span
                                 class="text-xs font-semibold text-slate-700 mt-2 text-center leading-tight">E-Organisasi</span>
+                        </a>
+
+                        <!-- Menu 2 (Mobile: Sertifikat, Desktop: Advokasi) -->
+                        <a href="{{ route('artikel.index.public') }}"
+                            class="flex flex-col items-center cursor-pointer group">
+                            <div
+                                class="w-16 h-16 md:w-18 md:h-18 rounded-2xl bg-gradient-to-tr from-blue-800 to-blue-600 flex items-center justify-center text-white shadow-md shadow-blue-500/20 group-hover:scale-105 transition">
+                                <i class="fa-solid fa-newspaper max-[1280px]:block min-[1281px]:hidden text-2xl"></i>
+                                <i
+                                    class="fa-solid fa-newspaper hidden max-[1280px]:hidden min-[1281px]:block text-xl"></i>
+                            </div>
+                            <span
+                                class="text-xs font-semibold text-slate-700 mt-2 text-center leading-tight">Artikel</span>
                         </a>
 
                         <!-- Menu 7 (Mobile: Merchandise, Desktop: Darurat) -->
@@ -766,12 +784,12 @@
             </a>
 
             <!-- 2. Artikel -->
-            <a href="{{ route('artikel.index.public') }}"
+            <a href="{{ route('sertifikat.index') }}"
                 class="flex flex-col items-center text-slate-400 hover:text-blue-700 py-1 transition">
                 <div class="w-9 h-9 rounded-full flex items-center justify-center">
-                    <i class="fa-solid fa-newspaper text-base"></i>
+                    <i class="fa-solid fa-stamp text-base"></i>
                 </div>
-                <span class="text-[10px] font-medium mt-0.5">Artikel</span>
+                <span class="text-[10px] font-medium mt-0.5">Sertifikat</span>
             </a>
 
             <!-- 3. QR (Scan) -->
@@ -1072,6 +1090,17 @@
                                 class="text-xs font-semibold text-slate-300 mt-2 text-center leading-tight">Pelatihan</span>
                         </a>
 
+                        <!-- Menu 4 (Inspirator) -->
+                        <a {!! $isMember ? 'href="' . route('user-referral.index') . '"' : $authAction !!}
+                            class="menu-item-auth flex flex-col items-center cursor-pointer group">
+                            <div
+                                class="w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-gradient-to-tr from-blue-600 to-cyan-700 flex items-center justify-center text-white shadow-md shadow-blue-500/20 group-hover:scale-105 transition">
+                                <i class="fa-solid fa-lightbulb text-xl md:text-2xl"></i>
+                            </div>
+                            <span
+                                class="text-xs font-semibold text-slate-300 mt-2 text-center leading-tight">Inspirator</span>
+                        </a>
+
                         <!-- Menu Kartu Anggota (KTA) di Fitur Eksklusif -->
                         <a href="{{ route('user-anggota.index') }}"
                             class="flex flex-col items-center cursor-pointer group">
@@ -1083,17 +1112,6 @@
                                 Anggota</span>
                         </a>
 
-                        <!-- Menu 2 (Sertifikat) -->
-                        <a href="{{ route('sertifikat.index') }}"
-                            class="flex flex-col items-center cursor-pointer group">
-                            <div
-                                class="w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-gradient-to-tr from-blue-800 to-blue-600 flex items-center justify-center text-white shadow-md shadow-blue-500/20 group-hover:scale-105 transition">
-                                <i class="fa-solid fa-certificate text-xl md:text-2xl"></i>
-                            </div>
-                            <span
-                                class="text-xs font-semibold text-slate-300 mt-2 text-center leading-tight">Sertifikat</span>
-                        </a>
-
                         <!-- Menu 3 (E-Dokumen) -->
                         <a {!! $isMember ? 'href="' . url('/user-surat') . '"' : $authAction !!}
                             class="menu-item-auth flex flex-col items-center cursor-pointer group">
@@ -1103,17 +1121,6 @@
                             </div>
                             <span
                                 class="text-xs font-semibold text-slate-300 mt-2 text-center leading-tight">E-Dokumen</span>
-                        </a>
-
-                        <!-- Menu 4 (Inspirator) -->
-                        <a {!! $isMember ? 'href="' . route('user-referral.index') . '"' : $authAction !!}
-                            class="menu-item-auth flex flex-col items-center cursor-pointer group">
-                            <div
-                                class="w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-gradient-to-tr from-blue-600 to-cyan-700 flex items-center justify-center text-white shadow-md shadow-blue-500/20 group-hover:scale-105 transition">
-                                <i class="fa-solid fa-lightbulb text-xl md:text-2xl"></i>
-                            </div>
-                            <span
-                                class="text-xs font-semibold text-slate-300 mt-2 text-center leading-tight">Inspirator</span>
                         </a>
 
                         <!-- Menu 5 (Asisten Legal / AI Chat) -->
@@ -1146,6 +1153,17 @@
                             </div>
                             <span
                                 class="text-xs font-semibold text-slate-300 mt-2 text-center leading-tight">E-Organisasi</span>
+                        </a>
+
+                         <!-- Menu 2 (Artikel) -->
+                        <a href="{{ route('artikel.index.public') }}"
+                            class="flex flex-col items-center cursor-pointer group">
+                            <div
+                                class="w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-gradient-to-tr from-blue-800 to-blue-600 flex items-center justify-center text-white shadow-md shadow-blue-500/20 group-hover:scale-105 transition">
+                                <i class="fa-solid fa-certificate text-xl md:text-2xl"></i>
+                            </div>
+                            <span
+                                class="text-xs font-semibold text-slate-300 mt-2 text-center leading-tight">Artikel</span>
                         </a>
 
                         <!-- Menu 8 (Kerja Sama) -->

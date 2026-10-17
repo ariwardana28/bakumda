@@ -39,7 +39,7 @@ class HalamanUtamaController extends Controller
             return redirect()->route('dashboard');
         }
 
-        $pelatihans = Pelatihan::latest()->get();
+        $pelatihans = Pelatihan::where('tampilkan_di_banner', true)->latest()->get();
         $user = Auth::user();
         $artikels = Artikel::where('status', 'published')->latest()->get();
         $isRegistered = false;

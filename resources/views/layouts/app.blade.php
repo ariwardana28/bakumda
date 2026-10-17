@@ -1,318 +1,370 @@
-@extends('layouts.app')
+<!DOCTYPE html>
+<html lang="id">
 
-@section('title', 'Tanya BAKUMDA AI')
-
-@section('content')
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light">
+    <title>@yield('title', 'BAKUMDA - Bantuan Hukum Daerah')</title>
+    <!-- Tailwind CSS CDN -->
+    <script>
+        window.tailwind = window.tailwind || {};
+        window.tailwind.config = { darkMode: 'class' };
+    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Alpine.js CDN -->
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <style>
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(8px); }
-            to { opacity: 1; transform: translateY(0); }
+        :root {
+            color-scheme: only light;
         }
-        .msg-enter {
-            animation: fadeInUp 0.25s ease-out;
+
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
         }
-        @keyframes bounceDot {
-            0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
-            40% { transform: scale(1); opacity: 1; }
+
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
         }
-        .typing-dot {
-            animation: bounceDot 1.2s infinite ease-in-out;
-        }
-        .typing-dot:nth-child(2) { animation-delay: 0.15s; }
-        .typing-dot:nth-child(3) { animation-delay: 0.3s; }
     </style>
+    @stack('styles')
+</head>
 
-    <!-- Wrapper Utama: tinggi dikunci via JS berdasarkan tinggi header & bottom-nav yang sebenarnya -->
-    <div id="ai-chat-wrapper" class="flex flex-col w-full bg-white text-slate-800 overflow-hidden relative">
+<body class="bg-white font-sans text-slate-800 antialiased min-h-screen flex flex-col">
+    @php
+        $cartItems = auth()->user()?->keranjang?->items()->with('produk')->get() ?? collect();
+    @endphp
 
-        <!-- Area Chat: Satu-satunya area yang bisa di-scroll secara independen -->
-        <div id="chat-container" class="flex-1 overflow-y-auto px-4 sm:px-6 py-6 space-y-8 max-w-3xl w-full mx-auto scroll-smooth">
+    <!-- ================================================= -->
+    <!-- VIEW 1: TAMPILAN ANDROID / MOBILE                 -->
+    <!-- ================================================= -->
+ <div id="view-android-container" class="w-full 2xl:hidden flex-1 flex flex-col min-h-screen relative bg-white">
 
-            <!-- Tampilan Awal (Welcome Screen) ala Gemini -->
-            <div id="welcome-section" class="h-full flex flex-col items-center justify-center text-center space-y-8 my-auto">
-                <h1 class="text-3xl sm:text-5xl font-medium tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-600 via-indigo-500 to-rose-500">
-                    Halo, {{ Auth::user()->name }}
-                </h1>
-                <p class="text-slate-400 text-sm sm:text-base -mt-4">Ada yang bisa BAKUMDA AI bantu hari ini?</p>
+    <!-- Header Tetap (Sticky) -->
+    <header id="mobile-header"
+        class="sticky top-0 left-0 right-0 z-40 px-6 sm:px-12 pt-4 pb-4 backdrop-blur-md transition-colors duration-200 {{ request()->routeIs('user-pelatihan.show') || request()->routeIs('user-pelatihan.index') || request()->routeIs('user-materi.index') || request()->routeIs('user-materi.show') || request()->routeIs('user-pelatihan.katalog') ? 'bg-white/95 border-b border-slate-200 text-slate-800' : 'bg-slate-900/95 border-b border-white/5 text-white' }}">
 
-                <!-- Input Khusus Tampilan Awal -->
-                <div class="w-full max-w-2xl">
-                    <form id="geminiFormInitial"
-                        class="relative bg-slate-50 border border-slate-200 rounded-[28px] px-2 py-2 shadow-sm hover:shadow-md focus-within:border-slate-300 focus-within:shadow-md transition-all">
-                        @csrf
-                        <div class="flex items-center px-3 py-1.5">
-                            <button type="button" class="text-slate-400 hover:text-slate-600 mr-3 transition shrink-0">
-                                <i class="fa-solid fa-plus text-sm"></i>
-                            </button>
-                            <input type="text" id="prompt-initial" name="prompt"
-                                placeholder="Tanyakan sesuatu"
-                                class="w-full bg-transparent border-none text-sm sm:text-base focus:outline-none text-slate-900 placeholder-slate-400"
-                                required autocomplete="off">
-                            <button type="submit" id="btnSubmitInitial"
-                                class="bg-slate-900 hover:bg-slate-700 active:scale-95 text-white w-9 h-9 rounded-full flex items-center justify-center transition shrink-0 ml-2 disabled:opacity-40 disabled:cursor-not-allowed">
-                                <i class="fa-solid fa-arrow-up text-xs"></i>
-                            </button>
+        <div class="flex items-center justify-between relative z-10">
+            <div class="flex items-center space-x-2.5">
+                <img src="{{ asset(request()->routeIs('user-pelatihan.*', 'user-materi.*', 'user-soal.*', 'materi.*') ? 'lg.jpeg' : 'log.png') }}"
+                    alt="Logo" class="h-[48px] sm:h-[56px] w-auto object-contain">
+            </div>
+
+            <div class="flex items-center space-x-3">
+                
+                @guest
+                    {{-- Belum login --}}
+                    <div class="flex items-center gap-2">
+                        <a href="{{ route('login') }}"
+                            class="px-4 py-1.5 rounded-full text-xs font-semibold border border-slate-300 text-slate-700 hover:bg-slate-100 transition">
+                            Login
+                        </a>
+                        <a href="{{ route('register') }}"
+                            class="px-4 py-1.5 rounded-full text-xs font-semibold bg-sky-600 text-white hover:bg-sky-700 transition shadow">
+                            Register
+                        </a>
+                    </div>
+                @endguest
+
+                {{-- Tombol Keranjang --}}
+                <div class="relative" x-data="{ cartOpen: false }" @click.away="cartOpen = false">
+                    <button type="button" @click="cartOpen = !cartOpen"
+                        class="w-9 h-9 rounded-full border flex items-center justify-center transition {{ request()->routeIs('user-pelatihan.show') || request()->routeIs('user-pelatihan.index') || request()->routeIs('user-materi.index') || request()->routeIs('user-materi.show') || request()->routeIs('user-pelatihan.katalog') ? 'bg-slate-100 border-slate-300 text-slate-700 hover:bg-slate-200' : 'bg-[#0a1226]/90 border-blue-950/60 text-blue-200 hover:text-white' }}"
+                        title="Keranjang">
+                        <i class="fa-solid fa-cart-shopping text-sm"></i>
+                        @if (isset($cartItems) && $cartItems->sum('jumlah') > 0)
+                            <span
+                                class="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-orange-500 px-1 text-[9px] font-black text-white shadow">{{ $cartItems->sum('jumlah') > 99 ? '99+' : $cartItems->sum('jumlah') }}</span>
+                        @endif
+                    </button>
+                    @include('layouts.partials.cart-dropdown')
+                </div>
+
+                {{-- Tombol Notifikasi --}}
+                <div class="relative" x-data="{ notifOpen: false }" @click.away="notifOpen = false">
+                    <button @click="notifOpen = !notifOpen"
+                        class="w-9 h-9 rounded-full border flex items-center justify-center transition {{ request()->routeIs('user-pelatihan.show') || request()->routeIs('user-pelatihan.index') || request()->routeIs('user-materi.index') || request()->routeIs('user-materi.show') || request()->routeIs('user-pelatihan.katalog')  ? 'bg-slate-100 border-slate-300 text-slate-700 hover:bg-slate-200' : 'bg-[#0a1226]/90 border-blue-950/60 text-blue-200 hover:text-white' }}">
+                        <i class="fa-regular fa-bell text-sm"></i>
+                    </button>
+
+                    @php
+                        $notifCollection = $notifications ?? collect();
+                        $unreadCount = $unreadNotificationsCount ?? $notifCollection->whereNull('read_at')->count();
+                    @endphp
+
+                    @if ($unreadCount > 0)
+                        <span
+                            class="absolute -top-0.5 -right-0.5 w-4 h-4 bg-amber-500 text-slate-950 font-extrabold text-[9px] flex items-center justify-center rounded-full shadow">
+                            {{ $unreadCount > 9 ? '9+' : $unreadCount }}
+                        </span>
+                    @endif
+
+                    {{-- Dropdown Notifikasi --}}
+                    <div x-show="notifOpen" x-transition:enter="ease-out duration-150"
+                        x-transition:enter-start="opacity-0 scale-95 -translate-y-1"
+                        x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+                        x-transition:leave="ease-in duration-100" x-transition:leave-start="opacity-100 scale-100"
+                        x-transition:leave-end="opacity-0 scale-95"
+                        class="absolute right-0 mt-3 w-80 sm:w-96 bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden z-50"
+                        style="display: none;">
+
+                        <div class="flex items-center justify-between px-4 py-3 border-b border-slate-100">
+                            <h4 class="text-sm font-bold text-slate-900">Notifikasi</h4>
+                            @if ($unreadCount > 0)
+                                <form action="{{ route('notifications.readAll') }}" method="POST">
+                                    @csrf
+                                    <button type="submit"
+                                        class="text-[11px] font-semibold text-blue-600 hover:text-blue-700 transition">
+                                        Tandai semua dibaca
+                                    </button>
+                                </form>
+                            @endif
                         </div>
-                    </form>
 
-                    <!-- Suggestion Chips ala Gemini -->
-                    <div class="flex flex-wrap justify-center gap-2 mt-4">
-                        <button type="button"
-                            class="suggestion-chip px-4 py-2 rounded-full border border-slate-200 text-xs sm:text-sm text-slate-600 hover:bg-slate-50 hover:border-slate-300 transition">
-                            Jelaskan prosedur bantuan hukum
-                        </button>
-                        <button type="button"
-                            class="suggestion-chip px-4 py-2 rounded-full border border-slate-200 text-xs sm:text-sm text-slate-600 hover:bg-slate-50 hover:border-slate-300 transition">
-                            Syarat menjadi anggota BAKUMDA
-                        </button>
-                        <button type="button"
-                            class="suggestion-chip px-4 py-2 rounded-full border border-slate-200 text-xs sm:text-sm text-slate-600 hover:bg-slate-50 hover:border-slate-300 transition">
-                            Cara mendaftar pelatihan
-                        </button>
+                        <div class="max-h-80 overflow-y-auto divide-y divide-slate-100">
+                            @forelse ($notifCollection as $notif)
+                                <a href="{{ route('notifications.read', $notif->id) }}"
+                                    class="flex items-start gap-3 px-4 py-3 hover:bg-slate-50 transition {{ is_null($notif->read_at) ? 'bg-blue-50/50' : '' }}">
+                                    <div
+                                        class="w-8 h-8 rounded-full flex items-center justify-center shrink-0
+                                        {{ $notif->type === 'success'
+                                            ? 'bg-emerald-100 text-emerald-600'
+                                            : ($notif->type === 'error'
+                                                ? 'bg-red-100 text-red-600'
+                                                : ($notif->type === 'warning'
+                                                    ? 'bg-amber-100 text-amber-600'
+                                                    : 'bg-blue-100 text-blue-600')) }}">
+                                        <i
+                                            class="fa-solid
+                                            {{ $notif->type === 'success'
+                                                ? 'fa-check'
+                                                : ($notif->type === 'error'
+                                                    ? 'fa-triangle-exclamation'
+                                                    : ($notif->type === 'warning'
+                                                        ? 'fa-circle-exclamation'
+                                                        : 'fa-bell')) }} text-xs"></i>
+                                    </div>
+
+                                    <div class="min-w-0 flex-1">
+                                        <p class="text-xs font-bold text-slate-900 truncate">{{ $notif->title }}</p>
+                                        <p class="text-[11px] text-slate-500 line-clamp-2 mt-0.5 leading-relaxed">
+                                            {{ $notif->message }}</p>
+                                        <span class="text-[10px] text-slate-400 mt-1 block">{{ $notif->created_at->diffForHumans() }}</span>
+                                    </div>
+
+                                    @if (is_null($notif->read_at))
+                                        <span class="w-2 h-2 rounded-full bg-blue-500 mt-1.5 shrink-0"></span>
+                                    @endif
+                                </a>
+                            @empty
+                                <div class="px-4 py-10 text-center text-slate-400">
+                                    <i class="fa-regular fa-bell-slash text-2xl mb-2 block"></i>
+                                    <p class="text-xs">Belum ada notifikasi.</p>
+                                </div>
+                            @endforelse
+                        </div>
                     </div>
                 </div>
-            </div>
 
+            </div>
+        </div>
+    </header>
+
+    <!-- Konten Utama: Bebas Padding agar Gambar Latar Hero Bisa Full Screen -->
+    <main class="flex-1 w-full pb-24">
+        @yield('content')
+    </main>
+
+    <!-- Mobile Bottom Navigation Bar -->
+    <div id="mobile-bottom-nav"
+        class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 px-6 py-2.5 flex items-center justify-around z-50 shadow-[0_-4px_20px_rgba(0,0,0,0.06)]">
+
+        <a href="{{ url('/') }}"
+            class="flex flex-col items-center py-1 transition {{ request()->routeIs('home', 'dashboard', 'welcome') ? 'text-blue-700' : 'text-slate-400 hover:text-blue-700' }}">
+            <div class="w-9 h-9 rounded-full flex items-center justify-center {{ request()->routeIs('home', 'dashboard', 'welcome') ? 'bg-blue-50' : '' }}">
+                <i class="fa-solid fa-house text-base"></i>
+            </div>
+            <span class="text-[10px] {{ request()->routeIs('home', 'dashboard', 'welcome') ? 'font-bold' : 'font-medium' }} mt-0.5">Beranda</span>
+        </a>
+
+        <a href="{{ route('sertifikat.index') }}"
+            class="flex flex-col items-center py-1 transition {{ request()->routeIs('sertifikat.*') ? 'text-blue-700' : 'text-slate-400 hover:text-blue-700' }}">
+            <div class="w-9 h-9 rounded-full flex items-center justify-center {{ request()->routeIs('sertifikat.*') ? 'bg-blue-50' : '' }}">
+                <i class="fa-solid fa-certificate text-base"></i>
+            </div>
+            <span class="text-[10px] {{ request()->routeIs('sertifikat.*') ? 'font-bold' : 'font-medium' }} mt-0.5">Sertifikat</span>
+        </a>
+
+        <div class="relative -top-5">
+            <a href="{{ route('kartu-anggota.cek.form') }}"
+                class="w-14 h-14 rounded-full bg-gradient-to-tr from-red-700 to-rose-900 text-white flex items-center justify-center shadow-lg border-4 border-white transition-transform hover:scale-105">
+                <i class="fa-solid fa-qrcode text-xl"></i>
+            </a>
         </div>
 
-        <!-- Input Permanen: Duduk menempel rapat di bagian paling bawah kontainer (di atas menu navbar) -->
-        <div id="persistent-input-container" class="hidden shrink-0 bg-white px-4 py-3 z-20">
-            <div class="max-w-3xl mx-auto">
-                <form id="geminiForm"
-                    class="relative bg-slate-50 border border-slate-200 rounded-[28px] px-2 py-2 shadow-sm hover:shadow-md focus-within:border-slate-300 focus-within:shadow-md transition-all">
-                    @csrf
-                    <div class="flex items-center px-3 py-1.5">
-                        <button type="button" class="text-slate-400 hover:text-slate-600 mr-3 transition shrink-0">
-                            <i class="fa-solid fa-plus text-sm"></i>
-                        </button>
+        <a href="{{ route('user-anggota.index') }}"
+            class="flex flex-col items-center py-1 transition {{ request()->routeIs('user-anggota.*') ? 'text-blue-700' : 'text-slate-400 hover:text-blue-700' }}">
+            <div class="w-9 h-9 rounded-full flex items-center justify-center {{ request()->routeIs('user-anggota.*') ? 'bg-blue-50' : '' }}">
+                <i class="fa-solid fa-id-card text-base"></i>
+            </div>
+            <span class="text-[10px] {{ request()->routeIs('user-anggota.*') ? 'font-bold' : 'font-medium' }} mt-0.5">Kartu</span>
+        </a>
 
-                        <input type="text" id="prompt" name="prompt"
-                            placeholder="Tanyakan sesuatu"
-                            class="w-full bg-transparent border-none text-sm sm:text-base focus:outline-none text-slate-900 placeholder-slate-400"
-                            required autocomplete="off">
+        <a href="{{ route('profile.show') }}"
+            class="flex flex-col items-center py-1 transition {{ request()->routeIs('profile.*') ? 'text-blue-700' : 'text-slate-400 hover:text-blue-700' }}">
+            <div class="w-9 h-9 rounded-full flex items-center justify-center {{ request()->routeIs('profile.*') ? 'bg-blue-50' : '' }}">
+                <i class="fa-solid fa-user text-base"></i>
+            </div>
+            <span class="text-[10px] {{ request()->routeIs('profile.*') ? 'font-bold' : 'font-medium' }} mt-0.5">Profil</span>
+        </a>
 
-                        <button type="submit" id="btnSubmit"
-                            class="bg-slate-900 hover:bg-slate-700 active:scale-95 text-white w-9 h-9 rounded-full flex items-center justify-center transition shrink-0 ml-2 disabled:opacity-40 disabled:cursor-not-allowed">
-                            <i class="fa-solid fa-arrow-up text-xs"></i>
-                        </button>
+    </div>
+</div>
+
+    <!-- ================================================= -->
+    <!-- VIEW 2: DESKTOP MODE                              -->
+    <!-- ================================================= -->
+    <div id="view-desktop-container" x-data="{ sidebarOpen: false }"
+        class="hidden 2xl:flex flex-1 flex-row h-screen overflow-hidden">
+
+        <!-- Sidebar Navigation (Kiri) - Tetap diam / sticky -->
+        <aside :class="sidebarOpen ? 'w-64' : 'w-20'"
+            class="bg-white border-r border-slate-200 flex flex-col justify-between h-screen z-30 shadow-sm shrink-0 transition-all duration-300">
+            <div>
+                <!-- Brand Header -->
+                <div class="p-6 border-b border-slate-100 flex items-center space-x-3 overflow-hidden">
+                    <div
+                        class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-700 to-amber-500 flex items-center justify-center text-white font-black text-lg shadow-md shrink-0 overflow-hidden">
+                        <img src="{{ asset(request()->routeIs('user-pelatihan.*', 'user-materi.*', 'user-soal.*', 'user.sertifikat*', 'materi.*') ? 'logo2.jpeg' : 'bakumda.png') }}"
+                            alt="Logo" class="w-full h-full object-cover">
                     </div>
+                    <div x-show="sidebarOpen" x-transition.opacity class="truncate">
+                        <h1 class="font-extrabold text-slate-900 text-base tracking-wider">BAKUMDA</h1>
+                        <p class="text-[10px] text-slate-500 font-medium">Bantuan Hukum Daerah</p>
+                    </div>
+                </div>
+
+                <!-- Navigation Links -->
+                <nav class="p-3 space-y-1.5 overflow-y-auto max-h-[calc(100vh-280px)]">
+                    <a href="{{ url('/') }}"
+                        class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl bg-blue-600 text-white font-bold text-sm shadow-md shadow-blue-600/20">
+                        <i class="fa-solid fa-house w-5 text-center shrink-0 text-base"></i>
+                        <span x-show="sidebarOpen" x-transition.opacity class="truncate">Beranda</span>
+                    </a>
+                    <a href="#"
+                        class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-medium text-sm transition">
+                        <i class="fa-solid fa-newspaper  w-5 text-center shrink-0 text-base"></i>
+                        <span x-show="sidebarOpen" x-transition.opacity class="truncate">Artikel</span>
+                    </a>
+                    <a href="{{ route('kartu-anggota.cek.form') }}"
+                        class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-medium text-sm transition">
+                        <i class="fa-solid fa-qrcode w-5 text-center shrink-0 text-base"></i>
+                        <span x-show="sidebarOpen" x-transition.opacity class="truncate">Scan</span>
+                    </a>
+                    <a href="{{ route('user-anggota.index') }}"
+                        class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-medium text-sm transition">
+                        <i class="fa-solid fa-id-card  w-5 text-center shrink-0 text-base"></i>
+                        <span x-show="sidebarOpen" x-transition.opacity class="truncate">Kartu</span>
+                    </a>
+                    <a href="{{ route('profile.show') }}"
+                        class="flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-medium text-sm transition">
+                        <i class="fa-solid fa-user-shield w-5 text-center shrink-0 text-base"></i>
+                        <span x-show="sidebarOpen" x-transition.opacity class="truncate">Profile</span>
+                    </a>
+                </nav>
+            </div>
+
+            <!-- User Info & Logout Footer -->
+            <div class="border-t border-slate-100 bg-slate-50/50 flex flex-col">
+
+                <!-- Hidden Logout Form -->
+                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                    @csrf
                 </form>
-                <p class="text-center text-[10px] text-slate-400 mt-2">BAKUMDA AI dapat membuat kesalahan. Periksa kembali info penting.</p>
+                <!-- Tombol Logout -->
+                <div class="px-3 pb-3 pt-3">
+                    <a href="#"
+                        onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
+                        class="flex items-center space-x-3 px-3.5 py-2 rounded-xl text-red-600 hover:bg-red-50 font-medium text-sm transition">
+                        <i class="fa-solid fa-right-from-bracket w-5 text-center shrink-0 text-base"></i>
+                        <span x-show="sidebarOpen" x-transition.opacity class="truncate">Logout</span>
+                    </a>
+                </div>
+                <!-- User Profile Info -->
+                <div class="p-4 border-t border-slate-100 flex items-center space-x-3 overflow-hidden">
+                    <div
+                        class="w-9 h-9 rounded-full bg-slate-200 border border-slate-300 flex items-center justify-center text-amber-700 font-bold text-xs shrink-0">
+                        AM</div>
+                    <div x-show="sidebarOpen" x-transition.opacity class="overflow-hidden truncate">
+                        <h4 class="text-xs font-bold text-slate-900 truncate">DR. H. ARIS M.</h4>
+                        <p class="text-[10px] text-slate-500 truncate">Advokat / Konsultan</p>
+                    </div>
+                </div>
+
+            </div>
+        </aside>
+
+        <!-- Main Desktop Content Area yang bisa discroll secara mandiri -->
+        <div class="flex-1 flex flex-col min-w-0 h-screen overflow-y-auto bg-slate-50/30">
+            <!-- Top Bar - Sticky di bagian atas area konten -->
+            <header
+                class="bg-white/90 backdrop-blur-md border-b border-slate-200 px-6 py-4 flex items-center justify-between sticky top-0 z-20">
+                <div class="flex items-center space-x-4">
+                    <!-- Tombol Burger Menu untuk Membuka/Menutup Sidebar -->
+                    <button @click="sidebarOpen = !sidebarOpen"
+                        class="w-10 h-10 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-600 hover:text-slate-900 transition shadow-sm focus:outline-none">
+                        <i class="fa-solid fa-bars text-sm"></i>
+                    </button>
+
+                </div>
+                <div class="items-center space-x-3 hidden sm:flex">
+                    <div class="relative w-72">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-xs text-slate-400"></i>
+                        <input type="text" placeholder="Cari pasal, layanan, atau konsultasi..."
+                            class="w-full bg-slate-100 border border-slate-200 text-xs text-slate-800 rounded-full pl-10 pr-4 py-2.5 focus:outline-none focus:border-blue-500 transition">
+                    </div>
+
+                    <!-- Tombol Keranjang (Diletakkan di samping Notifikasi pada Topbar Desktop) -->
+                    <div class="relative" x-data="{ cartOpen: false }" @click.away="cartOpen = false">
+                        <button type="button" @click="cartOpen = !cartOpen"
+                            class="w-10 h-10 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-600 hover:text-slate-900 transition"
+                            title="Keranjang">
+                            <i class="fa-solid fa-cart-shopping text-sm"></i>
+                            @if ($cartItems->sum('jumlah') > 0)
+                                <span
+                                    class="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-orange-500 px-1 text-[9px] font-black text-white shadow">{{ $cartItems->sum('jumlah') > 99 ? '99+' : $cartItems->sum('jumlah') }}</span>
+                            @endif
+                        </button>
+                        @include('layouts.partials.cart-dropdown')
+                    </div>
+
+                    <div class="relative">
+                        <button
+                            class="w-10 h-10 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-600 hover:text-slate-900 transition">
+                            <i class="fa-regular fa-bell text-sm"></i>
+                        </button>
+                        <span
+                            class="absolute top-1 right-1 w-4 h-4 bg-amber-500 text-white font-extrabold text-[9px] flex items-center justify-center rounded-full shadow">8</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Desktop Content Slot -->
+            <div class="flex-1 p-6">
+                @yield('content')
             </div>
         </div>
-
     </div>
 
     <script>
-    (() => {
-        // ============================================================
-        // Kunci tinggi #ai-chat-wrapper berdasarkan tinggi ASLI header
-        // & bottom-nav (bukan angka rem yang ditebak), dan nolkan
-        // padding-bottom <main> khusus halaman ini supaya wrapper pas
-        // persis tanpa memicu scroll dokumen. Hanya berjalan di mobile
-        // (#mobile-bottom-nav ada & terlihat); di desktop, container
-        // sudah scroll sendiri (h-screen overflow-y-auto).
-        // ============================================================
-        function isElementVisible(el) {
-            return !!el && el.offsetParent !== null;
+        function showAlert(msg) {
+            alert(msg);
         }
-
-        function lockChatHeight() {
-            const wrapper = document.getElementById('ai-chat-wrapper');
-            const header = document.getElementById('mobile-header');
-            const bottomNav = document.getElementById('mobile-bottom-nav');
-            const mobileMain = document.querySelector('#view-android-container > main');
-
-            if (!wrapper) return;
-
-            if (!isElementVisible(bottomNav)) {
-                wrapper.style.height = '';
-                wrapper.style.maxHeight = '';
-                if (mobileMain) mobileMain.style.paddingBottom = '';
-                return;
-            }
-
-            const viewportHeight = window.visualViewport
-                ? window.visualViewport.height
-                : window.innerHeight;
-
-            const headerHeight = header ? header.offsetHeight : 0;
-            const navHeight = bottomNav ? bottomNav.offsetHeight : 0;
-
-            const availableHeight = viewportHeight - headerHeight - navHeight;
-
-            wrapper.style.height = availableHeight + 'px';
-            wrapper.style.maxHeight = availableHeight + 'px';
-
-            if (mobileMain) mobileMain.style.paddingBottom = '0px';
-        }
-
-        lockChatHeight();
-        window.addEventListener('resize', lockChatHeight);
-        window.addEventListener('orientationchange', lockChatHeight);
-        if (window.visualViewport) {
-            window.visualViewport.addEventListener('resize', lockChatHeight);
-        }
-
-        function scrollToBottom() {
-            const chatContainer = document.getElementById('chat-container');
-            if (chatContainer) {
-                chatContainer.scrollTop = chatContainer.scrollHeight;
-            }
-        }
-
-        async function handleFormSubmit(userText) {
-            if (!userText) return;
-
-            const chatContainer = document.getElementById('chat-container');
-            const welcomeSection = document.getElementById('welcome-section');
-            const persistentInput = document.getElementById('persistent-input-container');
-
-            if (welcomeSection) {
-                welcomeSection.remove();
-            }
-            if (persistentInput) {
-                persistentInput.classList.remove('hidden');
-            }
-
-            // 🌟 Bubble user: pill abu-abu rata kanan, tanpa avatar (gaya Gemini)
-            const userBubble = `
-                <div class="msg-enter flex justify-end w-full">
-                    <div class="bg-slate-100 text-slate-900 px-4 py-3 rounded-3xl rounded-br-lg max-w-lg text-sm sm:text-base leading-relaxed whitespace-pre-line">
-                        ${escapeHtml(userText)}
-                    </div>
-                </div>
-            `;
-            chatContainer.insertAdjacentHTML('beforeend', userBubble);
-
-            const promptInitial = document.getElementById('prompt-initial');
-            const promptPersistent = document.getElementById('prompt');
-            if (promptInitial) promptInitial.value = '';
-            if (promptPersistent) promptPersistent.value = '';
-
-            scrollToBottom();
-
-            const btnInitial = document.getElementById('btnSubmitInitial');
-            const btnPersistent = document.getElementById('btnSubmit');
-            if (btnInitial) {
-                btnInitial.disabled = true;
-                btnInitial.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-xs"></i>';
-            }
-            if (btnPersistent) {
-                btnPersistent.disabled = true;
-                btnPersistent.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-xs"></i>';
-            }
-
-            // 🌟 Loading: ikon spark gradient + tiga dot mantul, tanpa bubble/border (gaya Gemini)
-            const aiLoadingId = 'ai-loading-' + Date.now();
-            const aiLoadingBubble = `
-                <div id="${aiLoadingId}" class="msg-enter flex items-start gap-3 w-full">
-                    <div class="bg-gradient-to-tr from-blue-600 via-indigo-500 to-rose-500 rounded-full h-7 w-7 flex items-center justify-center shrink-0 mt-0.5">
-                        <i class="fa-solid fa-sparkle text-white text-[10px]"></i>
-                    </div>
-                    <div class="flex items-center gap-1.5 py-2">
-                        <span class="typing-dot w-1.5 h-1.5 rounded-full bg-slate-400"></span>
-                        <span class="typing-dot w-1.5 h-1.5 rounded-full bg-slate-400"></span>
-                        <span class="typing-dot w-1.5 h-1.5 rounded-full bg-slate-400"></span>
-                    </div>
-                </div>
-            `;
-            chatContainer.insertAdjacentHTML('beforeend', aiLoadingBubble);
-            scrollToBottom();
-
-            const formData = new FormData();
-            formData.append('prompt', userText);
-
-            try {
-                const response = await fetch("{{ route('gemini.ask') }}", {
-                    method: 'POST',
-                    body: formData,
-                    headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                        'Accept': 'application/json'
-                    }
-                });
-
-                const contentType = response.headers.get("content-type");
-                if (!contentType || !contentType.includes("application/json")) {
-                    throw new Error("Server mengembalikan respons non-JSON.");
-                }
-
-                const data = await response.json();
-
-                document.getElementById(aiLoadingId)?.remove();
-
-                if (data.success) {
-                    // 🌟 Respons AI: tanpa bubble, teks mengalir penuh dengan ikon spark kecil (gaya Gemini)
-                    const aiResponseBubble = `
-                        <div class="msg-enter flex items-start gap-3 w-full">
-                            <div class="bg-gradient-to-tr from-blue-600 via-indigo-500 to-rose-500 rounded-full h-7 w-7 flex items-center justify-center shrink-0 mt-0.5">
-                                <i class="fa-solid fa-sparkle text-white text-[10px]"></i>
-                            </div>
-                            <div class="text-slate-800 text-sm sm:text-base leading-relaxed whitespace-pre-line pt-0.5">
-                                ${escapeHtml(data.response)}
-                            </div>
-                        </div>
-                    `;
-                    chatContainer.insertAdjacentHTML('beforeend', aiResponseBubble);
-                } else {
-                    alert('Terjadi Kesalahan: ' + (data.error || 'Gagal memproses permintaan.'));
-                }
-            } catch (err) {
-                document.getElementById(aiLoadingId)?.remove();
-                alert('Gagal menghubungi server: ' + err.message);
-                console.error(err);
-            } finally {
-                if (btnInitial) {
-                    btnInitial.disabled = false;
-                    btnInitial.innerHTML = '<i class="fa-solid fa-arrow-up text-xs"></i>';
-                }
-                if (btnPersistent) {
-                    btnPersistent.disabled = false;
-                    btnPersistent.innerHTML = '<i class="fa-solid fa-arrow-up text-xs"></i>';
-                }
-                setTimeout(scrollToBottom, 50);
-                setTimeout(lockChatHeight, 60);
-            }
-        }
-
-        const initialForm = document.getElementById('geminiFormInitial');
-        if (initialForm) {
-            initialForm.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                const userText = document.getElementById('prompt-initial')?.value.trim();
-                await handleFormSubmit(userText);
-            });
-        }
-
-        const persistentForm = document.getElementById('geminiForm');
-        if (persistentForm) {
-            persistentForm.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                const userText = document.getElementById('prompt')?.value.trim();
-                await handleFormSubmit(userText);
-            });
-        }
-
-        // 🌟 Suggestion chips: klik untuk langsung mengirim pertanyaan
-        document.querySelectorAll('.suggestion-chip').forEach((chip) => {
-            chip.addEventListener('click', () => {
-                handleFormSubmit(chip.textContent.trim());
-            });
-        });
-
-        function escapeHtml(text) {
-            const map = {
-                '&': '&amp;',
-                '<': '&lt;',
-                '>': '&gt;',
-                '"': '&quot;',
-                "'": '&#039;'
-            };
-            return text.replace(/[&<>"']/g, function(m) {
-                return map[m];
-            });
-        }
-    })();
     </script>
-@endsection
+    @stack('scripts')
+</body>
+
+</html>

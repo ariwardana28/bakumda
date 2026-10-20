@@ -829,7 +829,7 @@
             <a href="{{ route('sertifikat.index') }}"
                 class="flex flex-col items-center text-slate-400 hover:text-blue-700 py-1 transition">
                 <div class="w-9 h-9 rounded-full flex items-center justify-center">
-                    <i class="fa-solid fa-stamp text-base"></i>
+                    <i class="fa-solid fa-newspaper text-base"></i>
                 </div>
                 <span class="text-[10px] font-medium mt-0.5">Sertifikat</span>
             </a>

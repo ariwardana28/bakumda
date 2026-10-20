@@ -180,8 +180,8 @@
 
     <!-- Mobile Bottom Navigation Bar -->
     <div id="mobile-bottom-nav"
-        class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 px-6 py-2.5 flex items-center justify-around z-50 shadow-[0_-4px_20px_rgba(0,0,0,0.06)]">
-
+         class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-100 px-6 py-2.5 flex items-center justify-around z-50 shadow-[0_-6px_25px_rgba(37,99,235,0.35)]">
+          
         <a href="{{ url('/') }}"
             class="flex flex-col items-center py-1 transition {{ request()->routeIs('home', 'dashboard', 'welcome') ? 'text-blue-700' : 'text-slate-400 hover:text-blue-700' }}">
             <div class="w-9 h-9 rounded-full flex items-center justify-center {{ request()->routeIs('home', 'dashboard', 'welcome') ? 'bg-blue-50' : '' }}">
@@ -193,7 +193,7 @@
         <a href="{{ route('sertifikat.index') }}"
             class="flex flex-col items-center py-1 transition {{ request()->routeIs('sertifikat.*') ? 'text-blue-700' : 'text-slate-400 hover:text-blue-700' }}">
             <div class="w-9 h-9 rounded-full flex items-center justify-center {{ request()->routeIs('sertifikat.*') ? 'bg-blue-50' : '' }}">
-                <i class="fa-solid fa-certificate text-base"></i>
+                <i class="fa-solid fa-newspaper text-base"></i>
             </div>
             <span class="text-[10px] {{ request()->routeIs('sertifikat.*') ? 'font-bold' : 'font-medium' }} mt-0.5">Sertifikat</span>
         </a>

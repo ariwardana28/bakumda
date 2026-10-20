@@ -816,7 +816,7 @@
 
         <!-- Mobile Bottom Navigation Bar -->
         <div
-            class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-100 px-6 py-2.5 flex items-center justify-around z-50 shadow-[0_-4px_20px_rgba(0,0,0,0.06)]">
+            class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-100 px-6 py-2.5 flex items-center justify-around z-50 shadow-[0_-6px_25px_rgba(37,99,235,0.35)]">
             <!-- 1. Beranda -->
             <a href="{{ url('/') }}" class="flex flex-col items-center text-blue-700 py-1">
                 <div class="w-9 h-9 rounded-full bg-blue-50 flex items-center justify-center"> {{-- @TODO: Ganti dengan route('dashboard') --}}

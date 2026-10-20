@@ -8,6 +8,7 @@ use App\Models\ReferralPayment;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Notifications\ReferralSuccessNotification;
 
 class ReferralController extends Controller
 {
@@ -97,7 +98,7 @@ class ReferralController extends Controller
                 DB::table('referral_transactions')->whereIn('id', $transactionIds)->update(['is_claimed' => $isClaimedStatus]);
             }
 
-            // Kirim notifikasi ke pengguna
+            // Kirim notifikasi sistem (database notification) ke pengguna
             Notification::create([
                 'user_id' => $claim->user_id,
                 'title'   => 'Status Klaim Reward Diperbarui',
@@ -105,10 +106,30 @@ class ReferralController extends Controller
                 'type'    => $claim->status === 'approved' ? 'success' : 'error',
                 'route'   => route('user-referral.index', [], false),
             ]);
-
-            
         });
 
-        return back()->with('success', 'Status klaim berhasil diperbarui.');
+        // Kirim email notifikasi secara otomatis jika status disetujui (approved)
+        if ($claim->status === 'approved' && $claim->user) {
+            $claim->user->notify(new ReferralSuccessNotification($claim));
+        }
+
+        return back()->with('success', 'Status klaim berhasil diperbarui dan email notifikasi telah dikirim.');
+    }
+
+    public function approve($id)
+    {
+        // 1. Cari data berdasarkan ID
+        $claim = ReferralPayment::with('user')->findOrFail($id);
+
+        // 2. Ubah status menjadi disetujui
+        $claim->status = 'approved';
+        $claim->save();
+
+        // 3. Kirim email notifikasi ke user pemilik referral
+        if ($claim->user) {
+            $claim->user->notify(new ReferralSuccessNotification($claim));
+        }
+
+        return redirect()->back()->with('success', 'Klaim referral berhasil disetujui dan email notifikasi telah dikirim.');
     }
 }

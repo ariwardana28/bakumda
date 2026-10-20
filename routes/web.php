@@ -275,7 +275,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->names('user-referral');
     Route::post('/referral/claim', [App\Http\Controllers\UserReferralController::class, 'claim'])->name('user-referral.claim');
     Route::post('/referral/claim-all', [App\Http\Controllers\UserReferralController::class, 'claimAll'])->name('user-referral.claimAll');
-
+    Route::post('/admin/referral/claims/{id}/approve', [App\Http\Controllers\ReferralController::class, 'approve'])->name('admin.referral.approve');
 
     /*
     |--------------------------------------------------------------------------

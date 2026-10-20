@@ -11,12 +11,14 @@ class ReferralSuccessNotification extends Notification
 {
     use Queueable;
 
+    protected $referralPayment;
+
     /**
      * Create a new notification instance.
      */
-    public function __construct()
+    public function __construct($referralPayment)
     {
-        //
+        $this->referralPayment = $referralPayment;
     }
 
     /**
@@ -32,14 +34,17 @@ class ReferralSuccessNotification extends Notification
     /**
      * Get the mail representation of the notification.
      */
-    public function toMail(object $notifiable): MailMessage
+    public function toMail($notifiable): MailMessage
     {
         return (new MailMessage)
-            ->line('The introduction to the notification.')
-            ->action('Notification Action', url('/'))
-            ->line('Thank you for using our application!');
+            ->subject('Pemberitahuan: Klaim Referral BAKUMDA Disetujui')
+            ->greeting('Halo, ' . $notifiable->name)
+            ->line('Kami informasikan bahwa klaim reward referral Anda telah disetujui.')
+            ->line('Jumlah Komisi: Rp ' . number_format($this->referralPayment->amount, 0, ',', '.'))
+            // ->action('Cek Dashboard Referral', route('user-referral.index'))
+            ->line('Terima kasih atas kontribusi Anda bersama BAKUMDA!')
+            ->salutation('Salam hormat, Tim BAKUMDA');
     }
-
     /**
      * Get the array representation of the notification.
      *

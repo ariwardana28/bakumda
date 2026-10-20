@@ -19,5 +19,7 @@ class Kerjasama extends Model
         'tanggal_selesai',
         'status',
         'file_dokumen',
+        'keterangan',
+        'user_id',
     ];
 }

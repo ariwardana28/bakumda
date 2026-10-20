@@ -15,9 +15,12 @@ class UserKerjasamaController extends Controller
     {
         $search = $request->input('search');
 
-        $kerjasamas = Kerjasama::when($search, function ($query, $search) {
-                return $query->where('judul', 'like', "%{$search}%")
-                             ->orWhere('mitra', 'like', "%{$search}%");
+        $kerjasamas = Kerjasama::where('user_id', auth()->id()) // Batasi hanya milik user yang login
+            ->when($search, function ($query, $search) {
+                return $query->where(function ($q) use ($search) {
+                    $q->where('judul', 'like', "%{$search}%")
+                        ->orWhere('mitra', 'like', "%{$search}%");
+                });
             })
             ->latest()
             ->paginate(10)
@@ -31,7 +34,7 @@ class UserKerjasamaController extends Controller
      */
     public function create()
     {
-        return view('user.kerjasama.form');
+        return view('user.kerjasam.form');
     }
 
     /**
@@ -60,6 +63,13 @@ class UserKerjasamaController extends Controller
             ->with('success', 'Data kerja sama baru berhasil ditambahkan.');
     }
 
+    public function show($id)
+    {
+        $kerjasama = Kerjasama::findOrFail($id);
+
+        return view('user.kerjasama.show', compact('kerjasama'));
+    }
+
     /**
      * Menampilkan form ubah kerja sama (Edit).
      */
@@ -67,7 +77,7 @@ class UserKerjasamaController extends Controller
     {
         $kerjasama = Kerjasama::findOrFail($id);
 
-        return view('user.kerjasamas.form', compact('kerjasama'));
+        return view('user.kerjasama.form', compact('kerjasama'));
     }
 
     /**
@@ -119,5 +129,16 @@ class UserKerjasamaController extends Controller
 
         return redirect()->route('user.kerjasama.index')
             ->with('success', 'Data kerja sama berhasil dihapus.');
+    }
+
+    public function cancel(Request $request, $id)
+    {
+        $kerjasama = Kerjasama::findOrFail($id);
+        $kerjasama->update([
+            'status' => 'dibatalkan',
+            'keterangan' => $request->input('keterangan'),
+        ]);
+
+        return redirect()->back()->with('success', 'Kerjasama berhasil dibatalkan.');
     }
 }

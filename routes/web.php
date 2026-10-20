@@ -365,6 +365,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::get('/korwil/get-latest-data/{anggotaCard}', [KorwilController::class, 'getLatestKorwilData'])->name('korwil.get-latest-data');
 
             Route::resource('kerjasama', KerjasamaController::class);
+            Route::patch('kerjasama/{kerjasama}/status', [KerjasamaController::class, 'status'])->name('kerjasama.status');
 
             // --- Manajemen Referral (Admin) ---
             Route::get('referral', [\App\Http\Controllers\Admin\ReferralController::class, 'claims'])->name('referral.index');
@@ -376,5 +377,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
 Route::get('/artikel/{artikel:slug}', [HalamanUtamaController::class, 'show'])->name('artikel.show.public');
 
 Route::resource('user-kerjasamas', UserKerjasamaController::class);
+Route::patch('user-kerjasamas/{id}/cancel', [KerjasamaController::class, 'cancel'])->name('user-kerjasamas.cancel');
 
 require __DIR__ . '/auth.php';

@@ -9,10 +9,40 @@ use Illuminate\Support\Facades\Storage;
 
 class KerjasamaController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $kerjasamas = Kerjasama::latest()->paginate(10);
-        return view('admin.kerjasama.index', compact('kerjasamas'));
+        // 1. Ambil filter status dari request (default 'pending')
+        $statusFilter = $request->get('status', 'pending');
+        $search = $request->get('search');
+
+        // 2. Query dasar diurutkan dari yang terbaru (descending)
+        $query = Kerjasama::latest(); // atau bisa juga menggunakan ->orderBy('id', 'desc')
+
+        // 3. Filter berdasarkan status jika bukan 'semua'
+        if ($statusFilter && $statusFilter !== 'semua') {
+            $query->where('status', $statusFilter);
+        }
+
+        // 4. Filter berdasarkan kata kunci pencarian (judul / mitra)
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('judul', 'like', "%{$search}%")
+                    ->orWhere('mitra', 'like', "%{$search}%")
+                    ->orWhere('deskripsi', 'like', "%{$search}%");
+            });
+        }
+
+        // 5. Paginated data
+        $kerjasamas = $query->paginate(10)->withQueryString();
+
+        // 6. Hitung jumlah data untuk masing-masing tab status (badge counter)
+        $counts = [
+            'pending' => Kerjasama::where('status', 'pending')->count(),
+            'aktif' => Kerjasama::where('status', 'aktif')->count(),
+            'ditolak' => Kerjasama::where('status', 'ditolak')->count(),
+        ];
+
+        return view('admin.kerjasama.index', compact('kerjasamas', 'counts'));
     }
 
     public function create()
@@ -41,6 +71,11 @@ class KerjasamaController extends Controller
         Kerjasama::create($data);
 
         return redirect()->route('admin.kerjasama.index')->with('success', 'Data kerjasama berhasil ditambahkan.');
+    }
+
+    public function show(Kerjasama $kerjasama)
+    {
+        return view('admin.kerjasama.show', compact('kerjasama'));
     }
 
     public function edit(Kerjasama $kerjasama)
@@ -83,5 +118,46 @@ class KerjasamaController extends Controller
         $kerjasama->delete();
 
         return redirect()->route('admin.kerjasama.index')->with('success', 'Data kerjasama berhasil dihapus.');
+    }
+
+    public function status(Request $request, Kerjasama $kerjasama)
+    {
+        $validated = $request->validate([
+            'status'     => 'required|in:aktif,ditolak',
+            'keterangan' => 'required_if:status,ditolak|nullable|string|min:10|max:1000',
+        ], [
+            'status.in'                => 'Status yang dipilih tidak valid.',
+            'keterangan.required_if'   => 'Keterangan penolakan wajib diisi.',
+            'keterangan.min'           => 'Keterangan minimal 10 karakter.',
+            'keterangan.max'           => 'Keterangan maksimal 1000 karakter.',
+        ]);
+
+        // Hanya pengajuan pending yang boleh diproses
+        // (mencegah klik ganda atau dua admin memproses data yang sama)
+        if ($kerjasama->status !== 'pending') {
+            return back()->with('error', 'Pengajuan ini sudah diproses dan tidak dapat diubah lagi.');
+        }
+
+        if ($validated['status'] === 'aktif') {
+            $kerjasama->update([
+                'status'     => 'aktif',
+                'keterangan' => null,
+                'ditolak_at' => null,
+            ]);
+
+            $message = 'Pengajuan kerjasama berhasil aktif.';
+        } else {
+            $kerjasama->update([
+                'status'     => 'ditolak',
+                'keterangan' => $validated['keterangan'],
+                'ditolak_at' => now(),
+            ]);
+
+            $message = 'Pengajuan kerjasama telah ditolak.';
+        }
+
+        return redirect()
+            ->route('admin.kerjasama.show', $kerjasama->id)
+            ->with('success', $message);
     }
 }

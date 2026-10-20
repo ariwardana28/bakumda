@@ -301,6 +301,41 @@
                     </a>
                 @endcan
 
+                @can('kerjasama-view')
+                    <!-- Kerjasama -->
+                    @php
+                        $isKerjasamaActive = request()->routeIs('admin.kerjasama.*');
+                        $pendingKerjasamaCount = \App\Models\Kerjasama::where('status', 'pending')->count();
+                    @endphp
+                    <a href="{{ route('admin.kerjasama.index') }}"
+                        class="flex items-center gap-3.5 px-3.5 py-3 rounded-xl transition-all duration-200 group relative {{ $isKerjasamaActive ? 'font-semibold text-brand-600 bg-brand-50/80 dark:bg-brand-500/15 dark:text-brand-400 shadow-sm' : 'font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100/60 dark:text-slate-400 dark:hover:text-slate-100 dark:hover:bg-slate-800/40' }}">
+                        <div class="absolute left-0 w-1 h-5 bg-brand-600 dark:bg-brand-400 rounded-r-full"
+                            x-show="sidebarOpen && {{ $isKerjasamaActive ? 'true' : 'false' }}"></div>
+
+                        <!-- Ikon + badge (badge kecil muncul di ikon saat sidebar diciutkan) -->
+                        <span class="relative shrink-0">
+                            <i
+                                class="fa-solid fa-handshake-angle text-sm w-5 text-center transition-transform group-hover:scale-110"></i>
+                            @if ($pendingKerjasamaCount > 0)
+                                <span x-show="!sidebarOpen"
+                                    class="absolute -top-2 -right-2 min-w-[16px] h-4 px-1 rounded-full bg-rose-500 text-white text-[9px] font-bold flex items-center justify-center ring-2 ring-white dark:ring-slate-900">
+                                    {{ $pendingKerjasamaCount > 99 ? '99+' : $pendingKerjasamaCount }}
+                                </span>
+                            @endif
+                        </span>
+
+                        <span x-show="sidebarOpen" class="whitespace-nowrap text-xs tracking-wide">Kerjasama</span>
+
+                        <!-- Badge di samping teks (saat sidebar terbuka) -->
+                        @if ($pendingKerjasamaCount > 0)
+                            <span x-show="sidebarOpen"
+                                class="ml-auto min-w-[20px] h-5 px-1.5 rounded-full bg-rose-500 text-white text-[10px] font-bold flex items-center justify-center animate-pulse">
+                                {{ $pendingKerjasamaCount > 99 ? '99+' : $pendingKerjasamaCount }}
+                            </span>
+                        @endif
+                    </a>
+                @endcan
+
                 @can('produk-view')
                     <!-- Produk -->
                     @php $isProdukActive = request()->routeIs('admin.produk.*'); @endphp

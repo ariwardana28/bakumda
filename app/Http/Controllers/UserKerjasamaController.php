@@ -17,14 +17,15 @@ class UserKerjasamaController extends Controller
     {
         $search = $request->input('search');
 
-        $kerjasamas = Kerjasama::where('user_id', auth()->id()) // Batasi hanya milik user yang login
+        $kerjasamas = Kerjasama::where('user_id', auth()->id())
+            ->with('latestStatus') // Muat status terakhir
             ->when($search, function ($query, $search) {
                 return $query->where(function ($q) use ($search) {
                     $q->where('judul', 'like', "%{$search}%")
                         ->orWhere('mitra', 'like', "%{$search}%");
                 });
             })
-            ->latest()
+            ->orderBy('id', 'desc') // Mengurutkan dari yang terbaru (DESC)
             ->paginate(10)
             ->withQueryString();
 
@@ -151,12 +152,35 @@ class UserKerjasamaController extends Controller
             ->with('success', 'Data kerja sama berhasil dihapus.');
     }
 
+
     public function cancel(Request $request, $id)
     {
         $kerjasama = Kerjasama::findOrFail($id);
-        $kerjasama->update([
-            'status' => 'dibatalkan',
-            'keterangan' => $request->input('keterangan'),
+
+        // Pastikan user yang login adalah pemilik data kerja sama ini
+        if ($kerjasama->user_id !== auth()->id()) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        // Cek status terakhir dari tabel kerjasama_status
+        $latestStatus = KerjasamaStatus::where('kerjasama_id', $kerjasama->id)->latest()->first();
+        $currentStatus = $latestStatus ? $latestStatus->status : 'pending';
+
+        // Jika status bukan pending (misal sudah aktif atau ditolak), tolak pembatalan
+        if ($currentStatus !== 'pending') {
+            return back()->with('error', 'Pengajuan ini sudah diproses dan tidak dapat dibatalkan.');
+        }
+
+        $validated = $request->validate([
+            'keterangan' => 'nullable|string|max:1000',
+        ]);
+
+        // Simpan status pembatalan baru ke tabel kerjasama_status
+        KerjasamaStatus::create([
+            'user_id'      => Auth::id(), // ID user yang membatalkan
+            'kerjasama_id' => $kerjasama->id,
+            'status'       => 'dibatalkan',
+            'keterangan'   => $validated['keterangan'] ?? 'Dibatalkan oleh pemohon.',
         ]);
 
         return redirect()->back()->with('success', 'Kerjasama berhasil dibatalkan.');

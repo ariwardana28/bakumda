@@ -2,12 +2,16 @@
 
 @section('content')
     @php
-        $status = strtolower($kerjasama->status ?? 'pending');
+        // Ambil status terakhir dari relasi kerjasama_status, fallback ke 'pending' jika belum ada
+        $latestStatusRecord = $kerjasama->latestStatus;
+        $status = strtolower($latestStatusRecord ? $latestStatusRecord->status : 'pending');
+
         $badgeColor = match ($status) {
             'aktif' => 'bg-emerald-50 text-emerald-700 border-emerald-200/60',
             'pending' => 'bg-amber-50 text-amber-700 border-amber-200/60',
             'selesai' => 'bg-sky-50 text-sky-700 border-sky-200/60',
-            default => 'bg-rose-50 text-rose-700 border-rose-200/60',
+            'terminasi', 'dibatalkan' => 'bg-rose-50 text-rose-700 border-rose-200/60',
+            default => 'bg-slate-50 text-slate-700 border-slate-200',
         };
 
         $mulai = $kerjasama->tanggal_mulai ? \Carbon\Carbon::parse($kerjasama->tanggal_mulai) : null;
@@ -26,17 +30,16 @@
         $oldAction = old('status') === 'aktif' ? 'aktif' : 'ditolak';
     @endphp
 
-    <div class="min-h-screen bg-[#f8fafc] py-6 px-4 sm:px-6 lg:px-8"
-        x-data="{
-            modal: {{ $reopenModal ? 'true' : 'false' }},
-            action: '{{ $oldAction }}',
-            submitting: false,
-            openCancelModal: false,
-            openModal() {
-                this.submitting = false;
-                this.modal = true;
-            }
-        }"
+    <div class="min-h-screen bg-[#f8fafc] py-6 px-4 sm:px-6 lg:px-8" x-data="{
+        modal: {{ $reopenModal ? 'true' : 'false' }},
+        action: '{{ $oldAction }}',
+        submitting: false,
+        openCancelModal: false,
+        openModal() {
+            this.submitting = false;
+            this.modal = true;
+        }
+    }"
         @keydown.escape.window="modal = false; openCancelModal = false">
         <div class="max-w-4xl mx-auto space-y-6">
 
@@ -55,13 +58,14 @@
                 </div>
 
                 <!-- Tombol Aksi Pembatalan -->
-                @if(in_array($status, ['pending', 'aktif']))
+                @if (in_array($status, ['pending']))
                     <div>
-                        <button @click="openCancelModal = true"
-                            type="button"
+                        <button @click="openCancelModal = true" type="button"
                             class="inline-flex items-center justify-center px-4 py-2.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-sm font-semibold hover:bg-rose-100 transition duration-200">
-                            <svg class="w-4 h-4 mr-2 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            <svg class="w-4 h-4 mr-2 text-rose-500" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M6 18L18 6M6 6l12 12" />
                             </svg>
                             Batalkan Kerjasama
                         </button>
@@ -71,8 +75,10 @@
 
             <!-- Flash Message -->
             @if (session('success'))
-                <div class="p-4 rounded-2xl bg-emerald-50 border border-emerald-100 text-emerald-700 text-sm flex items-center shadow-xs">
-                    <svg class="w-5 h-5 mr-2 text-emerald-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div
+                    class="p-4 rounded-2xl bg-emerald-50 border border-emerald-100 text-emerald-700 text-sm flex items-center shadow-xs">
+                    <svg class="w-5 h-5 mr-2 text-emerald-500 shrink-0" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                     </svg>
                     <span>{{ session('success') }}</span>
@@ -85,19 +91,26 @@
                 </div>
             @endif
 
+
+            <!-- Keterangan Ditolak / Dibatalkan -->
             <!-- Keterangan Ditolak / Dibatalkan -->
             @if ($status === 'ditolak' || $status === 'dibatalkan')
                 <div class="p-5 rounded-2xl bg-rose-50 border border-rose-200 shadow-xs">
                     <div class="flex items-start gap-3">
-                        <div class="w-9 h-9 rounded-xl bg-white border border-rose-200 text-rose-600 flex items-center justify-center shrink-0">
+                        <div
+                            class="w-9 h-9 rounded-xl bg-white border border-rose-200 text-rose-600 flex items-center justify-center shrink-0">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
                             </svg>
                         </div>
                         <div class="min-w-0">
-                            <p class="text-xs font-bold uppercase tracking-wider text-rose-700">Pengajuan {{ ucfirst($status) }}</p>
+                            <p class="text-xs font-bold uppercase tracking-wider text-rose-700">Pengajuan
+                                {{ ucfirst($status) }}</p>
+                            <!-- Perbaikan di sini: Mengambil keterangan dari record status terakhir -->
                             <p class="text-sm text-rose-800 mt-1.5 leading-relaxed whitespace-pre-line">
-                                {{ $kerjasama->keterangan ?: 'Tidak ada keterangan pembatalan/penolakan.' }}</p>
+                                {{ optional($latestStatusRecord)->keterangan ?: 'Tidak ada keterangan pembatalan/penolakan.' }}
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -110,7 +123,8 @@
                 <div class="p-6 sm:p-8 border-b border-[#e2e8f0]">
                     <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
                         <div class="flex items-start gap-4 min-w-0">
-                            <div class="w-12 h-12 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-700 font-bold text-sm shrink-0">
+                            <div
+                                class="w-12 h-12 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-700 font-bold text-sm shrink-0">
                                 {{ strtoupper(substr($kerjasama->judul ?? 'K', 0, 2)) }}
                             </div>
                             <div class="min-w-0">
@@ -123,14 +137,16 @@
                             </div>
                         </div>
 
-                        <span class="inline-flex items-center self-start px-3 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-wide border {{ $badgeColor }}">
-                            {{ $kerjasama->status }}
+                        <span
+                            class="inline-flex items-center self-start px-3 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-wide border {{ $badgeColor }}">
+                            {{ ucfirst($status) }}
                         </span>
                     </div>
                 </div>
 
                 <!-- Ringkasan Tanggal -->
-                <div class="grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-[#e2e8f0] border-b border-[#e2e8f0]">
+                <div
+                    class="grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-[#e2e8f0] border-b border-[#e2e8f0]">
                     <div class="p-5 sm:p-6">
                         <p class="text-[11px] font-semibold uppercase tracking-wider text-[#64748b]">Tanggal Mulai</p>
                         <p class="text-sm font-bold text-[#1e293b] mt-1.5">
@@ -158,7 +174,8 @@
                 <div class="p-6 sm:p-8 border-b border-[#e2e8f0]">
                     <h3 class="text-[11px] font-semibold uppercase tracking-wider text-[#64748b] mb-2">Deskripsi</h3>
                     @if ($kerjasama->deskripsi)
-                        <p class="text-sm text-[#1e293b] leading-relaxed whitespace-pre-line">{{ $kerjasama->deskripsi }}</p>
+                        <p class="text-sm text-[#1e293b] leading-relaxed whitespace-pre-line">{{ $kerjasama->deskripsi }}
+                        </p>
                     @else
                         <p class="text-sm text-[#64748b] italic">Tidak ada deskripsi.</p>
                     @endif
@@ -166,12 +183,15 @@
 
                 <!-- Dokumen -->
                 <div class="p-6 sm:p-8 border-b border-[#e2e8f0]">
-                    <h3 class="text-[11px] font-semibold uppercase tracking-wider text-[#64748b] mb-3">Dokumen Kerjasama</h3>
+                    <h3 class="text-[11px] font-semibold uppercase tracking-wider text-[#64748b] mb-3">Dokumen Kerjasama
+                    </h3>
 
                     @if ($kerjasama->file_dokumen)
-                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-4 rounded-2xl bg-[#f8fafc] border border-[#e2e8f0]">
+                        <div
+                            class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-4 rounded-2xl bg-[#f8fafc] border border-[#e2e8f0]">
                             <div class="flex items-center gap-3 min-w-0">
-                                <div class="w-10 h-10 rounded-xl bg-rose-50 border border-rose-100 text-rose-600 flex items-center justify-center text-[10px] font-bold uppercase shrink-0">
+                                <div
+                                    class="w-10 h-10 rounded-xl bg-rose-50 border border-rose-100 text-rose-600 flex items-center justify-center text-[10px] font-bold uppercase shrink-0">
                                     {{ $ext ?: 'file' }}
                                 </div>
                                 <div class="min-w-0">
@@ -201,43 +221,48 @@
                             </div>
                         @endif
                     @else
-                        <div class="p-4 rounded-2xl bg-[#f8fafc] border border-dashed border-[#e2e8f0] text-sm text-[#64748b] italic">
+                        <div
+                            class="p-4 rounded-2xl bg-[#f8fafc] border border-dashed border-[#e2e8f0] text-sm text-[#64748b] italic">
                             Belum ada dokumen yang diunggah.
                         </div>
                     @endif
                 </div>
 
                 <!-- Meta -->
-                <div class="px-6 sm:px-8 py-4 bg-[#f8fafc]/60 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 text-xs text-[#64748b]">
+                <div
+                    class="px-6 sm:px-8 py-4 bg-[#f8fafc]/60 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 text-xs text-[#64748b]">
                     <span>Dibuat: {{ optional($kerjasama->created_at)->format('d M Y, H:i') ?? '-' }}</span>
                     <span>Diperbarui: {{ optional($kerjasama->updated_at)->format('d M Y, H:i') ?? '-' }}</span>
                 </div>
             </div>
 
             <!-- Modal Konfirmasi Pembatalan -->
-            <div x-show="openCancelModal"
-                x-cloak
+            <div x-show="openCancelModal" x-cloak
                 class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-xs">
                 <div class="bg-white rounded-3xl p-6 max-w-md w-full space-y-4 border border-[#e2e8f0] shadow-xl text-left"
                     @click.away="openCancelModal = false">
-                    <div class="w-10 h-10 rounded-2xl bg-rose-50 border border-rose-100 text-rose-600 flex items-center justify-center">
+                    <div
+                        class="w-10 h-10 rounded-2xl bg-rose-50 border border-rose-100 text-rose-600 flex items-center justify-center">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                         </svg>
                     </div>
                     <div>
                         <h3 class="text-base font-bold text-[#1e293b]">Batalkan Pengajuan Kerjasama?</h3>
-                        <p class="text-xs text-[#64748b] mt-1">Tindakan ini akan mengubah status kerjasama menjadi dibatalkan.</p>
+                        <p class="text-xs text-[#64748b] mt-1">Tindakan ini akan mengubah status kerjasama menjadi
+                            dibatalkan.</p>
                     </div>
 
                     <!-- Form Pembatalan -->
-                    <form action="{{ route('user-kerjasamas.cancel', $kerjasama->id) }}" method="POST" class="space-y-4">
+                    <form action="{{ route('user-kerjasamas.cancel', $kerjasama->id) }}" method="POST"
+                        class="space-y-4">
                         @csrf
                         @method('PATCH')
                         <div>
-                            <label class="block text-xs font-semibold text-[#1e293b] mb-1">Alasan Pembatalan (Opsional)</label>
-                            <textarea name="keterangan" rows="3"
-                                placeholder="Masukkan alasan pembatalan..."
+                            <label class="block text-xs font-semibold text-[#1e293b] mb-1">Alasan Pembatalan
+                                (Opsional)</label>
+                            <textarea name="keterangan" rows="3" placeholder="Masukkan alasan pembatalan..."
                                 class="w-full p-3 bg-[#f8fafc] border border-[#e2e8f0] rounded-xl text-sm text-[#1e293b] focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600"></textarea>
                         </div>
 

@@ -377,6 +377,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
 Route::get('/artikel/{artikel:slug}', [HalamanUtamaController::class, 'show'])->name('artikel.show.public');
 
 Route::resource('user-kerjasamas', UserKerjasamaController::class);
-Route::patch('user-kerjasamas/{id}/cancel', [KerjasamaController::class, 'cancel'])->name('user-kerjasamas.cancel');
+Route::patch('user-kerjasamas/{id}/cancel', [UserKerjasamaController::class, 'cancel'])->name('user-kerjasamas.cancel');
 
 require __DIR__ . '/auth.php';

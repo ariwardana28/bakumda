@@ -305,8 +305,15 @@
                     <!-- Kerjasama -->
                     @php
                         $isKerjasamaActive = request()->routeIs('admin.kerjasama.*');
-                        $pendingKerjasamaCount = \App\Models\Kerjasama::where('status', 'pending')->count();
+
+                        // Hitung total pengajuan yang status terakhirnya 'pending' (atau belum punya status)
+                        $pendingKerjasamaCount = \App\Models\Kerjasama::where(function ($q) {
+                            $q->whereHas('latestStatus', function ($sub) {
+                                $sub->where('status', 'pending');
+                            })->orWhereDoesntHave('latestStatus');
+                        })->count();
                     @endphp
+
                     <a href="{{ route('admin.kerjasama.index') }}"
                         class="flex items-center gap-3.5 px-3.5 py-3 rounded-xl transition-all duration-200 group relative {{ $isKerjasamaActive ? 'font-semibold text-brand-600 bg-brand-50/80 dark:bg-brand-500/15 dark:text-brand-400 shadow-sm' : 'font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100/60 dark:text-slate-400 dark:hover:text-slate-100 dark:hover:bg-slate-800/40' }}">
                         <div class="absolute left-0 w-1 h-5 bg-brand-600 dark:bg-brand-400 rounded-r-full"

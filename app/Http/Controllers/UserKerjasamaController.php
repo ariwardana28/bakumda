@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Kerjasama;
+use App\Models\KerjasamaStatus;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
 
 class UserKerjasamaController extends Controller
 {
@@ -34,22 +36,24 @@ class UserKerjasamaController extends Controller
      */
     public function create()
     {
-        return view('user.kerjasam.form');
+        return view('user.kerjasama.form');
     }
 
     /**
      * Menyimpan data kerja sama baru ke database.
      */
+
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'judul'           => 'required|string|max:255',
-            'mitra'           => 'required|string|max:255',
-            'deskripsi'       => 'nullable|string',
-            'tanggal_mulai'   => 'required|date',
-            'tanggal_selesai' => 'required|date|after_or_equal:tanggal_mulai',
-            'status'          => 'required|in:aktif,pending,selesai,terminasi',
-            'file_dokumen'    => 'nullable|file|mimes:pdf,doc,docx|max:2048',
+            'judul'             => 'required|string|max:255',
+            'mitra'             => 'required|string|max:255',
+            'deskripsi'         => 'nullable|string',
+            'tanggal_mulai'     => 'required|date',
+            'tanggal_selesai'   => 'required|date|after_or_equal:tanggal_mulai',
+            'status'            => 'required|in:pending,aktif,selesai,dibatalkan', // Disesuaikan dengan ENUM migrasi
+            'keterangan'        => 'nullable|string', // Ditambahkan validasi keterangan status jika diperlukan
+            'file_dokumen'      => 'nullable|file|mimes:pdf,doc,docx|max:2048',
         ]);
 
         // Handle upload file dokumen jika ada
@@ -57,10 +61,26 @@ class UserKerjasamaController extends Controller
             $validated['file_dokumen'] = $request->file('file_dokumen')->store('dokumen-kerjasama', 'public');
         }
 
-        Kerjasama::create($validated);
+        // 1. Buat data Kerjasama (tanpa field 'status' dan 'keterangan' jika kolomnya sudah dihapus dari tabel kerjasamas)
+        $kerjasama = Kerjasama::create([
+            'user_id'           => Auth::id(),
+            'judul'             => $validated['judul'],
+            'mitra'             => $validated['mitra'],
+            'deskripsi'         => $validated['deskripsi'] ?? null,
+            'tanggal_mulai'     => $validated['tanggal_mulai'],
+            'tanggal_selesai'   => $validated['tanggal_selesai'],
+            'file_dokumen'      => $validated['file_dokumen'] ?? null,
+        ]);
+
+        // 2. Simpan status ke tabel kerjasama_status
+        KerjasamaStatus::create([
+            'kerjasama_id' => $kerjasama->id,
+            'status'       => $validated['status'],
+            'keterangan'   => $validated['keterangan'] ?? null,
+        ]);
 
         return redirect()->route('user-kerjasamas.index')
-            ->with('success', 'Data kerja sama baru berhasil ditambahkan.');
+            ->with('success', 'Data kerja sama baru beserta statusnya berhasil ditambahkan.');
     }
 
     public function show($id)

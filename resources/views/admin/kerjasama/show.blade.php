@@ -2,7 +2,10 @@
 
 @section('content')
     @php
-        $status = strtolower($kerjasama->status ?? 'pending');
+        // Mengambil status terakhir dari relasi kerjasama_status, jika null default ke 'pending'
+        $latestStatusRecord = $kerjasama->latestStatus;
+        $status = strtolower($latestStatusRecord ? $latestStatusRecord->status : 'pending');
+
         $badgeColor = match ($status) {
             'aktif' => 'bg-emerald-50 text-emerald-700 border-emerald-200/60',
             'pending' => 'bg-amber-50 text-amber-700 border-amber-200/60',
@@ -23,7 +26,7 @@
 
         // Modal otomatis terbuka lagi jika validasi gagal
         $reopenModal = $errors->has('keterangan') || $errors->has('status');
-        $oldAction = old('status') === 'aktif' ? 'aktif' : 'ditolak';
+        $oldAction = old('status') === 'aktif' ? 'aktif' : 'dibatalkan';
     @endphp
 
     <div class="min-h-screen bg-[#f8fafc] py-6 px-4 sm:px-6 lg:px-8"
@@ -54,7 +57,7 @@
                     </p>
                 </div>
 
-                {{-- SATU TOMBOL AKSI KONFIRMASI (hanya muncul saat status masih pending) --}}
+                {{-- TOMBOL AKSI KONFIRMASI (hanya muncul saat status masih pending) --}}
                 @if ($status === 'pending')
                     <div class="flex items-center gap-2">
                         <button type="button" @click="openModal()"
@@ -87,8 +90,8 @@
                 </div>
             @endif
 
-            <!-- Keterangan Ditolak -->
-            @if ($status === 'ditolak')
+            <!-- Keterangan Ditolak / Dibatalkan -->
+            @if ($status === 'dibatalkan' || $status === 'ditolak')
                 <div class="p-5 rounded-2xl bg-rose-50 border border-rose-200 shadow-xs">
                     <div class="flex items-start gap-3">
                         <div
@@ -101,11 +104,11 @@
                         <div class="min-w-0">
                             <p class="text-xs font-bold uppercase tracking-wider text-rose-700">Pengajuan Ditolak</p>
                             <p class="text-sm text-rose-800 mt-1.5 leading-relaxed whitespace-pre-line">
-                                {{ $kerjasama->keterangan ?: 'Tidak ada keterangan penolakan.' }}</p>
-                            @if ($kerjasama->ditolak_at)
+                                {{ optional($latestStatusRecord)->keterangan ?: 'Tidak ada keterangan penolakan.' }}</p>
+                            @if (optional($latestStatusRecord)->created_at)
                                 <p class="text-xs text-rose-600/80 mt-2">
                                     Ditolak pada
-                                    {{ \Carbon\Carbon::parse($kerjasama->ditolak_at)->format('d M Y, H:i') }}
+                                    {{ \Carbon\Carbon::parse($latestStatusRecord->created_at)->format('d M Y, H:i') }}
                                 </p>
                             @endif
                         </div>
@@ -136,7 +139,7 @@
 
                         <span
                             class="inline-flex items-center self-start px-3 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-wide border {{ $badgeColor }}">
-                            {{ $kerjasama->status }}
+                            {{ ucfirst($status) }}
                         </span>
                     </div>
                 </div>
@@ -262,7 +265,7 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M5 13l4 4L19 7" />
                                 </svg>
-                                <svg x-show="action === 'ditolak'" class="w-5 h-5" fill="none" stroke="currentColor"
+                                <svg x-show="action === 'dibatalkan'" class="w-5 h-5" fill="none" stroke="currentColor"
                                     viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M6 18L18 6M6 6l12 12" />
@@ -291,9 +294,9 @@
                             :class="action === 'aktif' ? 'bg-white text-emerald-700 shadow-sm' : 'text-[#64748b]'">
                             Setujui
                         </button>
-                        <button type="button" @click="action = 'ditolak'"
+                        <button type="button" @click="action = 'dibatalkan'"
                             class="py-2 rounded-lg text-xs font-bold transition"
-                            :class="action === 'ditolak' ? 'bg-white text-rose-700 shadow-sm' : 'text-[#64748b]'">
+                            :class="action === 'dibatalkan' ? 'bg-white text-rose-700 shadow-sm' : 'text-[#64748b]'">
                             Tolak
                         </button>
                     </div>
@@ -307,14 +310,14 @@
 
                         <input type="hidden" name="status" :value="action">
 
-                        <!-- Keterangan: hanya saat Tolak -->
-                        <div x-show="action === 'ditolak'" class="space-y-1.5">
+                        <!-- Keterangan: hanya saat Tolak/Dibatalkan -->
+                        <div x-show="action === 'dibatalkan'" class="space-y-1.5">
                             <label for="keterangan"
                                 class="block text-xs font-semibold text-[#1e293b] uppercase tracking-wider">
                                 Keterangan Penolakan <span class="text-rose-500">*</span>
                             </label>
                             <textarea id="keterangan" name="keterangan" rows="4" minlength="10" maxlength="1000"
-                                :required="action === 'ditolak'" :disabled="action !== 'ditolak'"
+                                :required="action === 'dibatalkan'" :disabled="action !== 'dibatalkan'"
                                 placeholder="Contoh: Dokumen belum lengkap, mohon lampirkan MoU yang sudah ditandatangani..."
                                 class="w-full px-4 py-2.5 bg-[#f8fafc] border rounded-xl text-sm text-[#1e293b] focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 transition {{ $errors->has('keterangan') ? 'border-rose-400' : 'border-[#e2e8f0]' }}">{{ old('keterangan') }}</textarea>
                             @error('keterangan')

@@ -4,42 +4,53 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Kerjasama;
+use App\Models\KerjasamaStatus;
+use App\Models\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
 
 class KerjasamaController extends Controller
 {
     public function index(Request $request)
     {
-        // 1. Ambil filter status dari request (default 'pending')
         $statusFilter = $request->get('status', 'pending');
         $search = $request->get('search');
 
-        // 2. Query dasar diurutkan dari yang terbaru (descending)
-        $query = Kerjasama::latest(); // atau bisa juga menggunakan ->orderBy('id', 'desc')
+        $query = Kerjasama::with('latestStatus');
 
-        // 3. Filter berdasarkan status jika bukan 'semua'
+        // Filter berdasarkan status terakhir di tabel kerjasama_status
         if ($statusFilter && $statusFilter !== 'semua') {
-            $query->where('status', $statusFilter);
+            if ($statusFilter === 'pending') {
+                // Menampilkan yang status terakhirnya 'pending' ATAU belum memiliki status sama sekali
+                $query->where(function ($q) {
+                    $q->whereHas('latestStatus', fn($sub) => $sub->where('status', 'pending'))
+                        ->orWhereDoesntHave('latestStatus');
+                });
+            } else {
+                $query->whereHas('latestStatus', function ($q) use ($statusFilter) {
+                    $q->where('status', $statusFilter);
+                });
+            }
         }
 
-        // 4. Filter berdasarkan kata kunci pencarian (judul / mitra)
         if ($search) {
             $query->where(function ($q) use ($search) {
                 $q->where('judul', 'like', "%{$search}%")
-                    ->orWhere('mitra', 'like', "%{$search}%")
-                    ->orWhere('deskripsi', 'like', "%{$search}%");
+                    ->orWhere('mitra', 'like', "%{$search}%");
             });
         }
 
-        // 5. Paginated data
-        $kerjasamas = $query->paginate(10)->withQueryString();
+        $kerjasamas = $query->latest()->paginate(10)->withQueryString();
 
-        // 6. Hitung jumlah data untuk masing-masing tab status (badge counter)
+        // Hitung jumlah data per status untuk badge tab
         $counts = [
-            'pending' => Kerjasama::where('status', 'pending')->count(),
-            'aktif' => Kerjasama::where('status', 'aktif')->count(),
-            'ditolak' => Kerjasama::where('status', 'ditolak')->count(),
+            'pending' => Kerjasama::where(function ($q) {
+                $q->whereHas('latestStatus', fn($sub) => $sub->where('status', 'pending'))
+                    ->orWhereDoesntHave('latestStatus');
+            })->count(),
+            'aktif'   => Kerjasama::whereHas('latestStatus', fn($q) => $q->where('status', 'aktif'))->count(),
+            'ditolak' => Kerjasama::whereHas('latestStatus', fn($q) => $q->where('status', 'dibatalkan'))->count(),
         ];
 
         return view('admin.kerjasama.index', compact('kerjasamas', 'counts'));
@@ -75,6 +86,9 @@ class KerjasamaController extends Controller
 
     public function show(Kerjasama $kerjasama)
     {
+        // Memuat relasi status terakhir dan user pembuat status
+        $kerjasama->load(['latestStatus.user']);
+
         return view('admin.kerjasama.show', compact('kerjasama'));
     }
 
@@ -123,37 +137,62 @@ class KerjasamaController extends Controller
     public function status(Request $request, Kerjasama $kerjasama)
     {
         $validated = $request->validate([
-            'status'     => 'required|in:aktif,ditolak',
-            'keterangan' => 'required_if:status,ditolak|nullable|string|min:10|max:1000',
+            'status'     => 'required|in:aktif,dibatalkan',
+            'keterangan' => 'required_if:status,dibatalkan|nullable|string|min:10|max:1000',
         ], [
             'status.in'                => 'Status yang dipilih tidak valid.',
-            'keterangan.required_if'   => 'Keterangan penolakan wajib diisi.',
+            'keterangan.required_if'   => 'Keterangan pembatalan/penolakan wajib diisi.',
             'keterangan.min'           => 'Keterangan minimal 10 karakter.',
             'keterangan.max'           => 'Keterangan maksimal 1000 karakter.',
         ]);
 
-        // Hanya pengajuan pending yang boleh diproses
-        // (mencegah klik ganda atau dua admin memproses data yang sama)
-        if ($kerjasama->status !== 'pending') {
+        // Cek status terakhir dari tabel kerjasama_status
+        $latestStatus = KerjasamaStatus::where('kerjasama_id', $kerjasama->id)->latest()->first();
+
+        if ($latestStatus && $latestStatus->status !== 'pending') {
             return back()->with('error', 'Pengajuan ini sudah diproses dan tidak dapat diubah lagi.');
         }
 
         if ($validated['status'] === 'aktif') {
-            $kerjasama->update([
-                'status'     => 'aktif',
-                'keterangan' => null,
-                'ditolak_at' => null,
+            // Simpan status baru ke tabel kerjasama_status
+            KerjasamaStatus::create([
+                'user_id'      => Auth::id(),
+                'kerjasama_id' => $kerjasama->id,
+                'status'       => 'aktif',
+                'keterangan'   => null,
             ]);
 
-            $message = 'Pengajuan kerjasama berhasil aktif.';
+            $message = 'Pengajuan kerjasama berhasil diaktifkan.';
+
+            // Kirim Notifikasi ke User pembuat pengajuan (jika user_id ada)
+            Notification::create([
+                'user_id'      => $kerjasama->user_id,
+                'title'        => 'Kerjasama Disetujui',
+                'message'      => 'Pengajuan kerjasama "' . $kerjasama->judul . '" telah disetujui dan berstatus aktif.',
+                'type'         => 'kerjasama',
+                'route'        => '/user-kerjasamas/' . $kerjasama->id,
+                'route_params' => json_encode([$kerjasama->id]),
+            ]);
         } else {
-            $kerjasama->update([
-                'status'     => 'ditolak',
-                'keterangan' => $validated['keterangan'],
-                'ditolak_at' => now(),
+            // Simpan status dibatalkan/ditolak ke tabel kerjasama_status
+            KerjasamaStatus::create([
+                'user_id'      => Auth::id(),
+                'kerjasama_id' => $kerjasama->id,
+                'status'       => 'dibatalkan',
+                'keterangan'   => $validated['keterangan'],
             ]);
 
-            $message = 'Pengajuan kerjasama telah ditolak.';
+            $message = 'Pengajuan kerjasama telah ditolak/dibatalkan.';
+
+            // Kirim Notifikasi Penolakan ke User pembuat pengajuan
+            Notification::create([
+                'user_id'      => $kerjasama->user_id,
+                'title'        => 'Kerjasama Ditolak',
+                'message'      => 'Pengajuan kerjasama "' . $kerjasama->judul . '" ditolak. Keterangan: ' . $validated['keterangan'],
+                'type'         => 'kerjasama',
+                'route'        => '/user-kerjasamas/' . $kerjasama->id,
+                'route_params' => json_encode([$kerjasama->id]),
+            ]);
         }
 
         return redirect()

@@ -35,38 +35,38 @@
                 </div>
             @endif
 
-            <!-- Tab Filter Status (Pending, Disetujui, Ditolak, Semua) -->
+            <!-- Tab Filter Status (Pending, Aktif, Ditolak, Semua) -->
             @php
                 $currentStatus = request()->get('status', 'pending');
             @endphp
             <div class="flex items-center space-x-2 border-b border-[#e2e8f0] pb-3 overflow-x-auto">
                 <a href="{{ route('admin.kerjasama.index', ['status' => 'pending', 'search' => request('search')]) }}"
                    class="px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition {{ $currentStatus === 'pending' ? 'bg-indigo-600 text-white shadow-sm' : 'bg-white text-[#64748b] border border-[#e2e8f0] hover:bg-slate-50' }}">
-                   Pending 
-                   @if(isset($counts['pending']))
-                       <span class="ml-1.5 px-1.5 py-0.5 rounded-full text-[10px] {{ $currentStatus === 'pending' ? 'bg-indigo-700 text-white' : 'bg-slate-100 text-slate-600' }}">{{ $counts['pending'] }}</span>
-                   @endif
+                    Pending 
+                    @if(isset($counts['pending']))
+                        <span class="ml-1.5 px-1.5 py-0.5 rounded-full text-[10px] {{ $currentStatus === 'pending' ? 'bg-indigo-700 text-white' : 'bg-slate-100 text-slate-600' }}">{{ $counts['pending'] }}</span>
+                    @endif
                 </a>
 
                 <a href="{{ route('admin.kerjasama.index', ['status' => 'aktif', 'search' => request('search')]) }}"
                    class="px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition {{ $currentStatus === 'aktif' ? 'bg-indigo-600 text-white shadow-sm' : 'bg-white text-[#64748b] border border-[#e2e8f0] hover:bg-slate-50' }}">
-                   Aktif
-                   @if(isset($counts['aktif']))
-                       <span class="ml-1.5 px-1.5 py-0.5 rounded-full text-[10px] {{ $currentStatus === 'aktif' ? 'bg-indigo-700 text-white' : 'bg-slate-100 text-slate-600' }}">{{ $counts['aktif'] }}</span>
-                   @endif
+                    Aktif
+                    @if(isset($counts['aktif']))
+                        <span class="ml-1.5 px-1.5 py-0.5 rounded-full text-[10px] {{ $currentStatus === 'aktif' ? 'bg-indigo-700 text-white' : 'bg-slate-100 text-slate-600' }}">{{ $counts['aktif'] }}</span>
+                    @endif
                 </a>
 
-                <a href="{{ route('admin.kerjasama.index', ['status' => 'ditolak', 'search' => request('search')]) }}"
-                   class="px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition {{ $currentStatus === 'ditolak' ? 'bg-indigo-600 text-white shadow-sm' : 'bg-white text-[#64748b] border border-[#e2e8f0] hover:bg-slate-50' }}">
-                   Ditolak
-                   @if(isset($counts['ditolak']))
-                       <span class="ml-1.5 px-1.5 py-0.5 rounded-full text-[10px] {{ $currentStatus === 'ditolak' ? 'bg-indigo-700 text-white' : 'bg-slate-100 text-slate-600' }}">{{ $counts['ditolak'] }}</span>
-                   @endif
+                <a href="{{ route('admin.kerjasama.index', ['status' => 'dibatalkan', 'search' => request('search')]) }}"
+                   class="px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition {{ $currentStatus === 'dibatalkan' ? 'bg-indigo-600 text-white shadow-sm' : 'bg-white text-[#64748b] border border-[#e2e8f0] hover:bg-slate-50' }}">
+                    Ditolak
+                    @if(isset($counts['ditolak']))
+                        <span class="ml-1.5 px-1.5 py-0.5 rounded-full text-[10px] {{ $currentStatus === 'dibatalkan' ? 'bg-indigo-700 text-white' : 'bg-slate-100 text-slate-600' }}">{{ $counts['ditolak'] }}</span>
+                    @endif
                 </a>
 
                 <a href="{{ route('admin.kerjasama.index', ['status' => 'semua', 'search' => request('search')]) }}"
                    class="px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition {{ $currentStatus === 'semua' ? 'bg-indigo-600 text-white shadow-sm' : 'bg-white text-[#64748b] border border-[#e2e8f0] hover:bg-slate-50' }}">
-                   Semua
+                    Semua
                 </a>
             </div>
 
@@ -113,6 +113,10 @@
                         </thead>
                         <tbody class="divide-y divide-[#f1f5f9] text-[#1e293b] text-sm font-medium">
                             @forelse ($kerjasamas as $index => $row)
+                                @php
+                                    // Mengambil status dari relasi kerjasama_status terakhir
+                                    $statusValue = $row->latestStatus ? strtolower($row->latestStatus->status) : 'pending';
+                                @endphp
                                 <tr class="hover:bg-[#f8fafc]/80 transition duration-200 group">
 
                                     <!-- No Urut Paginasi -->
@@ -147,8 +151,7 @@
                                     <!-- Status Badge -->
                                     <td class="py-4 px-6">
                                         @php
-                                            $status = strtolower($row->status ?? 'pending');
-                                            $badgeColor = match ($status) {
+                                            $badgeColor = match ($statusValue) {
                                                 'aktif' => 'bg-emerald-50 text-emerald-700 border-emerald-200/60',
                                                 'pending' => 'bg-amber-50 text-amber-700 border-amber-200/60',
                                                 'selesai' => 'bg-sky-50 text-sky-700 border-sky-200/60',
@@ -156,7 +159,7 @@
                                             };
                                         @endphp
                                         <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wide border {{ $badgeColor }}">
-                                            {{ $row->status ?? 'Pending' }}
+                                            {{ ucfirst($statusValue) }}
                                         </span>
                                     </td>
 
@@ -168,8 +171,6 @@
                                     <!-- 5. Action Column -->
                                     <td class="py-4 px-6 text-right whitespace-nowrap">
                                         <div class="inline-flex items-center space-x-1.5">
-
-                                            <!-- Tombol Detail / Tinjau -->
                                             @can('kerjasama-view')
                                                 <a href="{{ route('admin.kerjasama.show', $row->id) }}"
                                                     class="inline-flex items-center px-3 py-1.5 bg-indigo-50 text-indigo-600 hover:bg-indigo-100 rounded-lg text-xs font-semibold transition"
@@ -177,13 +178,11 @@
                                                     Tinjau
                                                 </a>
                                             @endcan
-
                                         </div>
                                     </td>
 
                                 </tr>
                             @empty
-                                <!-- 7. Empty State -->
                                 <tr>
                                     <td colspan="6" class="py-12 px-6 text-center">
                                         <div class="flex flex-col items-center justify-center space-y-3">

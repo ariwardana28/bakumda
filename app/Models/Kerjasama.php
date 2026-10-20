@@ -22,4 +22,16 @@ class Kerjasama extends Model
         'keterangan',
         'user_id',
     ];
+
+    // Relasi ke seluruh riwayat status
+    public function statuses()
+    {
+        return $this->hasMany(KerjasamaStatus::class, 'kerjasama_id');
+    }
+
+    // Relasi untuk mengambil status yang paling terakhir (terbaru)
+    public function latestStatus()
+    {
+        return $this->hasOne(KerjasamaStatus::class, 'kerjasama_id')->latestOfMany();
+    }
 }

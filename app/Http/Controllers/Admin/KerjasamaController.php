@@ -50,6 +50,7 @@ class KerjasamaController extends Controller
                     ->orWhereDoesntHave('latestStatus');
             })->count(),
             'aktif'   => Kerjasama::whereHas('latestStatus', fn($q) => $q->where('status', 'aktif'))->count(),
+            'selesai'   => Kerjasama::whereHas('latestStatus', fn($q) => $q->where('status', 'selesai'))->count(),
             'ditolak' => Kerjasama::whereHas('latestStatus', fn($q) => $q->where('status', 'dibatalkan'))->count(),
         ];
 

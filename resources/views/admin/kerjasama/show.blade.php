@@ -24,6 +24,10 @@
 
         $ext = $kerjasama->file_dokumen ? strtolower(pathinfo($kerjasama->file_dokumen, PATHINFO_EXTENSION)) : null;
 
+        // Cek dokumen PKS yang diunggah user
+        $hasPks = $kerjasama->dokumens->isNotEmpty();
+        $latestPks = $kerjasama->dokumens->last();
+
         // Modal otomatis terbuka lagi jika validasi gagal
         $reopenModal = $errors->has('keterangan') || $errors->has('status');
         $oldAction = old('status') === 'aktif' ? 'aktif' : 'dibatalkan';
@@ -53,13 +57,24 @@
                         Kembali ke daftar
                     </a>
                     <h1 class="text-xl sm:text-2xl font-bold text-[#1e293b] tracking-tight mt-2">Detail Kerjasama</h1>
-                    <p class="text-sm text-[#64748b] mt-1">Tinjau informasi kerjasama, lalu setujui atau tolak pengajuan.
-                    </p>
+                    <p class="text-sm text-[#64748b] mt-1">Tinjau informasi kerjasama, lalu setujui atau tolak pengajuan.</p>
                 </div>
 
-                {{-- TOMBOL AKSI KONFIRMASI (hanya muncul saat status masih pending) --}}
-                @if ($status === 'pending')
-                    <div class="flex items-center gap-2">
+                <!-- Tombol Aksi Kanan Atas -->
+                <div class="flex items-center gap-2">
+                    {{-- TOMBOL DOKUMEN PKS: HANYA MUNCUL JIKA STATUS SUDAH 'selesai' --}}
+                    @if ($status === 'selesai' && $hasPks)
+                        <a href="{{ Storage::url($latestPks->dokumen) }}" target="_blank" rel="noopener"
+                            class="inline-flex items-center justify-center px-4 py-2.5 rounded-xl bg-emerald-600 text-white text-sm font-semibold shadow-xs hover:bg-emerald-500 transition duration-200">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                            Dokumen PKS
+                        </a>
+                    @endif
+
+                    {{-- TOMBOL AKSI KONFIRMASI (hanya muncul saat status masih pending) --}}
+                    @if ($status === 'pending')
                         <button type="button" @click="openModal()"
                             class="inline-flex items-center justify-center px-4 py-2.5 rounded-xl bg-indigo-600 text-white text-sm font-semibold shadow-xs hover:bg-indigo-500 active:bg-indigo-700 transition duration-200">
                             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -68,8 +83,8 @@
                             </svg>
                             Tinjau Pengajuan
                         </button>
-                    </div>
-                @endif
+                    @endif
+                </div>
             </div>
 
             <!-- Flash Message -->
@@ -144,9 +159,14 @@
                     </div>
                 </div>
 
-                <!-- Ringkasan Tanggal -->
-                <div
-                    class="grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-[#e2e8f0] border-b border-[#e2e8f0]">
+                <!-- Informasi Tambahan: Biaya Pelatihan & Ringkasan Tanggal -->
+                <div class="grid grid-cols-1 sm:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-[#e2e8f0] border-b border-[#e2e8f0]">
+                    <div class="p-5 sm:p-6">
+                        <p class="text-[11px] font-semibold uppercase tracking-wider text-[#64748b]">Biaya Pelatihan</p>
+                        <p class="text-sm font-bold text-indigo-600 mt-1.5">
+                            Rp {{ number_format($kerjasama->biaya_pelatihan ?? 0, 0, ',', '.') }}
+                        </p>
+                    </div>
                     <div class="p-5 sm:p-6">
                         <p class="text-[11px] font-semibold uppercase tracking-wider text-[#64748b]">Tanggal Mulai</p>
                         <p class="text-sm font-bold text-[#1e293b] mt-1.5">
@@ -228,6 +248,40 @@
                         </div>
                     @endif
                 </div>
+
+                {{-- INFORMASI / SECTION DOKUMEN PKS (Hanya muncul jika status sudah selesai) --}}
+                @if ($status === 'selesai')
+                    <div class="p-6 sm:p-8 border-b border-[#e2e8f0] bg-emerald-50/40">
+                        <h3 class="text-[11px] font-semibold uppercase tracking-wider text-emerald-800 mb-3">Dokumen PKS Bertanda Tangan</h3>
+                        @if ($hasPks)
+                            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-4 rounded-2xl bg-white border border-emerald-200">
+                                <div class="flex items-center gap-3 min-w-0">
+                                    <div class="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-100 text-emerald-600 flex items-center justify-center text-[10px] font-bold uppercase shrink-0">
+                                        PDF
+                                    </div>
+                                    <div class="min-w-0">
+                                        <p class="text-sm font-semibold text-[#1e293b] truncate">
+                                            {{ basename($latestPks->dokumen) }}
+                                        </p>
+                                        <p class="text-xs text-emerald-700">Diunggah pada {{ \Carbon\Carbon::parse($latestPks->created_at)->format('d M Y, H:i') }}</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <a href="{{ Storage::url($latestPks->dokumen) }}" target="_blank" rel="noopener"
+                                        class="inline-flex items-center px-3.5 py-2 rounded-xl bg-white border border-[#e2e8f0] text-xs font-semibold text-[#1e293b] hover:bg-slate-50 transition">
+                                        Lihat
+                                    </a>
+                                    <a href="{{ Storage::url($latestPks->dokumen) }}" download
+                                        class="inline-flex items-center px-3.5 py-2 rounded-xl bg-emerald-600 text-xs font-semibold text-white hover:bg-emerald-500 transition">
+                                        Unduh
+                                    </a>
+                                </div>
+                            </div>
+                        @else
+                            <p class="text-xs text-amber-700 italic">Kerjasama berstatus selesai, namun pengguna belum mengunggah berkas PKS bertanda tangan.</p>
+                        @endif
+                    </div>
+                @endif
 
                 <!-- Meta -->
                 <div

@@ -378,5 +378,13 @@ Route::get('/artikel/{artikel:slug}', [HalamanUtamaController::class, 'show'])->
 
 Route::resource('user-kerjasamas', UserKerjasamaController::class);
 Route::patch('user-kerjasamas/{id}/cancel', [UserKerjasamaController::class, 'cancel'])->name('user-kerjasamas.cancel');
+Route::get('user-kerjasamas/{id}/pks', [UserKerjasamaController::class, 'pks'])
+    ->name('user-kerjasamas.pks');
+
+Route::post('/user-kerjasamas/{id}/pks-upload', [UserKerjasamaController::class, 'uploadPks'])
+    ->name('user-kerjasamas.pks.upload');
+// (Opsional jika dibutuhkan) Route untuk melihat atau mengunduh file PKS yang sudah diunggah
+Route::get('/user-kerjasamas/{id}/pks-file', [UserKerjasamaController::class, 'filePks'])
+    ->name('user-kerjasamas.pks.file');
 
 require __DIR__ . '/auth.php';

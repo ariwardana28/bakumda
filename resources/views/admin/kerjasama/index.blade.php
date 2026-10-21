@@ -35,7 +35,7 @@
                 </div>
             @endif
 
-            <!-- Tab Filter Status (Pending, Aktif, Ditolak, Semua) -->
+            <!-- Tab Filter Status (Pending, Aktif, Selesai, Ditolak, Semua) -->
             @php
                 $currentStatus = request()->get('status', 'pending');
             @endphp
@@ -53,6 +53,15 @@
                     Aktif
                     @if(isset($counts['aktif']))
                         <span class="ml-1.5 px-1.5 py-0.5 rounded-full text-[10px] {{ $currentStatus === 'aktif' ? 'bg-indigo-700 text-white' : 'bg-slate-100 text-slate-600' }}">{{ $counts['aktif'] }}</span>
+                    @endif
+                </a>
+
+                <!-- TOMBOL TAB SELESAI DITAMBAHKAN DI SINI -->
+                <a href="{{ route('admin.kerjasama.index', ['status' => 'selesai', 'search' => request('search')]) }}"
+                   class="px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition {{ $currentStatus === 'selesai' ? 'bg-indigo-600 text-white shadow-sm' : 'bg-white text-[#64748b] border border-[#e2e8f0] hover:bg-slate-50' }}">
+                    Selesai
+                    @if(isset($counts['selesai']))
+                        <span class="ml-1.5 px-1.5 py-0.5 rounded-full text-[10px] {{ $currentStatus === 'selesai' ? 'bg-indigo-700 text-white' : 'bg-slate-100 text-slate-600' }}">{{ $counts['selesai'] }}</span>
                     @endif
                 </a>
 

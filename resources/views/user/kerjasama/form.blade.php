@@ -13,7 +13,7 @@
                 {{ isset($kerjasama) ? 'Ubah Kerja Sama' : 'Tambah Kerja Sama Baru' }}
             </h1>
             <p class="text-sm text-[#64748b] mt-1">
-                Lengkapi informasi detail mitra dan berkas dokumen kerja sama.
+                Lengkapi informasi detail mitra, biaya pelatihan, dan berkas dokumen kerja sama.
             </p>
         </div>
 
@@ -29,7 +29,7 @@
             </div>
         @endif
 
-        <!-- Form Utama (Tanpa Alpine.js submitting) -->
+        <!-- Form Utama -->
         <form action="{{ isset($kerjasama) ? route('user-kerjasamas.update', $kerjasama->id) : route('user-kerjasamas.store') }}" 
               method="POST" 
               enctype="multipart/form-data" 
@@ -67,6 +67,40 @@
                            placeholder="Contoh: PT Teknologi Nusantara / Universitas Terkait" 
                            class="w-full px-4 py-2.5 bg-[#f8fafc] border border-[#e2e8f0] rounded-xl text-sm text-[#1e293b] focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 transition" 
                            required>
+                </div>
+
+                <!-- Biaya Pelatihan (Dengan Format Titik Rupiah) -->
+                <div class="space-y-1.5" x-data="{ 
+                    rawVal: '{{ old('biaya_pelatihan', $kerjasama->biaya_pelatihan ?? '') }}',
+                    get formattedVal() {
+                        if (!this.rawVal) return '';
+                        return Number(this.rawVal).toLocaleString('id-ID');
+                    },
+                    updateValue(e) {
+                        let value = e.target.value.replace(/\D/g, '');
+                        this.rawVal = value;
+                        e.target.value = value ? Number(value).toLocaleString('id-ID') : '';
+                    }
+                }">
+                    <label for="biaya_pelatihan_display" class="block text-xs font-semibold text-[#1e293b] uppercase tracking-wider">
+                        BIAYA PELATIHAN (RP) <span class="text-rose-500">*</span>
+                    </label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-xs font-bold text-[#64748b]">Rp</span>
+                        
+                        <!-- Input Tampilan (Formatted dengan Titik) -->
+                        <input type="text" 
+                               id="biaya_pelatihan_display" 
+                               x-init="$el.value = formattedVal"
+                               @input="updateValue($event)"
+                               placeholder="Contoh: 5.000.000" 
+                               class="w-full pl-10 pr-4 py-2.5 bg-[#f8fafc] border border-[#e2e8f0] rounded-xl text-sm text-[#1e293b] focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-600 transition" 
+                               required>
+
+                        <!-- Input Hidden untuk Menyimpan Angka Murni ke Database -->
+                        <input type="hidden" name="biaya_pelatihan" x-model="rawVal">
+                    </div>
+                    <p class="text-[11px] text-[#64748b]">Format titik pemisah ribuan akan otomatis disesuaikan.</p>
                 </div>
 
                 <!-- Tanggal Mulai & Selesai -->
@@ -127,7 +161,7 @@
 
             </div>
 
-            <!-- Action Buttons (Tanpa script penahan tombol) -->
+            <!-- Action Buttons -->
             <div class="flex items-center justify-end space-x-3 pt-2">
                 <a href="{{ route('user-kerjasamas.index') }}" 
                    class="px-5 py-2.5 rounded-xl border border-[#e2e8f0] bg-white text-[#64748b] hover:bg-slate-50 text-sm font-semibold transition">

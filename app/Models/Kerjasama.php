@@ -19,7 +19,7 @@ class Kerjasama extends Model
         'tanggal_selesai',
         'status',
         'file_dokumen',
-        'keterangan',
+        'biaya_pelatihan',
         'user_id',
     ];
 
@@ -33,5 +33,10 @@ class Kerjasama extends Model
     public function latestStatus()
     {
         return $this->hasOne(KerjasamaStatus::class, 'kerjasama_id')->latestOfMany();
+    }
+
+    public function dokumens()
+    {
+        return $this->hasMany(KerjasamaDokumen::class, 'kerjasama_id');
     }
 }

@@ -190,7 +190,7 @@ Route::resource('user-pelatihan', UserPelatihanController::class)
     ->parameters(['user-pelatihan' => 'pelatihan']);
 
 
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth', 'member.active'])->group(function () {
 
     // --- Profile Management ---
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');

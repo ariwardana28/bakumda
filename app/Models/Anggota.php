@@ -3,9 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Concerns\ChecksActiveMembership;
 
 class Anggota extends Model
 {
+    use ChecksActiveMembership;
+
     protected $table = 'anggota';
 
     protected $fillable = [
@@ -93,4 +96,6 @@ class Anggota extends Model
         }
         return null;
     }
+
+   
 }
